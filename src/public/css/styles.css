@@ -1,0 +1,56 @@
+.scotflag {
+  color: #ffffff;
+  background-color: #005eb8;
+}
+
+@media only screen and (min-width: 1000px) {
+  .chart-container {
+    position: relative;
+    height: 60vh;
+    width: 45vw;
+    margin-bottom: 30px;
+  }
+
+  .slider { max-height: 180px; }
+
+  #sep { height: 70px; }
+}
+
+@media only screen and (max-width: 1000px) {
+  .chart-container {
+    position: relative;
+    height: 60vh;
+    width: 85vw;
+    margin-bottom: 100px;
+  }
+
+  .slider { max-height: 400px; }
+
+  .hidden-on-mobile { display: none !important; }
+}
+
+/* https://davidwalsh.name/css-slide */
+.slider {
+  overflow-y: hidden;
+  transition-property: all;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slider.closed {
+  max-height: 0;
+}
+
+.data-toggle {
+  margin-bottom: -10px !important;
+}
+
+.chart-container {
+  margin-top: -30px !important;
+}
+
+/*
+* For some reason the stats and moreStats columns are wider than the page
+* https://github.com/jgthms/bulma/issues/449
+*/
+body, html { overflow-x: hidden; }
