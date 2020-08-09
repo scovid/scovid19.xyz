@@ -33,7 +33,7 @@ get '/api/trend' => sub {
 	my ($ctx) = @_;
 
 	$ctx->render(
-		json => $cache->wrap('trend', 7, \&get_trend),
+		json => $cache->wrap('trend', 7200, \&get_trend),
 	);
 };
 
