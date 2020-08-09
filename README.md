@@ -2,10 +2,11 @@
 The new and improved Scottish COVID-19 tracker.  
 
 
-### Get started
-
-Setup:
+### Install
 ```
+# Bootstrap
+[[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
+
 dnf install openssl-devel zlib-devel
 
 # Install plenv
@@ -25,8 +26,17 @@ cpanm Carton
 
 # Install dependencies
 carton install
+
+# nginx
+sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
+sudo systemctl restart nginx
+
+# Certbot
+sudo certbot --nginx
 ```
 
+### Starting
 Start dev server:
 ```
 carton exec morbo src/app.pl -w ./src
@@ -40,8 +50,6 @@ carton exec hypnotoad src/app.pl
 carton exec hypnotoad src/app.pl --stop
 ```
 
-
-#### Notes
-
+### Notes
 Open Data API reference:  
 https://docs.ckan.org/en/latest/maintaining/datastore.html#api-reference

@@ -27,7 +27,7 @@ get '/api/breakdown'       => { json => get_breakdown() };
 get '/api/locations/total' => { json => get_locations_total() };
 get '/api/locations/new'   => { json => get_locations_new() };
 
-app->config(hypnotoad => { listen => ['https://[::]:3000'] });
+app->config(hypnotoad => { listen => ['https://[::]:8080'] });
 app->start;
 
 
