@@ -10,26 +10,61 @@ use warnings;
 use v5.32.0;
 
 use OpenData;
+use Cache;
 use DateTime;
 use List::MoreUtils qw{uniq};
 
+my $cache = Cache->new(app->mode);
 my $TOTAL_COUNCILS = 32;
 
-my $summary = get_summary();
-get '/' => {
-	template => 'index',
-	summary  => $summary,
-	date_fmt => '%d %b %Y'
+# Main page
+get '/' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		template => 'index',
+		summary  => get_summary(),
+		date_fmt => '%d %b %Y',
+	);
 };
 
-get '/api/trend'           => { json => get_trend() };
-get '/api/breakdown'       => { json => get_breakdown() };
-get '/api/locations/total' => { json => get_locations_total() };
-get '/api/locations/new'   => { json => get_locations_new() };
+# API
+get '/api/trend' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		json => $cache->wrap('trend', 7, \&get_trend),
+	);
+};
+
+get '/api/breakdown' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		json => $cache->wrap('breakdown', 7200, \&get_breakdown),
+	);
+};
+
+get '/api/locations/total' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		json => $cache->wrap('locations_total', 7200, \&get_locations_total),
+	);
+};
+
+get '/api/locations/new' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		json => $cache->wrap('locations_new', 7200, \&get_locations_new),
+	);
+};
 
 app->config(hypnotoad => { listen => ['http://[::]:8080'] });
 app->start;
 
+# == #
 
 sub get_summary {
 	my $odata = OpenData->new;
@@ -102,12 +137,11 @@ sub get_trend {
 }
 
 sub get_breakdown {
-	my $odata = OpenData->new;
-
 	my ($positive, $negative, $deaths);
 
 	# There doesn't seem to be a good endpoint for getting total negatives
 	# So use total_by_deprivation and total it manually
+	my $odata = OpenData->new;
 	my $total_by_deprivation = $odata->fetch('total_by_deprivation');
 	foreach my $record ($total_by_deprivation->{records}->@*) {
 		$positive += $record->{TotalPositive};
@@ -123,7 +157,7 @@ sub get_breakdown {
 			label           => 'Breakdown',
 			data            => [$positive, $negative, $deaths],
 		}],
-	}
+	};
 }
 
 sub get_locations_total {
@@ -149,7 +183,7 @@ sub get_locations_total {
 			label           => 'Cases by area',
 			data            => \@sets,
 		}],
-	}
+	};
 }
 
 sub get_locations_new {
@@ -182,7 +216,7 @@ sub get_locations_new {
 			label           => 'Cases by area',
 			data            => \@sets,
 		}],
-	}
+	};
 }
 
 sub _council_map {
@@ -235,24 +269,24 @@ sub _color {
 		Fife                  => '#a6d854',
 
 		# TODO: These need nicer colors
-		Glasgow_City => 'orangered',
-		Highland => 'blue',
-		Inverclyde => 'purple',
-		Midlothian => 'cyan',
-		Moray => 'pink',
+		Glasgow_City         => 'orangered',
+		Highland             => 'blue',
+		Inverclyde           => 'purple',
+		Midlothian           => 'cyan',
+		Moray                => 'pink',
 		'Na_h-Eileanan_Siar' => 'burgandy',
-		North_Ayrshire => 'red',
-		North_Lanarkshire => 'yellow',
-		Orkney_Islands => 'lime',
-		Perth_and_Kinross => 'rebeccapurple',
-		Renfrewshire => 'brown',
-		Scottish_Borders => 'lightblue',
-		Shetland_Islands => 'navy',
-		South_Ayrshire => 'green',
-		South_Lanarkshire => 'orange',
-		Stirling => 'darkgreen',
-		West_Dunbartonshire => 'grey',
-		West_Lothian => 'magenta',
+		North_Ayrshire       => 'red',
+		North_Lanarkshire    => 'yellow',
+		Orkney_Islands       => 'lime',
+		Perth_and_Kinross    => 'rebeccapurple',
+		Renfrewshire         => 'brown',
+		Scottish_Borders     => 'lightblue',
+		Shetland_Islands     => 'navy',
+		South_Ayrshire       => 'green',
+		South_Lanarkshire    => 'orange',
+		Stirling             => 'darkgreen',
+		West_Dunbartonshire  => 'grey',
+		West_Lothian         => 'magenta',
 	);
 
 	return $map{$key} || 'yellow';
