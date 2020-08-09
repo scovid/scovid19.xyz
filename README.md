@@ -27,9 +27,17 @@ cpanm Carton
 carton install
 ```
 
-Run:
+Start dev server:
 ```
 carton exec morbo src/app.pl -w ./src
+```
+
+Start prod server:
+```
+carton exec hypnotoad src/app.pl
+
+# and stop with
+carton exec hypnotoad src/app.pl --stop
 ```
 
 
