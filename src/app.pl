@@ -1,10 +1,19 @@
-use lib 'src/lib';
+#!/usr/bin/env perl
 
-use Mojolicious::Lite;
+BEGIN {
+	use Mojolicious::Lite;
+	unshift @INC, app->home . "/lib";
+};
+
+use strict;
+use warnings;
+use v5.32.0;
+
 use OpenData;
 use DateTime;
 use List::MoreUtils qw{uniq};
-use Data::Dumper;
+
+my $TOTAL_COUNCILS = 32;
 
 my $summary = get_summary();
 get '/' => {
@@ -13,9 +22,10 @@ get '/' => {
 	date_fmt => '%d %b %Y'
 };
 
-get '/api/trend'     => { json => get_trend() };
-get '/api/breakdown' => { json => get_breakdown() };
-get '/api/locations' => { json => get_locations() };
+get '/api/trend'           => { json => get_trend() };
+get '/api/breakdown'       => { json => get_breakdown() };
+get '/api/locations/total' => { json => get_locations_total() };
+get '/api/locations/new'   => { json => get_locations_new() };
 
 app->start;
 
@@ -90,7 +100,6 @@ sub get_trend {
 	}
 }
 
-
 sub get_breakdown {
 	my $odata = OpenData->new;
 
@@ -109,13 +118,14 @@ sub get_breakdown {
 		labels => [qw{Positive Negative Deaths}],
 		datasets => [{
 			backgroundColor => ['darkorange', 'lightgreen', 'darkgrey'],
+			borderColor     => ['darkorange', 'lightgreen', 'darkgrey'],
 			label           => 'Breakdown',
 			data            => [$positive, $negative, $deaths],
 		}],
 	}
 }
 
-sub get_locations {
+sub get_locations_total {
 	my $odata = OpenData->new;
 
 	my $council_map   = _council_map();
@@ -125,7 +135,40 @@ sub get_locations {
 	foreach my $location ($total_by_area->{records}->@*) {
 		push @sets, {
 			x => $council_map->{$location->{CA}},
-			y => $location->{TotalCases},
+			y => $location->{'TotalCases'},
+		};
+	}
+
+	@sets = sort { $a->{x} cmp $b->{x} } @sets;
+
+	return {
+		labels => [ sort { $a cmp $b } uniq values %$council_map ],
+		datasets => [{
+			backgroundColor => [ map { _color($_->{x}) } @sets ],
+			label           => 'Cases by area',
+			data            => \@sets,
+		}],
+	}
+}
+
+sub get_locations_new {
+	my ($type) = @_;
+
+	my $odata = OpenData->new;
+
+	my %totals        = ();
+	my $council_map   = _council_map();
+	my $daily_by_area = $odata->fetch('daily_by_area', limit => $TOTAL_COUNCILS * 7, sort => 'Date DESC');
+
+	my @sets = ();
+	foreach my $record ($daily_by_area->{records}->@*) {
+		$totals{$record->{CA}} += $record->{DailyPositive};
+	}
+
+	foreach my $ca (keys %totals) {
+		push @sets, {
+			x => $council_map->{$ca},
+			y => $totals{$ca},
 		};
 	}
 
@@ -167,7 +210,6 @@ sub _color {
 	my ($key) = @_;
 
 	$key =~ s/\s+/_/g;
-	warn $key;
 
 	my %map = (
 		# Types

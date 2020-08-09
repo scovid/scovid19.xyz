@@ -29,7 +29,7 @@ carton install
 
 Run:
 ```
-carton exec morbo src/app.pl
+carton exec morbo src/app.pl -w ./src
 ```
 
 

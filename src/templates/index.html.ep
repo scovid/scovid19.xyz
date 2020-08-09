@@ -123,6 +123,7 @@
 			<div class="columns is-desktop">
 				<div class="column">
 					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Daily Trends</p>
+					<p class="has-text-centered">&nbsp;</p>
 					<br>
 
 					<!-- Cases by location -->
@@ -142,17 +143,19 @@
 			<div class="columns is-desktop">
 				<div class="column">
 					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Total cases by location</p>
+					<p class="has-text-centered">&nbsp;</p>
 					<br>
 					<!-- Cases by location -->
 					<div class="chart-container">
-						<canvas id="locationChart"></canvas>
+						<canvas id="totalLocationChart"></canvas>
 					</div>
 				</div>
 				<div class="column">
-					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Total cases across the country</p>
+					<p class="heading is-size-5 has-text-centered has-text-weight-medium">New cases by location</p>
+					<p class="has-text-centered">Last 7 days</p>
 					<br>
 					<div class="chart-container">
-						<canvas id="totalsChart"></canvas>
+						<canvas id="newLocationChart"></canvas>
 					</div>
 				</div>
 			</div>

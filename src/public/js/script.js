@@ -36,8 +36,14 @@ async function initCharts() {
 			type: 'doughnut',
 		},
 		{
-			key: 'locations',
-			selector: '#locationChart',
+			key: 'locations/total',
+			selector: '#totalLocationChart',
+			type: 'bar',
+			options: { legend: false },
+		},
+		{
+			key: 'locations/new',
+			selector: '#newLocationChart',
 			type: 'bar',
 			options: { legend: false },
 		},
