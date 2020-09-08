@@ -13,9 +13,12 @@ use OpenData;
 use Cache;
 use DateTime;
 use List::MoreUtils qw{uniq};
+use Mojo::Log;
 
 my $cache = Cache->new(app->mode);
 my $TOTAL_COUNCILS = 32;
+
+my $log = Mojo::Log->new(path => (app->home . '/log/scovid.log'), level => 'warn');
 
 # Main page
 get '/' => sub {
@@ -201,6 +204,8 @@ sub get_locations_new {
 	}
 
 	foreach my $ca (keys %totals) {
+		# TODO: Figure out why this has blanks
+		next unless $ca && $council_map->{$ca};
 		push @sets, {
 			x => $council_map->{$ca},
 			y => $totals{$ca},
