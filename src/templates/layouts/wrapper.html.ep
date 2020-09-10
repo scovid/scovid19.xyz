@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Scottish COVID-19 Stats" />
+		<meta name="keywords" content="COVID-19, Coronavirus, Scotland, Stats, SCOVID-19, Scottish" />
+		<meta name="author" content="Dan Stewart" />
+
+		<title>SCOVID-19</title>
+
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
+		<link rel="stylesheet" href="css/styles.css" />
+
+		<!-- From https://favicon.io/ -->
+		<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+	</head>
+
+	<body>
+
+		<!-- Hero -->
+		<section class="hero scotflag">
+			<div class="hero-body">
+				<div class="level">
+					<div class="level-left">
+						<div>
+							<p class="title is-2 scotflag">SCOVID-19</p>
+							<p class="subtitle is-5 scotflag">COVID-19 Stats for Scotland</p>
+							<p class="subtitle is-7 has-text-grey-lighter ">Last Updated: <%= $last_updated->strftime($date_fmt) %></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Work in progress
+		<section id="tabs">
+			<div class="tabs is-centered">
+				<ul>
+					<li class=<%= $tab eq 'overview' ? 'is-active' : '' %>><a href="/">Overview</a></li>
+					<li class=<%= $tab eq 'location' ? 'is-active' : '' %>><a href="/location">My Location</a></li>
+				</ul>
+			</div>
+		</section>
+		-->
+
+		<br>
+
+		<section id="message" class="is-hidden">
+			<div class="container">
+				<div class="message">
+					<div class="message-header scotflag">
+						<p>Info</p>
+						<button class="delete" onclick="toggleInfo(this)"></button>
+					</div>
+					<div class="message-body">
+					<ul>
+						<li>&bull; On April 2nd the process for counting deaths changed, <a href="https://www.gov.scot/news/new-process-for-reporting-covid-19-deaths/">see more</a></li>
+						<li>&bull; As of June 15th the data now includes cases at UK Government Regional Testing Centres</li>
+					</ul>
+					</div>
+				</div>
+				<br>
+			</div>
+		</section>
+
+		<%= content %>
+
+		<br>
+
+		<footer class="footer">
+			<div class="content has-text-centered">
+				<p>All stats are from the <a href="https://www.opendata.nhs.scot/dataset/covid-19-in-scotland">NHS OpenData</a> API</p>
+				<hr>
+				<div><i class="fas fa-envelope"></i> <a href="mailto:SCOVID@mail.danstewart.dev">SCOVID@mail.danstewart.dev</a></div>
+				<div><i class="fab fa-github"></i> <a href="https://github.com/danstewart/scovid19.xyz">Source Code</a></div>
+			</div>
+		</footer>
+
+		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+		<script defer src="js/script.js"></script>
+
+		<script async defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+	</body>
+</html>

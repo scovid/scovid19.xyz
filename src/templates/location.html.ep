@@ -1,0 +1,14 @@
+% layout 'wrapper';
+
+<section id="location-summary">
+	<div class="container">
+		<p class="subtitle">Pick a council area to see a summary for your area</p>
+		<div class="buttons">
+			% foreach my $council (sort keys %$councils) {
+				<button class="button is-small is-rounded is-info" onclick="alert('<%= $councils->{$council} %>')"><%= $council %></button>
+			% }
+		</div>
+	</div>
+</section>
+
+<hr>

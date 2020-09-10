@@ -10,24 +10,44 @@ use warnings;
 use v5.32.0;
 
 use OpenData;
+use SCOVID;
 use Cache;
+use Util;
 use DateTime;
+use List::Util qw{sum};
 use List::MoreUtils qw{uniq};
 use Mojo::Log;
+use Data::Dumper;
 
 my $cache = Cache->new(app->mode);
-my $TOTAL_COUNCILS = 32;
+my $log   = Mojo::Log->new(path => (app->home . '/log/scovid.log'), level => 'warn');
 
-my $log = Mojo::Log->new(path => (app->home . '/log/scovid.log'), level => 'warn');
+my $scovid         = SCOVID->new;
+my $TOTAL_COUNCILS = 32;
+my $COUNCIL_MAP    = $scovid->councils;
 
 # Main page
 get '/' => sub {
 	my ($ctx) = @_;
 
 	$ctx->render(
-		template => 'index',
-		summary  => get_summary(),
-		date_fmt => '%d %b %Y',
+		template     => 'index',
+		summary      => get_summary(),
+		last_updated => $scovid->last_updated,
+		date_fmt     => '%d %b %Y',
+		tab          => 'overview',
+	);
+};
+
+get '/location' => sub {
+	my ($ctx) = @_;
+
+	$ctx->render(
+		template     => 'location',
+		date_fmt     => '%d %b %Y',
+		tab          => 'location',
+		last_updated => $scovid->last_updated,
+		councils     => { reverse %$COUNCIL_MAP },
 	);
 };
 
@@ -76,7 +96,6 @@ sub get_summary {
 	my %summary = ();
 	my @records = $cases_by_day->{records}->@*;
 
-	$summary{last_updated}    = _dt($records[-1]->{Date});
 	$summary{cases}->{total}  = $records[-1]->{CumulativeCases};
 	$summary{cases}->{today}  = $records[-1]->{DailyCases};
 	$summary{deaths}->{total} = $records[-1]->{Deaths};
@@ -88,7 +107,7 @@ sub get_summary {
 
 		if (not $max_deaths or $new_deaths > $max_deaths->{number}) {
 			$max_deaths->{number} = $new_deaths;
-			$max_deaths->{date}   = _dt($day->{Date});
+			$max_deaths->{date}   = Util::iso2dt($day->{Date});
 		}
 
 		if (not $max_cases or $day->{DailyCases} > $max_cases->{number}) {
@@ -96,7 +115,7 @@ sub get_summary {
 			# So this day isn't really an accurate representation
 			if ($day->{Date} ne '20200420') {
 				$max_cases->{number} = $day->{DailyCases};
-				$max_cases->{date}   = _dt($day->{Date});
+				$max_cases->{date}   = Util::iso2dt($day->{Date});
 			}
 		}
 
@@ -110,15 +129,25 @@ sub get_summary {
 }
 
 sub get_trend {
+	# NOTE: Fetching 31 so we can count the daily deaths
+	# We ignore the 31st day
 	my $odata = OpenData->new;
-	my $trend = $odata->fetch('daily', sort => 'Date DESC', limit => 30);
+	my $trend = $odata->fetch('daily', sort => 'Date DESC', limit => 31);
 
-	my @dates = ();
-	my @cases = ();
+	my @dates  = ();
+	my @cases  = ();
+	my @deaths = ();
 
-	foreach my $day (reverse $trend->{records}->@*) {
-		push @dates, _dt($day->{Date})->ymd;
+	my @records = reverse $trend->{records}->@*;
+	my $first_day = shift @records;
+
+	my $deaths_yesterday = $first_day->{Deaths};
+	foreach my $day (@records) {
+		push @dates, Util::iso2dt($day->{Date})->ymd;
 		push @cases, $day->{DailyCases};
+		push @deaths, $day->{Deaths} - $deaths_yesterday;
+
+		$deaths_yesterday = $day->{Deaths};
 	}
 
 	return {
@@ -128,13 +157,15 @@ sub get_trend {
 			label           => 'Positive',
 			data            => \@cases,
 		# },{
-		# 	backgroundColor => 'lightgreen',
-		# 	label           => 'Negative',
-		# 	data            => \@cases,
+			# backgroundColor => 'lightgreen',
+			# label           => 'Negative',
+			# data            => \@cases,
 		# },{
-		# 	backgroundColor => 'darkgrey',
-		# 	label           => 'Deaths',
-		# 	data            => \@cases,
+
+		# TODO: death stats work but want to make it disabled by default
+			# backgroundColor => 'darkgrey',
+			# label           => 'Deaths',
+			# data            => \@deaths,
 		}],
 	}
 }
@@ -166,13 +197,12 @@ sub get_breakdown {
 sub get_locations_total {
 	my $odata = OpenData->new;
 
-	my $council_map   = _council_map();
 	my $total_by_area = $odata->fetch('total_by_area');
 
 	my @sets = ();
 	foreach my $location ($total_by_area->{records}->@*) {
 		push @sets, {
-			x => $council_map->{$location->{CA}},
+			x => $COUNCIL_MAP->{$location->{CA}},
 			y => $location->{'TotalCases'},
 		};
 	}
@@ -180,7 +210,7 @@ sub get_locations_total {
 	@sets = sort { $a->{x} cmp $b->{x} } @sets;
 
 	return {
-		labels => [ sort { $a cmp $b } uniq values %$council_map ],
+		labels => [ sort { $a cmp $b } uniq values %$COUNCIL_MAP ],
 		datasets => [{
 			backgroundColor => [ map { _color($_->{x}) } @sets ],
 			label           => 'Cases by area',
@@ -195,7 +225,6 @@ sub get_locations_new {
 	my $odata = OpenData->new;
 
 	my %totals        = ();
-	my $council_map   = _council_map();
 	my $daily_by_area = $odata->fetch('daily_by_area', limit => $TOTAL_COUNCILS * 7, sort => 'Date DESC');
 
 	my @sets = ();
@@ -204,10 +233,10 @@ sub get_locations_new {
 	}
 
 	foreach my $ca (keys %totals) {
-		# TODO: Figure out why this has blanks
-		next unless $ca && $council_map->{$ca};
+		next unless $ca && $COUNCIL_MAP->{$ca};
+
 		push @sets, {
-			x => $council_map->{$ca},
+			x => $COUNCIL_MAP->{$ca},
 			y => $totals{$ca},
 		};
 	}
@@ -215,35 +244,13 @@ sub get_locations_new {
 	@sets = sort { $a->{x} cmp $b->{x} } @sets;
 
 	return {
-		labels => [ sort { $a cmp $b } uniq values %$council_map ],
+		labels => [ sort { $a cmp $b } uniq values %$COUNCIL_MAP ],
 		datasets => [{
 			backgroundColor => [ map { _color($_->{x}) } @sets ],
 			label           => 'Cases by area',
 			data            => \@sets,
 		}],
 	};
-}
-
-sub _council_map {
-	my $odata = OpenData->new;
-
-	# Mapping of council ID to name
-	my $councils = $odata->fetch('councils')->{records};
-	my %council_map = ();
-	$council_map{$_->{CA}} = $_->{CAName} foreach @$councils;
-
-	return \%council_map;
-}
-
-# Conver YYYYMMDD into a DateTime object
-sub _dt {
-	my ($date) = @_;
-
-	if ($date =~ /(\d{4})(\d{2})(\d{2})/) {
-		return DateTime->new(year => $1, month => $2, day => $3);
-	}
-
-	return DateTime->now();
 }
 
 sub _color {

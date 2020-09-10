@@ -5,7 +5,10 @@ let charts = {};
 Chart.defaults.line.spanGaps = true;
 
 // Draw the charts for the first time
-initCharts();
+window.onload = () => {
+	toggleInfo();
+	initCharts();
+}
 
 /*
 * Event handlers
@@ -19,6 +22,18 @@ function toggleExtraCards(e) {
 	moreStats.classList.toggle('closed');
 }
 
+function toggleInfo(e) {
+	const isHidden = window.localStorage.getItem('hiddenInfo');
+	if (isHidden) return;
+
+	document.querySelector('#message').classList.toggle('is-hidden');
+
+	// If coming from a click then store we want to permanently hide this
+	if (e) {
+		window.localStorage.setItem('hiddenInfo', true);
+	}
+}
+
 /*
 * Charts
 */
@@ -28,7 +43,7 @@ async function initCharts() {
 			key: 'trend',
 			selector: '#trendChart',
 			type: 'bar',
-			options: { legend: false },
+			// options: { legend: false },
 		},
 		{
 			key: 'breakdown',

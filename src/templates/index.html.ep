@@ -1,180 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="Scottish COVID-19 Stats" />
-		<meta name="keywords" content="COVID-19, Coronavirus, Scotland, Stats, SCOVID-19, Scottish" />
-		<meta name="author" content="Dan Stewart" />
+% layout 'wrapper';
 
-		<title>SCOVID-19</title>
-
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
-		<link rel="stylesheet" href="css/styles.css" />
-
-		<!-- From https://favicon.io/ -->
-		<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-	</head>
-
-	<body>
-		<!-- Hero -->
-		<section class="hero scotflag">
-			<div class="hero-body">
-				<div class="level">
-					<div class="level-left">
-						<div>
-							<p class="title is-2 scotflag">SCOVID-19</p>
-							<p class="subtitle is-5 scotflag">COVID-19 Stats for Scotland</p>
-							<p class="subtitle is-7 has-text-grey-lighter ">Last Updated: <%= $summary->{last_updated}->strftime($date_fmt) %></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<hr>
-
-		<!-- Stats-->
-		<section id="stats" class="columns">
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #249596; color: white;">
-						<p class="heading is-size-6">Total Positive Cases</p>
-						<p id="totalCases" class="title"><%= $summary->{cases}->{total} %></p>
-					</article>
-				</div>
-			</div>
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #67a23f; color: white;">
-						<p class="heading is-size-6">New Cases Today</p>
-						<p id="newCases" class="title"><%= $summary->{cases}->{today} %></p>
-					</article>
-				</div>
-			</div>
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #f6ae33; color: white;">
-						<p class="heading is-size-6">Total Deaths</p>
-						<p id="totalDeaths" class="title"><%= $summary->{deaths}->{total} %></p>
-					</article>
-				</div>
-			</div>
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #f94333; color: white;">
-						<p class="heading is-size-6">New Deaths Today</p>
-						<p id="newDeaths" class="title"><%= $summary->{deaths}->{today} %></p>
-					</article>
-				</div>
-			</div>
-		</section>
-
-		<section id="moreStats" class="columns slider closed">
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #469C6B; color: white;">
-						<p class="heading is-size-6">Most cases in one day</p>
-						<p id="totalCases" class="title is-marginless"><%= $summary->{cases}->{most}->{number} %></p>
-						<p class="heading is-size-6">On <%= $summary->{cases}->{most}->{date}->strftime($date_fmt) %></p>
-					</article>
-				</div>
-			</div>
-			<div class="column">
-				<div class="tile is-parent">
-					<article class="has-text-centered tile is-child notification" style="background-color: #F87933; color: white;">
-						<p class="heading is-size-6">Most deaths in one day</p>
-						<p id="totalDeaths" class="title is-marginless"><%= $summary->{deaths}->{most}->{number} %></p>
-						<p class="heading is-size-6">On <%= $summary->{deaths}->{most}->{date}->strftime($date_fmt) %></p>
-					</article>
-				</div>
-			</div>
-		</section>
-
-		<!-- More stats button -->
-		<div class="has-text-centered">
-			<a class="button is-text is-medium is-family-monospace" onclick="toggleExtraCards(this)">
-				<i class="fas fa-chevron-down"></i>
-			</a>
+<!-- Stats-->
+<section id="stats" class="columns">
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #249596; color: white;">
+				<p class="heading is-size-6">Total Positive Cases</p>
+				<p id="totalCases" class="title"><%= $summary->{cases}->{total} %></p>
+			</article>
 		</div>
+	</div>
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #67a23f; color: white;">
+				<p class="heading is-size-6">New Cases Today</p>
+				<p id="newCases" class="title"><%= $summary->{cases}->{today} %></p>
+			</article>
+		</div>
+	</div>
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #f6ae33; color: white;">
+				<p class="heading is-size-6">Total Deaths</p>
+				<p id="totalDeaths" class="title"><%= $summary->{deaths}->{total} %></p>
+			</article>
+		</div>
+	</div>
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #f94333; color: white;">
+				<p class="heading is-size-6">New Deaths Today</p>
+				<p id="newDeaths" class="title"><%= $summary->{deaths}->{today} %></p>
+			</article>
+		</div>
+	</div>
+</section>
 
-		<hr>
+<section id="moreStats" class="columns slider closed">
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #469C6B; color: white;">
+				<p class="heading is-size-6">Most cases in one day</p>
+				<p id="totalCases" class="title is-marginless"><%= $summary->{cases}->{most}->{number} %></p>
+				<p class="heading is-size-6">On <%= $summary->{cases}->{most}->{date}->strftime($date_fmt) %></p>
+			</article>
+		</div>
+	</div>
+	<div class="column">
+		<div class="tile is-parent">
+			<article class="has-text-centered tile is-child notification" style="background-color: #F87933; color: white;">
+				<p class="heading is-size-6">Most deaths in one day</p>
+				<p id="totalDeaths" class="title is-marginless"><%= $summary->{deaths}->{most}->{number} %></p>
+				<p class="heading is-size-6">On <%= $summary->{deaths}->{most}->{date}->strftime($date_fmt) %></p>
+			</article>
+		</div>
+	</div>
+</section>
 
-		<div class="container" id="message">
-			<div class="message">
-				<div class="message-header scotflag">
-					<p>Info</p>
-					<button class="delete" onclick="document.querySelector('#message').classList.toggle('is-hidden')"></button>
-				</div>
-				<div class="message-body">
-				<ul>
-					<li>&bull; On April 2nd the process for counting deaths changed, <a href="https://www.gov.scot/news/new-process-for-reporting-covid-19-deaths/">see more</a></li>
-					<li>&bull; As of June 15th the data now includes cases at UK Government Regional Testing Centres</li>
-				</ul>
-				</div>
+<!-- More stats button -->
+<div class="has-text-centered">
+	<a class="button is-text is-medium is-family-monospace" onclick="toggleExtraCards(this)">
+		<i class="fas fa-chevron-down"></i>
+	</a>
+</div>
+
+<hr>
+
+<!-- Charts -->
+<section class="section">
+	<div class="columns is-desktop">
+		<div class="column">
+			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Daily Trends</p>
+			<p class="has-text-centered">&nbsp;</p>
+			<br>
+
+			<!-- Cases by location -->
+			<div class="chart-container">
+				<canvas id="trendChart"></canvas>
 			</div>
 		</div>
-
-
-		<!-- Charts -->
-		<section class="section">
-			<div class="columns is-desktop">
-				<div class="column">
-					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Daily Trends</p>
-					<p class="has-text-centered">&nbsp;</p>
-					<br>
-
-					<!-- Cases by location -->
-					<div class="chart-container">
-						<canvas id="trendChart"></canvas>
-					</div>
-				</div>
-				<div class="column">
-					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Breakdown</p>
-					<br>
-					<div class="chart-container">
-						<canvas id="breakdownChart"></canvas>
-					</div>
-				</div>
+		<div class="column">
+			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Breakdown</p>
+			<br>
+			<div class="chart-container">
+				<canvas id="breakdownChart"></canvas>
 			</div>
-			<div id="sep"></div>
-			<div class="columns is-desktop">
-				<div class="column">
-					<p class="heading is-size-5 has-text-centered has-text-weight-medium">Total cases by location</p>
-					<p class="has-text-centered">&nbsp;</p>
-					<br>
-					<!-- Cases by location -->
-					<div class="chart-container">
-						<canvas id="totalLocationChart"></canvas>
-					</div>
-				</div>
-				<div class="column">
-					<p class="heading is-size-5 has-text-centered has-text-weight-medium">New cases by location</p>
-					<p class="has-text-centered">Last 7 days</p>
-					<br>
-					<div class="chart-container">
-						<canvas id="newLocationChart"></canvas>
-					</div>
-				</div>
+		</div>
+	</div>
+	<div id="sep"></div>
+	<div class="columns is-desktop">
+		<div class="column">
+			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Total cases by location</p>
+			<p class="has-text-centered">&nbsp;</p>
+			<br>
+			<!-- Cases by location -->
+			<div class="chart-container">
+				<canvas id="totalLocationChart"></canvas>
 			</div>
-		</section>
-
-		<br>
-
-		<footer class="footer">
-			<div class="content has-text-centered">
-				<p>All stats are from the <a href="https://www.opendata.nhs.scot/dataset/covid-19-in-scotland">NHS OpenData</a> API</p>
-				<hr>
-				<div><i class="fas fa-envelope"></i> <a href="mailto:SCOVID@mail.danstewart.dev">SCOVID@mail.danstewart.dev</a></div>
-				<div><i class="fab fa-github"></i> <a href="https://github.com/danstewart/scovid19.xyz">Source Code</a></div>
+		</div>
+		<div class="column">
+			<p class="heading is-size-5 has-text-centered has-text-weight-medium">New cases by location</p>
+			<p class="has-text-centered">Last 7 days</p>
+			<br>
+			<div class="chart-container">
+				<canvas id="newLocationChart"></canvas>
 			</div>
-		</footer>
-
-		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
-		<script defer src="js/script.js"></script>
-
-		<script async defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-	</body>
-</html>
+		</div>
+	</div>
+</section>
