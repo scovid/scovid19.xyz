@@ -67,44 +67,14 @@
 <hr>
 
 <!-- Charts -->
-<section class="section">
+<section id="charts" class="section">
 	<div class="columns is-desktop">
-		<div class="column">
-			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Daily Trends</p>
-			<p class="has-text-centered">&nbsp;</p>
-			<br>
-
-			<!-- Cases by location -->
-			<div class="chart-container">
-				<canvas id="trendChart"></canvas>
-			</div>
-		</div>
-		<div class="column">
-			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Breakdown</p>
-			<br>
-			<div class="chart-container">
-				<canvas id="breakdownChart"></canvas>
-			</div>
-		</div>
+		%= include '_chart', type => 'trendChart', title => { text => 'Daily Trends' }
+		%= include '_chart', type => 'breakdownChart', title => { text => 'Breakdown' }
 	</div>
 	<div id="sep"></div>
 	<div class="columns is-desktop">
-		<div class="column">
-			<p class="heading is-size-5 has-text-centered has-text-weight-medium">Total cases by location</p>
-			<p class="has-text-centered">&nbsp;</p>
-			<br>
-			<!-- Cases by location -->
-			<div class="chart-container">
-				<canvas id="totalLocationChart"></canvas>
-			</div>
-		</div>
-		<div class="column">
-			<p class="heading is-size-5 has-text-centered has-text-weight-medium">New cases by location</p>
-			<p class="has-text-centered">Last 7 days</p>
-			<br>
-			<div class="chart-container">
-				<canvas id="newLocationChart"></canvas>
-			</div>
-		</div>
+		%= include '_chart', type => 'totalLocationChart', title => { text => 'Total cases by location' }
+		%= include '_chart', type => 'newLocationChart', title => { text => 'New cases by location', sub => 'Last 7 days' }
 	</div>
 </section>

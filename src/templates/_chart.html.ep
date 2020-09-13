@@ -1,0 +1,19 @@
+<div class="column">
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">
+		<%= $title->{text} %>
+		<!-- TODO: Show setting popup -->
+		<a href='#'><i class="fas fa-cog"></i></a>
+	</p>
+
+	% if (exists $title->{sub}) {
+		<p class="has-text-centered"><%= $title->{sub} %></p>
+	% } else {
+		<p>&nbsp;</p>
+	% }
+	<br>
+
+	<!-- Cases by location -->
+	<div class="chart-container">
+		<canvas id="<%= $type %>"></canvas>
+	</div>
+</div>

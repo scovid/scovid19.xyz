@@ -49,6 +49,13 @@
   margin-top: -30px !important;
 }
 
+/* Font awesome cog override */
+.fa-cog {
+  font-size: 1rem;
+  margin-left: 10px;
+  color: grey;
+}
+
 /*
 * For some reason the stats and moreStats columns are wider than the page
 * https://github.com/jgthms/bulma/issues/449
