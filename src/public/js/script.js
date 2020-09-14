@@ -1,14 +1,4 @@
-// All of the charts
-let charts = {};
-
-// Global ChartJS Configuration
-Chart.defaults.line.spanGaps = true;
-
-// Draw the charts for the first time
-window.onload = () => {
-	toggleInfo();
-	initCharts();
-}
+window.onload = () => toggleInfo();
 
 /*
 * Event handlers
@@ -29,73 +19,15 @@ function toggleInfo(e) {
 	document.querySelector('#message').classList.toggle('is-hidden');
 
 	// If coming from a click then store we want to permanently hide this
-	if (e) {
-		window.localStorage.setItem('hiddenInfo', true);
-	}
+	if (e) window.localStorage.setItem('hiddenInfo', true);
 }
 
-/*
-* Charts
-*/
-async function initCharts() {
-	let chartConfig = [
-		{
-			key: 'trend',
-			selector: '#trendChart',
-			type: 'bar',
-			// options: { legend: false },
-		},
-		{
-			key: 'breakdown',
-			selector: '#breakdownChart',
-			type: 'doughnut',
-		},
-		{
-			key: 'locations/total',
-			selector: '#totalLocationChart',
-			type: 'bar',
-			options: { legend: false },
-		},
-		{
-			key: 'locations/new',
-			selector: '#newLocationChart',
-			type: 'bar',
-			options: { legend: false },
-		},
-	];
-
-	// Generate charts
-	for (let config of chartConfig) {
-		let data = await getData(config.key);
-		chart = makeChart(config, data);
-		charts[config.key] = chart;
-	}
+function showSettings(type) {
+	// TODO
+	document.querySelector('#settings').classList.toggle('is-active');
+	// reloadChart(type);
 }
 
-// Instantiates the Chart()
-function makeChart(config, data) {
-	let context = document.querySelector(config.selector);
-
-	let chart = new Chart(context, {
-		type: config.type || 'line',
-		data: data,
-		options: {
-			maintainAspectRatio: false,
-			responsive: true,
-			...config.options
-		}
-	});
-
-	chart.key = config.key;
-
-	return chart;
-}
-
-// Return the appropriate data for this chart
-// Automatically generated server side
-async function getData(key) {
-	let res = await fetch(`/api/${key}`);
-	let data = await res.json();
-
-	return data;
+function closeSettings() {
+	document.querySelector('#settings').classList.remove('is-active');
 }

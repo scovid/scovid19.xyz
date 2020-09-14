@@ -86,6 +86,7 @@
 
 		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 		<script defer src="js/script.js"></script>
+		<script defer src="js/charts.js"></script>
 
 		<script async defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 	</body>

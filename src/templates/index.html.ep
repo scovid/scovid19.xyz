@@ -69,12 +69,14 @@
 <!-- Charts -->
 <section id="charts" class="section">
 	<div class="columns is-desktop">
-		%= include '_chart', type => 'trendChart', title => { text => 'Daily Trends' }
-		%= include '_chart', type => 'breakdownChart', title => { text => 'Breakdown' }
+		%= include 'partials/chart', type => 'trendChart', title => { text => 'Daily Trends' }
+		%= include 'partials/chart', type => 'breakdownChart', title => { text => 'Breakdown' }
 	</div>
 	<div id="sep"></div>
 	<div class="columns is-desktop">
-		%= include '_chart', type => 'totalLocationChart', title => { text => 'Total cases by location' }
-		%= include '_chart', type => 'newLocationChart', title => { text => 'New cases by location', sub => 'Last 7 days' }
+		%= include 'partials/chart', type => 'totalLocationChart', title => { text => 'Total cases by location' }
+		%= include 'partials/chart', type => 'newLocationChart', title => { text => 'New cases by location', sub => 'Last 7 days' }
 	</div>
 </section>
+
+%= include 'partials/settings_modal'
