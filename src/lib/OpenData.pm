@@ -1,3 +1,5 @@
+# Basic interface to the NHS OpenData API
+
 package OpenData;
 
 use strict;

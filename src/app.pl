@@ -19,12 +19,17 @@ use List::MoreUtils qw{uniq};
 use Mojo::Log;
 use Data::Dumper;
 
-my $cache = Cache->new(app->mode);
+$ENV{MODE} = app->mode;
+
+my $cache = Cache->new;
 my $log   = Mojo::Log->new(path => (app->home . '/log/scovid.log'), level => 'warn');
 
 my $scovid         = SCOVID->new;
 my $TOTAL_COUNCILS = 32;
 my $COUNCIL_MAP    = $scovid->councils;
+
+my $TWO_HOURS = 7_200; # 2 hours in seconds
+my $CACHE_TIME = $TWO_HOURS;
 
 # Main page
 get '/' => sub {
@@ -55,8 +60,11 @@ get '/location' => sub {
 get '/api/trend' => sub {
 	my ($ctx) = @_;
 
+	# TODO: Move caching into SCOVID::trend
+	my $trend = sub { $scovid->trend(@_) };
+
 	$ctx->render(
-		json => $cache->wrap('trend', 7200, \&get_trend),
+		json => $cache->wrap('trend', $CACHE_TIME, $trend, $ctx->req->params->to_hash),
 	);
 };
 
@@ -64,7 +72,7 @@ get '/api/breakdown' => sub {
 	my ($ctx) = @_;
 
 	$ctx->render(
-		json => $cache->wrap('breakdown', 7200, \&get_breakdown),
+		json => $cache->wrap('breakdown', $CACHE_TIME, \&get_breakdown, $ctx->req->params->to_hash),
 	);
 };
 
@@ -72,7 +80,7 @@ get '/api/locations/total' => sub {
 	my ($ctx) = @_;
 
 	$ctx->render(
-		json => $cache->wrap('locations_total', 7200, \&get_locations_total),
+		json => $cache->wrap('locations_total', $CACHE_TIME, \&get_locations_total, $ctx->req->params->to_hash),
 	);
 };
 
@@ -80,7 +88,7 @@ get '/api/locations/new' => sub {
 	my ($ctx) = @_;
 
 	$ctx->render(
-		json => $cache->wrap('locations_new', 7200, \&get_locations_new),
+		json => $cache->wrap('locations_new', $CACHE_TIME, \&get_locations_new, $ctx->req->params->to_hash),
 	);
 };
 
@@ -126,48 +134,6 @@ sub get_summary {
 	$summary{deaths}->{most} = $max_deaths;
 
 	return \%summary;
-}
-
-sub get_trend {
-	# NOTE: Fetching 31 so we can count the daily deaths
-	# We ignore the 31st day
-	my $odata = OpenData->new;
-	my $trend = $odata->fetch('daily', sort => 'Date DESC', limit => 31);
-
-	my @dates  = ();
-	my @cases  = ();
-	my @deaths = ();
-
-	my @records = reverse $trend->{records}->@*;
-	my $first_day = shift @records;
-
-	my $deaths_yesterday = $first_day->{Deaths};
-	foreach my $day (@records) {
-		push @dates, Util::iso2dt($day->{Date})->ymd;
-		push @cases, $day->{DailyCases};
-		push @deaths, $day->{Deaths} - $deaths_yesterday;
-
-		$deaths_yesterday = $day->{Deaths};
-	}
-
-	return {
-		labels => \@dates,
-		datasets => [{
-			backgroundColor => 'darkorange',
-			label           => 'Positive',
-			data            => \@cases,
-		# },{
-			# backgroundColor => 'lightgreen',
-			# label           => 'Negative',
-			# data            => \@cases,
-		# },{
-
-		# TODO: death stats work but want to make it disabled by default
-			# backgroundColor => 'darkgrey',
-			# label           => 'Deaths',
-			# data            => \@deaths,
-		}],
-	}
 }
 
 sub get_breakdown {

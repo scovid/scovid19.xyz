@@ -8,10 +8,10 @@ use Mojo::Cache;
 use DateTime;
 
 sub new {
-	my ($class, $mode, $verbose) = @_;
+	my ($class, $verbose) = @_;
 
 	my $self = {
-		MODE    => $mode,
+		MODE    => $ENV{MODE},
 		CACHE   => Mojo::Cache->new,
 		VERBOSE => $verbose,
 	};
@@ -60,14 +60,19 @@ sub get {
 }
 
 # Wraps a function call in a cache lookup
+# Kinda like a poor mans memoize
 sub wrap {
-	my ($self, $key, $valid_for, $func, @args) = @_;
+	my ($self, $key, $valid_for, $func, $args) = @_;
+
+	if ($args and ref $args eq 'HASH') {
+		$key = join ':', $key, map { "$_=$args->{$_}" } sort keys %$args;
+	}
 
 	if (my $res = $self->get($key)) {
 		return $res;
 	}
 
-	my $res = $func->(@args);
+	my $res = $func->($args);
 	$self->set($key, $valid_for, $res);
 	return $res;
 }
