@@ -1,12 +1,15 @@
 <div class="column">
 	<p class="heading is-size-5 has-text-centered has-text-weight-medium">
-		<%= $title->{text} %>
-		<!-- TODO: Show setting popup -->
-		<a onclick="showSettings('<%= $type %>')"><i class="fas fa-cog"></i></a>
+		<%= $p->{title} %>
+
+		% if ($p->{show_cog}) {
+			<!-- TODO: Show setting popup -->
+			<a onclick="showSettings('<%= $p->{type} %>')"><i class="fas fa-cog"></i></a>
+		% }
 	</p>
 
-	% if (exists $title->{sub}) {
-		<p class="has-text-centered"><%= $title->{sub} %></p>
+	% if ($p->{subtitle}) {
+		<p class="has-text-centered"><%= $p->{subtitle} %></p>
 	% } else {
 		<p>&nbsp;</p>
 	% }
@@ -14,6 +17,6 @@
 
 	<!-- Cases by location -->
 	<div class="chart-container">
-		<canvas id="<%= $type %>"></canvas>
+		<canvas id="<%= $p->{type} %>"></canvas>
 	</div>
 </div>

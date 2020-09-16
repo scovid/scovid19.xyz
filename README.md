@@ -1,6 +1,13 @@
 # scovid19.xyz
 The new and improved Scottish COVID-19 tracker.  
 
+### Built with
+- [mojolicious](https://mojolicious.org/)
+- [Bulma](https://bulma.io/)
+- [NHS OpenData API](https://www.opendata.nhs.scot/dataset)
+- [Chart.js](https://www.chartjs.org/)
+- [flatpickr](https://flatpickr.js.org/)
+
 
 ### Install
 ```

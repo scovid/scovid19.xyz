@@ -1,15 +1,19 @@
-<div id="settings" class="modal">
+<div id="settings" class="modal" data-type="">
 	<div class="modal-background"></div>
 	<div class="modal-card">
 		<header class="modal-card-head">
-			<p class="modal-card-title">Modal title</p>
+			<p class="modal-card-title">Edit date range</p>
 			<button class="delete" aria-label="close" onclick="closeSettings()"></button>
 		</header>
 		<section class="modal-card-body">
 			<!-- Content ... -->
+			<input id="start-date" class="datepicker" type="text" placeholder="Select start date" />
+			<br />
+			<br />
+			<input id="end-date" class="datepicker" type="text" placeholder="Select end date" />
 		</section>
 		<footer class="modal-card-foot">
-			<button class="button is-success">Save changes</button>
+			<button class="button is-success" onclick="saveSettings()">Save changes</button>
 			<button class="button" onclick="closeSettings()">Cancel</button>
 		</footer>
 	</div>

@@ -2,35 +2,29 @@
 let charts = {};
 
 // Chart configuration
-let chartConfig = [
-	{
-		id: 'trendChart',
+let chartConfig = {
+	'trendChart': {
 		type: 'bar',
-		// options: { legend: false },
+		options: { legend: false },
 		endpoint: 'trend',
-		// query: {
-			// startDate: '2020-08-01',
-			// endDate: '2020-08-08'
-		// }
 	},
-	{
-		id: 'breakdownChart',
+
+	'breakdownChart': {
 		type: 'doughnut',
 		endpoint: 'breakdown',
 	},
-	{
-		id: 'totalLocationChart',
+	'totalLocationChart': {
 		type: 'bar',
 		options: { legend: false },
 		endpoint: 'locations/total',
 	},
-	{
-		id: 'newLocationChart',
+	'newLocationChart': {
+
 		type: 'bar',
 		options: { legend: false },
 		endpoint: 'locations/new',
-	},
-];
+	}
+};
 
 // Global ChartJS Configuration
 Chart.defaults.line.spanGaps = true;
@@ -43,18 +37,20 @@ window.onload = () => initCharts();
 */
 async function initCharts(chartId) {
 	// Generate charts
-	for (let config of chartConfig) {
-		if (chartId && config.id != chartId) continue;
+	for (let id of Object.keys(chartConfig)) {
+		if (chartId && id != chartId) continue;
+
+		const config = chartConfig[id];
 
 		let data = await getData(config.endpoint, config.query);
-		chart = makeChart(config, data);
-		charts[config.id] = chart;
+		chart = makeChart(id, config, data);
+		charts[id] = chart;
 	}
 }
 
 // Instantiates the Chart()
-function makeChart(config, data) {
-	let context = document.querySelector('#' + config.id);
+function makeChart(id, config, data) {
+	let context = document.querySelector('#' + id);
 
 	let chart = new Chart(context, {
 		type: config.type || 'line',
@@ -72,8 +68,9 @@ function makeChart(config, data) {
 }
 
 // Reloads a charts data
-function reloadChart(id) {
+function reloadChart(id, query) {
 	charts[id].destroy();
+	chartConfig[id].query = query;
 	initCharts(id);
 }
 
@@ -82,7 +79,7 @@ function reloadChart(id) {
 async function getData(id, query) {
 	let queryString = '';
 	if (query) {
-		queryString = '?' + Object.keys(query).map(k => `${k}=${query[k]}`).join(';');
+		queryString = '?' + Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
 	}
 
 	let res = await fetch(`/api/${id}${queryString}`);
