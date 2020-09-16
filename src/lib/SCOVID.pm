@@ -8,6 +8,7 @@ use 5.32.0;
 
 use Carp qw{carp};
 use DateTime;
+use Data::Dumper;
 
 use OpenData;
 use Cache;
@@ -43,24 +44,26 @@ sub councils {
 sub trend {
 	my ($self, $params) = @_;
 
-	# NOTE: Fetching 31 so we can count the daily deaths
-	# We ignore the 31st day
-	my $trend = $self->odata->fetch('daily', sort => 'Date DESC', limit => 31);
+	my ($limit, $offset) = (30, 0);
+	if ($params->{start} && $params->{end}) {
+		my $start        = Util::iso2dt($params->{start});
+		my $end          = Util::iso2dt($params->{end});
+		my $last_updated = Util::iso2dt($self->last_updated);
+
+		$limit = $end->delta_days($start)->in_units('days') + 1; # Add one to make the bounds inclusive
+		$offset = $last_updated->delta_days($end)->in_units('days');
+	}
+
+	my $trend = $self->odata->fetch('daily', sort => 'Date DESC', limit => $limit, offset => $offset);
 
 	my @dates  = ();
 	my @cases  = ();
-	my @deaths = ();
 
 	my @records = reverse $trend->{records}->@*;
-	my $first_day = shift @records;
 
-	my $deaths_yesterday = $first_day->{Deaths};
 	foreach my $day (@records) {
-		push @dates, Util::iso2dt($day->{Date})->ymd;
+		push @dates, Util::fix_date($day->{Date});
 		push @cases, $day->{DailyCases};
-		push @deaths, $day->{Deaths} - $deaths_yesterday;
-
-		$deaths_yesterday = $day->{Deaths};
 	}
 
 	return {
@@ -69,16 +72,6 @@ sub trend {
 			backgroundColor => 'darkorange',
 			label           => 'Positive',
 			data            => \@cases,
-		# },{
-			# backgroundColor => 'lightgreen',
-			# label           => 'Negative',
-			# data            => \@cases,
-		# },{
-
-		# TODO: death stats work but want to make it disabled by default
-			# backgroundColor => 'darkgrey',
-			# label           => 'Deaths',
-			# data            => \@deaths,
 		}],
 	}
 }
