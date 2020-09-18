@@ -2,7 +2,8 @@
 The new and improved Scottish COVID-19 tracker.  
 
 ### Built with
-- [mojolicious](https://mojolicious.org/)
+- [flask](https://flask.palletsprojects.com/en/1.1.x/)
+- [jinja](https://jinja.palletsprojects.com/en/2.11.x/)
 - [Bulma](https://bulma.io/)
 - [NHS OpenData API](https://www.opendata.nhs.scot/dataset)
 - [Chart.js](https://www.chartjs.org/)
