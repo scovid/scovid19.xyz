@@ -1,12 +1,14 @@
-% layout 'wrapper';
+{% import 'partials/chart.html' as chart %}
 
+{% extends 'layouts/wrapper.html' %}
+{% block body %}
 <!-- Stats-->
 <section id="stats" class="columns">
 	<div class="column">
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #249596; color: white;">
 				<p class="heading is-size-6">Total Positive Cases</p>
-				<p id="totalCases" class="title"><%= $summary->{cases}->{total} %></p>
+				<p id="totalCases" class="title">{{ summary['cases']['total'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -14,7 +16,7 @@
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #67a23f; color: white;">
 				<p class="heading is-size-6">New Cases Today</p>
-				<p id="newCases" class="title"><%= $summary->{cases}->{today} %></p>
+				<p id="newCases" class="title">{{ summary['cases']['today'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -22,7 +24,7 @@
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #f6ae33; color: white;">
 				<p class="heading is-size-6">Total Deaths</p>
-				<p id="totalDeaths" class="title"><%= $summary->{deaths}->{total} %></p>
+				<p id="totalDeaths" class="title">{{ summary['deaths']['total'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -30,7 +32,7 @@
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #f94333; color: white;">
 				<p class="heading is-size-6">New Deaths Today</p>
-				<p id="newDeaths" class="title"><%= $summary->{deaths}->{today} %></p>
+				<p id="newDeaths" class="title">{{ summary['deaths']['today'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -41,8 +43,9 @@
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #469C6B; color: white;">
 				<p class="heading is-size-6">Most cases in one day</p>
-				<p id="totalCases" class="title is-marginless"><%= $summary->{cases}->{most}->{number} %></p>
-				<p class="heading is-size-6">On <%= $summary->{cases}->{most}->{date}->strftime($date_fmt) %></p>
+				<p id="totalCases" class="title is-marginless">{{ summary['cases']['most']['number'] }}</p>
+				<!-- TODO: Format date -->
+				<p class="heading is-size-6">On {{ summary['cases']['most']['date'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -50,8 +53,9 @@
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #F87933; color: white;">
 				<p class="heading is-size-6">Most deaths in one day</p>
-				<p id="totalDeaths" class="title is-marginless"><%= $summary->{deaths}->{most}->{number} %></p>
-				<p class="heading is-size-6">On <%= $summary->{deaths}->{most}->{date}->strftime($date_fmt) %></p>
+				<p id="totalDeaths" class="title is-marginless">{{ summary['deaths']['most']['number'] }}</p>
+				<!-- TODO: Format date -->
+				<p class="heading is-size-6">On {{ summary['deaths']['most']['date'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -69,14 +73,16 @@
 <!-- Charts -->
 <section id="charts" class="section">
 	<div class="columns is-desktop">
-		%= include 'partials/chart', p => { type => 'trendChart', title => 'Daily Trends', show_cog => 1 }
-		%= include 'partials/chart', p => { type => 'breakdownChart', title => 'Breakdown' }
+		{{ chart.chart('trendChart', 'Daily Trends', show_cog=True) }}
+		{{ chart.chart('breakdownChart', 'Breakdown') }}
 	</div>
 	<div id="sep"></div>
 	<div class="columns is-desktop">
-		%= include 'partials/chart', p => { type => 'totalLocationChart', title => 'Total cases by location' }
-		%= include 'partials/chart', p => { type => 'newLocationChart', title => 'New cases by location', subtitle => 'Last 7 days' }
+		{{ chart.chart('totalLocationChart', 'Total cases by location') }}
+		{{ chart.chart('newLocationChart', 'New cases by location', subtitle='Last 7 days') }}
 	</div>
 </section>
 
-%= include 'partials/settings'
+{% include 'partials/settings.html' %}
+
+{% endblock %}

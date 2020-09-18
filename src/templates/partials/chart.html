@@ -1,0 +1,26 @@
+{% macro chart(type, title, subtitle='', show_cog=False) %}
+
+<div class="column">
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">
+		{{ title }}
+
+		{% if show_cog: %}
+			<!-- TODO: Show setting popup -->
+			<a onclick="showSettings('{{ type }}')"><i class="fas fa-cog"></i></a>
+		{% endif %}
+	</p>
+
+	{% if subtitle: %}
+		<p class="has-text-centered">{{ subtitle }}</p>
+	{% else %}
+		<p>&nbsp;</p>
+	{% endif %}
+	<br>
+
+	<!-- Cases by location -->
+	<div class="chart-container">
+		<canvas id="{{ type }}"></canvas>
+	</div>
+</div>
+
+{% endmacro %}
