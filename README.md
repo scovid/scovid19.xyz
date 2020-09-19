@@ -22,7 +22,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install --user -r requirements.txt
 
 # nginx
 sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from lib.SCOVID import SCOVID
 
 app = Flask(__name__, static_url_path='')
@@ -18,7 +18,7 @@ def locations():
 # API routes
 @app.route("/api/trend")
 def trend():
-	return jsonify(SCOVID.trend())
+	return jsonify(SCOVID.trend(request.args))
 
 @app.route("/api/breakdown")
 def breakdown():
