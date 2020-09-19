@@ -22,7 +22,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install --user -r requirements.txt
+pip install -r requirements.txt
 
 # nginx
 sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/
@@ -37,7 +37,8 @@ sudo certbot --nginx
 Start dev server:
 ```
 source venv/bin/activate
-python src/app.pl
+cd src/
+FLASK_APP=app.py FLASK_ENV=development flask run
 ```
 
 Start prod server:
