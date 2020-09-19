@@ -1,4 +1,5 @@
 from lib.OpenData import OpenData
+from lib.Util import Util
 from datetime import datetime
 from collections import defaultdict
 
@@ -36,15 +37,15 @@ class SCOVID:
 			new_deaths = day['Deaths'] - prev_day['Deaths'] if prev_day else day['Deaths']
 
 			if not max_deaths or new_deaths > max_deaths['number']:
-				max_deaths['number'] = day['Deaths']
-				max_deaths['date'] = day['Date']
+				max_deaths['number'] = new_deaths
+				max_deaths['date'] = Util.strpstrf(day['Date'], strf='%d %b %Y')
 
 			if not max_cases or day['DailyCases'] > max_cases['number']:
 				# On Apr 19th the stats started to include UK test centres
 				# So this day isn't really an accurate representation
-				if day['Date'] != '20200420':
+				if day['Date'] != 20200420:
 					max_cases['number'] = day['DailyCases']
-					max_cases['date']   = day['Date']
+					max_cases['date']   = Util.strpstrf(day['Date'], strf='%d %b %Y')
 
 			prev_day = day
 
@@ -66,6 +67,8 @@ class SCOVID:
 
 			limit = (end - start).days + 1 # Add one to make bounds inclusive
 			offset = (last_updated - end).days
+			if offset < 0:
+				offset = 0
 
 		trend = OpenData.fetch('daily', sort='Date DESC', limit=limit, offset=offset)
 		records = reversed(trend['records'])
@@ -73,8 +76,13 @@ class SCOVID:
 		dates = []
 		cases = []
 		for day in records:
-			# TODO: Fix date format
-			dates.append(day['Date'])
+			# On Apr 19th the stats started to include UK test centres
+			# So this day isn't really an accurate representation
+			if day['Date'] == 20200420:
+				day['DailyCases'] = 0
+
+			date = Util.strpstrf(str(day['Date']))
+			dates.append(date)
 			cases.append(day['DailyCases'])
 
 		return {
@@ -170,10 +178,15 @@ class SCOVID:
 	# Get the last updated time of the OpenData stats
 	# Based on the latest date in the "Daily and Cumulative Cases" data set
 	@staticmethod
-	def last_updated():
+	def last_updated(format=None):
 		cases_by_day = OpenData.fetch('daily', limit=1, sort='Date DESC')
 		records = cases_by_day['records']
-		return datetime.strptime(str(records[-1]['Date']), '%Y%m%d')
+		last_updated = datetime.strptime(str(records[-1]['Date']), '%Y%m%d')
+
+		if format:
+			return datetime.strftime(last_updated, format)
+		
+		return last_updated
 
 
 	@staticmethod

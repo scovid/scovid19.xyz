@@ -6,14 +6,19 @@
 			<button class="delete" aria-label="close" onclick="closeSettings()"></button>
 		</header>
 		<section class="modal-card-body">
-			<!-- Content ... -->
-			<input id="start-date" class="datepicker" type="text" placeholder="Select start date" />
-			<br />
-			<br />
-			<input id="end-date" class="datepicker" type="text" placeholder="Select end date" />
+			<div class="columns">
+				<div class="column is-half">
+					<label class="label" for="start-date">Start Date</label>
+					<input id="start-date" class="datepicker" type="text" placeholder="Select start date" />
+				</div>
+				<div class="column is-half">
+					<label class="label" for="end-date">End Date</label>
+					<input id="end-date" class="datepicker" type="text" placeholder="Select end date" />
+				</div>
+			</div>
 		</section>
 		<footer class="modal-card-foot">
-			<button class="button is-success" onclick="saveSettings()">Save changes</button>
+			<button class="button is-success" onclick="saveSettings()">Submit</button>
 			<button class="button" onclick="closeSettings()">Cancel</button>
 		</footer>
 	</div>

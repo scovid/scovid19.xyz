@@ -8,7 +8,7 @@ app = Flask(__name__, static_url_path='')
 def index():
 	return render_template('index.html',
 		summary=SCOVID.summary(),
-		last_updated=SCOVID.last_updated()
+		last_updated=SCOVID.last_updated(format='%Y-%m-%d')
 	)
 
 @app.route("/locations")
