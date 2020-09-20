@@ -50,7 +50,7 @@ FLASK_APP=app.py FLASK_ENV=development flask run
 
 Start prod server:
 ```
-# TODO
+sudo service start scovid19
 ```
 
 ### Notes
