@@ -25,7 +25,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # selinux
-cd selinux/
+cd system/selinux/
 ./install.sh scovid19.te
 
 # systemd
