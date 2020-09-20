@@ -1,11 +1,12 @@
+
 module scovid19 1.0;
 
 require {
-	type httpd_sys_content_t;
-	type init_t;
 	type http_port_t;
 	type unconfined_t;
-	class file { execute execute_no_trans ioctl map open read };
+	type init_t;
+	type httpd_sys_content_t;
+	class file { append create execute execute_no_trans ioctl map open read rename unlink write };
 	class lnk_file read;
 	class tcp_socket name_connect;
 	class capability2 mac_admin;
@@ -13,15 +14,13 @@ require {
 
 #============= init_t ==============
 
-#!!!! This avc can be allowed using the boolean 'nis_enabled'
+#!!!! This avc is allowed in the current policy
 allow init_t http_port_t:tcp_socket name_connect;
-allow init_t httpd_sys_content_t:file ioctl;
-
-#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
-allow init_t httpd_sys_content_t:file map;
+allow init_t httpd_sys_content_t:file { append rename unlink write };
 
 #!!!! This avc is allowed in the current policy
-allow init_t httpd_sys_content_t:file { execute execute_no_trans open read };
+#!!!! This av rule may have been overridden by an extended permission av rule
+allow init_t httpd_sys_content_t:file { create execute execute_no_trans ioctl map open read };
 
 #!!!! This avc is allowed in the current policy
 allow init_t httpd_sys_content_t:lnk_file read;
