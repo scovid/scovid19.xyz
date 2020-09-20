@@ -29,7 +29,9 @@
 						<div>
 							<p class="title is-2 scotflag">SCOVID-19</p>
 							<p class="subtitle is-5 scotflag">COVID-19 Stats for Scotland</p>
-							<p class="subtitle is-7 has-text-grey-lighter ">Last Updated: {{ last_updated }}</p>
+							{% if last_updated: %}
+								<p class="subtitle is-7 has-text-grey-lighter ">Last Updated: {{ last_updated }}</p>
+							{% endif %}
 						</div>
 					</div>
 					<div class="level-right">

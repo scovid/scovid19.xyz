@@ -3,8 +3,6 @@ from lib.Util import Util
 from datetime import datetime
 from collections import defaultdict
 
-# TODO: Handle OpenData errors
-
 class SCOVID:
 	# Get the mapping of council IDs to council names
 	@staticmethod

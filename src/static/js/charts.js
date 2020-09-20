@@ -43,8 +43,19 @@ async function initCharts(chartId) {
 		const config = chartConfig[id];
 
 		let data = await getData(config.endpoint, config.query);
-		chart = makeChart(id, config, data);
-		charts[id] = chart;
+
+		if (data.error) {
+			// TODO: This could be improved
+			console.error(`Error response from ${config.endpoint}`);
+			const err = document.createElement('p');
+			err.innerHTML = 'Failed to load data';
+			err.style = 'text-align: center; margin-top: 15px';
+			err.classList.add('is-family-monospace');
+			document.querySelector('#' + id).parentElement.prepend(err);
+		} else {
+			chart = makeChart(id, config, data);
+			charts[id] = chart;
+		}
 	}
 }
 

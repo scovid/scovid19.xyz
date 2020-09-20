@@ -1,7 +1,6 @@
 import requests
 import sys
 import logging
-logger = logging.getLogger(__name__)
 
 class OpenData:
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"
@@ -17,14 +16,14 @@ class OpenData:
 	@staticmethod
 	def fetch(resource, **kwargs):
 		if resource not in OpenData.resources:
-			logger.error("ERROR: Requested resource '{}' is not valid".format(resource))
+			logging.error(f"ERROR: Requested resource '{resource}' is not valid")
 			return {}
 
 		kwargs['resource_id'] = OpenData.resources[resource]
 		r = requests.get(OpenData.endpoint, params=kwargs)
 
 		if r.status_code != 200:
-			logger.error("ERROR: Bad response from OpenData API:\n{}".format(r.content))
+			logging.error(f'ERROR: Bad response from OpenData API:\n{r.content}')
 			return {}
 
 		json = r.json()
