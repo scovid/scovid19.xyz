@@ -10,8 +10,44 @@ The new and improved Scottish COVID-19 tracker.
 - [flatpickr](https://flatpickr.js.org/)
 
 
-### Install
+## Install locally
+
+#### With Docker/Podman
+```bash
+sudo docker build -t vm_docker_scovid .
+sudo docker run -d --name scovid-container -p 5000:5000 vm_docker_scovid
+
+# Stop/restart
+sudo docker stop scovid-container
+sudo docker restart scovid-container
+
+# Logs
+sudo docker logs --tail 200 -f scovid-container
+
+sudo docker exec -it scovid-container /bin/bash
+tail -f src/app.log
 ```
+
+#### Without Docker
+```bash
+# Create a virtualenv
+python -m venv venv
+
+# Activate venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run
+FLASK_APP=src/app.py FLASK_ENV=development flask run
+
+# Logs
+tail -f src/app.log
+```
+
+## Deploy
+```bash
 # Bootstrap
 [[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
 
@@ -37,21 +73,11 @@ sudo service scovid19 start
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
 sudo service nginx restart
 
+# Start
+sudo service start scovid19
+
 # Certbot
 sudo certbot --nginx
-```
-
-### Starting
-Start dev server:
-```
-source venv/bin/activate
-cd src/
-FLASK_APP=app.py FLASK_ENV=development flask run
-```
-
-Start prod server:
-```
-sudo service start scovid19
 ```
 
 ### Notes
