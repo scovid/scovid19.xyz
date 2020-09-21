@@ -31,10 +31,11 @@ cd system/selinux/
 # systemd
 sudo chcon -t bin_t /code/scovid19.xyz/system/systemd/scovid19.service
 sudo systemctl enable /code/scovid19.xyz/system/systemd/scovid19.service
-sudo systemctl start nginx
+sudo service scovid19 start
 
 # nginx
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo service nginx restart
 
 # Certbot
 sudo certbot --nginx
