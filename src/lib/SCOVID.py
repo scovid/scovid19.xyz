@@ -20,11 +20,11 @@ class SCOVID:
 		summary = {
 			'cases': {
 				'total': records[-1]['CumulativeCases'],
-				'today': records[-1]['DailyCases']
+				'new': sum([x['DailyCases'] for x in records[-7:]])
 			},
 			'deaths': {
 				'total': records[-1]['Deaths'],
-				'today': records[-1]['Deaths'] - records[-2]['Deaths']
+				'new': records[-1]['Deaths'] - records[-7]['Deaths']
 			}
 		}
 

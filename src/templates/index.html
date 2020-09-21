@@ -15,8 +15,8 @@
 	<div class="column">
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #67a23f; color: white;">
-				<p class="heading is-size-6">New Cases Today</p>
-				<p id="newCases" class="title">{{ summary['cases']['today'] }}</p>
+				<p class="heading is-size-6">New cases in last 7 days</p>
+				<p id="newCases" class="title">{{ summary['cases']['new'] }}</p>
 			</article>
 		</div>
 	</div>
@@ -31,8 +31,8 @@
 	<div class="column">
 		<div class="tile is-parent">
 			<article class="has-text-centered tile is-child notification" style="background-color: #f94333; color: white;">
-				<p class="heading is-size-6">New Deaths Today</p>
-				<p id="newDeaths" class="title">{{ summary['deaths']['today'] }}</p>
+				<p class="heading is-size-6">New deaths last 7 days</p>
+				<p id="newDeaths" class="title">{{ summary['deaths']['new'] }}</p>
 			</article>
 		</div>
 	</div>
