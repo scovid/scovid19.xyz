@@ -10,7 +10,7 @@ The new and improved Scottish COVID-19 tracker.
 - [flatpickr](https://flatpickr.js.org/)
 
 
-## Install locally
+## Running locally
 
 #### With Docker/Podman
 ```bash
