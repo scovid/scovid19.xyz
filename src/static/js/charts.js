@@ -69,6 +69,13 @@ function makeChart(id, config, data) {
 		options: {
 			maintainAspectRatio: false,
 			responsive: true,
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			},
 			...config.options
 		}
 	});
