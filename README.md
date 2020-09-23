@@ -14,12 +14,7 @@ The new and improved Scottish COVID-19 tracker.
 
 #### With Docker/Podman
 ```bash
-sudo docker build -t vm_docker_scovid .
-sudo docker run -d --name scovid-container -p 5000:5000 vm_docker_scovid
-
-# Stop/restart
-sudo docker stop scovid-container
-sudo docker restart scovid-container
+./control.sh docker up
 
 # Logs
 sudo docker logs --tail 200 -f scovid-container
@@ -40,7 +35,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run
-FLASK_APP=src/app.py FLASK_ENV=development flask run
+./control.sh dev
 
 # Logs
 tail -f src/app.log
