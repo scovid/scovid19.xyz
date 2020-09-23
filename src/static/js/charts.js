@@ -1,12 +1,23 @@
 // All of the charts
 let charts = {};
 
+let scales= {
+	scales: {
+		yAxes: [{
+			ticks: {
+				beginAtZero: true
+			}
+		}]
+	}
+};
+
 // Chart configuration
 let chartConfig = {
 	'trendChart': {
 		type: 'bar',
 		options: { legend: false },
 		endpoint: 'trend',
+		...scales
 	},
 
 	'breakdownChart': {
@@ -17,12 +28,14 @@ let chartConfig = {
 		type: 'bar',
 		options: { legend: false },
 		endpoint: 'locations/total',
+		...scales
 	},
 	'newLocationChart': {
 
 		type: 'bar',
 		options: { legend: false },
 		endpoint: 'locations/new',
+		...scales
 	}
 };
 
@@ -69,13 +82,6 @@ function makeChart(id, config, data) {
 		options: {
 			maintainAspectRatio: false,
 			responsive: true,
-			scales: {
-				yAxes: [{
-					ticks: {
-						beginAtZero: true
-					}
-				}]
-			},
 			...config.options
 		}
 	});
