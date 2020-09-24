@@ -1,7 +1,7 @@
 // All of the charts
 let charts = {};
 
-let scales= {
+let scales = {
 	scales: {
 		yAxes: [{
 			ticks: {
@@ -15,9 +15,8 @@ let scales= {
 let chartConfig = {
 	'trendChart': {
 		type: 'bar',
-		options: { legend: false },
+		options: { legend: false, ...scales },
 		endpoint: 'trend',
-		...scales
 	},
 
 	'breakdownChart': {
@@ -26,14 +25,13 @@ let chartConfig = {
 	},
 	'totalLocationChart': {
 		type: 'bar',
-		options: { legend: false },
+		options: { legend: false, ...scales },
 		endpoint: 'locations/total',
-		...scales
 	},
 	'newLocationChart': {
 
 		type: 'bar',
-		options: { legend: false },
+		options: { legend: false, ...scales },
 		endpoint: 'locations/new',
 		...scales
 	}
