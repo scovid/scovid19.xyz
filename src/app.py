@@ -16,7 +16,7 @@ logging.basicConfig(
 def index():
 	return render_template('index.html',
 		summary=SCOVID.summary(),
-		last_updated=SCOVID.last_updated(format='%Y-%m-%d')
+		last_updated=SCOVID.last_updated(format='%d %B %Y')
 	)
 
 @app.route('/locations')

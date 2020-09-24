@@ -79,7 +79,7 @@ class SCOVID:
 			if day['Date'] == 20200420:
 				day['DailyCases'] = 0
 
-			date = Util.strpstrf(str(day['Date']))
+			date = Util.strpstrf(str(day['Date']), strf='%d %b %y')
 			dates.append(date)
 			cases.append(day['DailyCases'])
 
