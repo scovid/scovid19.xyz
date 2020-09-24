@@ -14,7 +14,7 @@ The new and improved Scottish COVID-19 tracker.
 
 #### With Docker/Podman
 ```bash
-./control.sh docker up
+./control.sh --env dev --docker up
 
 # Logs
 sudo docker logs --tail 200 -f scovid-container
@@ -35,7 +35,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run
-./control.sh dev
+./control.sh --env dev --flask up
 
 # Logs
 tail -f src/app.log

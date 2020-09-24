@@ -4,9 +4,10 @@ LABEL Author="Daniel Stewart"
 LABEL E-mail="danielandrewstewart@gmail.com"
 LABEL version="0.0.1"
 
-ENV FLASK_APP "src/app.py"
-ENV FLASK_ENV "development"
-ENV FLASK_DEBUG True
+# Need to set this as an env var to use in the CMD below
+ARG env='dev'
+ENV ENV $env
+
 ENV PATH="/home/code/.local/bin:${PATH}"
 
 RUN useradd --create-home code
@@ -21,4 +22,4 @@ RUN pip install -r requirements.txt
 COPY . ./
 
 EXPOSE 5000
-CMD flask run --host=0.0.0.0
+CMD ./control.sh --env $ENV --flask up

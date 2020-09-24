@@ -1,19 +1,39 @@
 #!/usr/bin/env bash
 
-command=$1
-[[ -z $command ]] && command='dev'
+# Defaults
+env='dev'
 
-if [[ $command == 'help' ]]; then
+# Arg parse
+while [[ "$#" -gt 0 ]]; do
+	case "$1" in
+		--env) env=$2; shift ;;
+		--docker) docker=$2; shift ;;
+		--flask) flask=$2; shift ;;
+		-h|--help) help=1 ;;
+		-f|--force) force=1 ;;
+		--) shift; break ;;
+	esac
+
+	shift
+done
+
+# Show help on bad usage
+if [[ -z $flask && -z $docker ]]; then
+	echo 'Requires one of --flask or --docker'
+	echo
+fi
+
+if [[ $help ]]; then
 	cat << EOF
-./control.sh <command> [subcommand] [flags]
+./control.sh --env <dev|prod> [--flask cmd] [--docker cmd] [--flags]
 
 Used for running the scovid19.xyz web app.
 Should be ran from the app root.
 
-Commands
-	dev:    Starts the dev flask server
-	prod:   Starts the prod gunicorn server
-	docker: Manages docker container, see below
+env should be either 'dev' or 'prod' (defaults to dev).
+
+Flask
+	up: Starts the flask server
 
 Docker
 	up:      Builds and starts a container, pass -f to force rebuild
@@ -30,23 +50,27 @@ if [[ ! -d src || ! -f src/app.py ]]; then
 fi
 
 # Dev using flask
-if [[ $command == 'dev' ]]; then
-	source venv/bin/activate
-	FLASK_APP=src/app.py FLASK_ENV=development flask run
-	exit 0
-fi
+if [[ $flask == 'up' ]]; then
 
-# Prod using gunicorn
-if [[ $command == 'prod' ]]; then
-	source venv/bin/activate
-	gunicorn --bind 0.0.0.0:5000 --chdir src/ wsgi:app
+	if [[ $env == 'dev' ]]; then
+		source venv/bin/activate
+		FLASK_APP=src/app.py FLASK_ENV=development FLASK_DEBUG=True flask run --host 0.0.0.0
+
+	elif [[ $env == 'prod' ]]; then
+		source venv/bin/activate
+		gunicorn --bind 0.0.0.0:5000 --chdir src/ wsgi:app
+
+	else
+		echo "Invalid env value '$env'"
+	fi
+
 	exit 0
 fi
 
 # Docker
-if [[ $command == 'docker' ]]; then
+if [[ -n $docker ]]; then
 	# Wrapper function that uses Podman if Docker isn't installed
-	function docker() {
+	function dockman() {
 		if [[ $(type -P podman) && ! $(type -P docker) ]]; then
 			sudo podman "$@"
 		else
@@ -54,39 +78,51 @@ if [[ $command == 'docker' ]]; then
 		fi
 	}
 
-	sub=$2
 	name='scovid-container'
 
 	# Build and run
-	if [[ $sub == 'up' ]]; then
-		# Delete and recreate
-		if [[ -n $3 && $3 == '-f' ]]; then
-			docker rm -f $name
-			echo "-f flag passed, deleting any existing container"
-		fi
+	if [[ $docker == 'up' ]]; then
+		exists=$(dockman ps -q -a -f name=$name)
+		running=$(dockman ps -q -f name=$name)
 
-		exists=$(docker ps -q -a -f name=$name)
-		running=$(docker ps -q -f name=$name)
+		# Delete and recreate
+		if [[ -n $force ]]; then
+			if [[ $exists ]]; then
+				echo "-f flag passed, deleting existing container"
+				dockman rm -f $name
+			fi
+
+			unset exists
+			unset running
+		fi
 
 		if [[ $exists && $running ]]; then
 			echo 'Container already running'
+
 		elif [[ $exists ]]; then
-			docker start $name
+			dockman start $name
 			echo "Started $name"
+
 		else
-			docker build -t vm_docker_scovid .
-			docker run -d --name $name -p 5000:5000 vm_docker_scovid
+			extra=''
+
+			# If prod mode then ensure we restart on failure and reboot
+			[[ $env == 'prod' ]] && extra='--restart=unless-stopped'
+
+			echo "dockman build --build-arg env=$env -t vm_docker_scovid ."
+			dockman build --build-arg env=$env -t vm_docker_scovid .
+			dockman run $extra -d --name $name -p 5000:5000 vm_docker_scovid
 			echo "Built and started $name"
 		fi
 
 	# Stop
-	elif [[ $sub == 'down' ]]; then
-		docker stop $name
+	elif [[ $docker == 'down' ]]; then
+		dockman stop $name
 		echo "Container $name stopped"
 
 	# Restart
-	elif [[ $sub == 'restart' ]]; then
-		docker restart $name
+	elif [[ $docker == 'restart' ]]; then
+		dockman restart $name
 		echo "Container $name restarted"
 
 	else
@@ -95,5 +131,3 @@ if [[ $command == 'docker' ]]; then
 
 	exit 0
 fi
-
-echo "Invalid command '$command'"
