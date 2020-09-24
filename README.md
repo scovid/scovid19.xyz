@@ -42,6 +42,13 @@ tail -f src/app.log
 ```
 
 ## Deploy
+
+#### With Docker/Podman
+```bash
+./control.sh --env prod --docker up
+```
+
+#### Without Docker
 ```bash
 # Bootstrap
 [[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
