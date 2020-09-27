@@ -106,8 +106,11 @@ if [[ -n $docker ]]; then
 		else
 			extra=''
 
-			# If prod mode then ensure we restart on failure and reboot
-			[[ $env == 'prod' ]] && extra='--restart=unless-stopped'
+			# If prod mode then
+			# - ensure we restart on failure
+			# - pull the latest base image
+			# - don't use the cache (https://pythonspeed.com/articles/docker-cache-insecure-images/)
+			[[ $env == 'prod' ]] && extra='--restart=unless-stopped --pull --no-cache'
 
 			echo "dockman build --build-arg env=$env -t vm_docker_scovid ."
 			dockman build --build-arg env=$env -t vm_docker_scovid .
