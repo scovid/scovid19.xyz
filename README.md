@@ -52,6 +52,7 @@ tail -f src/app.log
 
 # nginx
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
 sudo service nginx restart
 
 # Certbot
@@ -86,6 +87,7 @@ sudo service start scovid19
 
 # nginx
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
 sudo service nginx restart
 
 # Certbot
