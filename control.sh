@@ -110,11 +110,12 @@ if [[ -n $docker ]]; then
 			# - ensure we restart on failure
 			# - pull the latest base image
 			# - don't use the cache (https://pythonspeed.com/articles/docker-cache-insecure-images/)
-			[[ $env == 'prod' ]] && extra='--restart=unless-stopped --pull --no-cache'
+			[[ $env == 'prod' ]] && extra_build='--pull --no-cache'
+			[[ $env == 'prod' ]] && extra_run='--restart=unless-stopped'
 
 			echo "dockman build --build-arg env=$env -t vm_docker_scovid ."
-			dockman build --build-arg env=$env -t vm_docker_scovid .
-			dockman run $extra -d --name $name -p 5000:5000 vm_docker_scovid
+			dockman build $extra_build --build-arg env=$env -t vm_docker_scovid .
+			dockman run -d $extra_run --name $name -p 5000:5000 vm_docker_scovid
 			echo "Built and started $name"
 		fi
 

@@ -16,10 +16,10 @@ USER code
 RUN mkdir -p /home/code/scovid19
 WORKDIR /home/code/scovid19
 
-COPY requirements.txt ./
+COPY --chown=code:code requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY . ./
+COPY --chown=code:code . ./
 
 EXPOSE 5000
 CMD ./control.sh --env $ENV --flask up
