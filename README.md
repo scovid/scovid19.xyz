@@ -42,10 +42,20 @@ tail -f src/app.log
 ```
 
 ## Deploy
-
 #### With Docker/Podman
 ```bash
+# Bootstrap
+[[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
+
+# run
 ./control.sh --env prod --docker up
+
+# nginx
+sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo service nginx restart
+
+# Certbot
+sudo certbot --nginx
 ```
 
 #### Without Docker
@@ -71,12 +81,12 @@ sudo chcon -t bin_t /code/scovid19.xyz/system/systemd/scovid19.service
 sudo systemctl enable /code/scovid19.xyz/system/systemd/scovid19.service
 sudo service scovid19 start
 
+# Start
+sudo service start scovid19
+
 # nginx
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
 sudo service nginx restart
-
-# Start
-sudo service start scovid19
 
 # Certbot
 sudo certbot --nginx
