@@ -2,18 +2,31 @@ from lib.OpenData import OpenData
 from lib.Util import Util
 from datetime import datetime
 from collections import defaultdict
+from lib.Decorators import cacheable
+import logging
+
+# TODO: 
+# - Confirm @cacheable decorator works
+# - Add heavier caching for things that won't change
 
 class SCOVID:
+	def __init__(self):
+		self._cache = {}
+
 	# Get the mapping of council IDs to council names
-	@staticmethod
-	def councils():
+	@cacheable
+	def councils(self):
 		councils = OpenData.fetch('councils')
 		return { council['CA']: council['CAName'] for council in councils['records'] }
 
+	# Get the population of each council area for 2019
+	@cacheable
+	def population(self):
+		populations = OpenData.fetch('population', limit=10000)['records']
+		return [x for x in populations if x['Year'] == 2019 and x['Sex'] == 'All']
 
 	# Return the summary of stats
-	@staticmethod
-	def summary():
+	def summary(self):
 		cases_by_day = OpenData.fetch('daily', limit=1000, sort='Date ASC')
 		records = cases_by_day['records']
 
@@ -51,11 +64,8 @@ class SCOVID:
 		summary['deaths']['most'] = max_deaths
 		return summary
 
-
 	# Return the overall cases by day for Scotland
-	@staticmethod
-	def trend(params={}):
-
+	def trend(self, params={}):
 		limit, offset = 30, 0
 
 		if 'start' in params and 'end' in params:
@@ -92,9 +102,7 @@ class SCOVID:
 			}]
 		}
 
-
-	@staticmethod
-	def breakdown():
+	def breakdown(self):
 		positive, negative, deaths = 0, 0, 0
 
 		# There doesn't seem to be a good endpoint for getting total negatives
@@ -116,13 +124,11 @@ class SCOVID:
 			}]
 		}
 
-
-	@staticmethod
-	def locations_total():
+	def locations_total(self):
 		total_by_area = OpenData.fetch('total_by_area')
 		records = total_by_area['records']
 
-		councils = SCOVID.councils()
+		councils = self.councils()
 
 		sets = []
 		for location in records:
@@ -141,10 +147,8 @@ class SCOVID:
 			}]
 		}
 
-
-	@staticmethod
-	def locations_new():
-		councils = SCOVID.councils()
+	def locations_new(self):
+		councils = self.councils()
 		daily_by_area = OpenData.fetch('daily_by_area', limit=(len(councils) * 7), sort='Date DESC')
 		records = daily_by_area['records']
 
@@ -172,11 +176,32 @@ class SCOVID:
 			}]
 		}
 
+	# TODO
+	def cases_by_population(self):
+		councils = self.councils()
+		total_by_area = OpenData.fetch('total_by_area')['records']
+		logging.error(self.population)
+
+		sets = []
+		for location in total_by_area:
+			sets.append({
+				'x': councils[location['CA']],
+				'y': location['TotalCases']
+			})
+
+		sets = sorted(sets, key=lambda k: k['x'])
+		return {
+			'labels': sorted(set(councils.values())),
+			'datasets': [{
+				'backgroundColor': [ SCOVID.color(item['x']) for item in sets ],
+				'label': 'Cases by population', # TODO
+				'data': sets
+			}]
+		}
 
 	# Get the last updated time of the OpenData stats
 	# Based on the latest date in the "Daily and Cumulative Cases" data set
-	@staticmethod
-	def last_updated(format=None):
+	def last_updated(self, format=None):
 		cases_by_day = OpenData.fetch('daily', limit=1, sort='Date DESC')
 		records = cases_by_day['records']
 		last_updated = datetime.strptime(str(records[-1]['Date']), '%Y%m%d')
@@ -185,7 +210,6 @@ class SCOVID:
 			return datetime.strftime(last_updated, format)
 		
 		return last_updated
-
 
 	@staticmethod
 	def color(key):

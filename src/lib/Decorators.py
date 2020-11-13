@@ -28,3 +28,20 @@ def page(func):
 			return render_template('error.html')
 	
 	return wrapper
+
+
+# Cacheable decorator
+def cacheable(func):
+	@functools.wraps(func)
+	def wrapper(*args, **kwargs):
+		this = args[0]
+
+		if func.__name__ in this._cache:
+			return this._cache[func.__name__]
+		
+		result = func(*args, **kwargs)
+		this._cache[func.__name__] = result
+		return result
+
+	return wrapper
+

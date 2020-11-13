@@ -10,13 +10,15 @@ logging.basicConfig(
 	format='[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 )
 
+scovid = SCOVID()
+
 # Page routes
 @app.route('/')
 @page
 def index():
 	return render_template('index.html',
-		summary=SCOVID.summary(),
-		last_updated=SCOVID.last_updated(format='%d %B %Y')
+		summary=scovid.summary(),
+		last_updated=scovid.last_updated(format='%d %B %Y')
 	)
 
 @app.route('/locations')
@@ -29,22 +31,27 @@ def locations():
 @app.route('/api/trend')
 @endpoint
 def trend():
-	return SCOVID.trend(request.args)
+	return scovid.trend(request.args)
 
 @app.route('/api/breakdown')
 @endpoint
 def breakdown():
-	return SCOVID.breakdown()
+	return scovid.breakdown()
 
 @app.route('/api/locations/total')
 @endpoint
 def locations_total():
-	return SCOVID.locations_total()
+	return scovid.locations_total()
 
 @app.route('/api/locations/new')
 @endpoint
 def locations_new():
-	return SCOVID.locations_new()
+	return scovid.locations_new()
+
+@app.route('/api/locations/pop')
+@endpoint
+def by_population():
+	return scovid.cases_by_population()
 
 
 if __name__ == '__main__':
