@@ -36,7 +36,7 @@ def cacheable(func):
 	def wrapper(*args, **kwargs):
 		this = args[0]
 
-		if func.__name__ in this._cache:
+		if hasattr(this, '_cache') and func.__name__ in this._cache:
 			return this._cache[func.__name__]
 		
 		result = func(*args, **kwargs)
