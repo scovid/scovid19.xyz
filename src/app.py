@@ -48,11 +48,11 @@ def locations_total():
 def locations_new():
 	return scovid.locations_new()
 
-@app.route('/api/locations/pop')
+@app.route('/api/prevalence')
 @endpoint
-def by_population():
-	return scovid.cases_by_population()
-
+def prevalence():
+	limit = int(request.args['limit']) if 'limit' in request.args else -1
+	return scovid.prevalence()[0:limit]
 
 if __name__ == '__main__':
 	app.run()

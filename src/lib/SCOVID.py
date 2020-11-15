@@ -71,7 +71,7 @@ class SCOVID:
 		if 'start' in params and 'end' in params:
 			start = datetime.strptime(params['start'], '%Y-%m-%d')
 			end = datetime.strptime(params['end'], '%Y-%m-%d')
-			last_updated = SCOVID.last_updated()
+			last_updated = self.last_updated()
 
 			limit = (end - start).days + 1 # Add one to make bounds inclusive
 			offset = (last_updated - end).days
@@ -176,28 +176,30 @@ class SCOVID:
 			}]
 		}
 
-	# TODO
-	def cases_by_population(self):
+	def prevalence(self):
 		councils = self.councils()
-		total_by_area = OpenData.fetch('total_by_area')['records']
-		logging.error(self.population)
+		populations = self.population()
 
-		sets = []
-		for location in total_by_area:
-			sets.append({
-				'x': councils[location['CA']],
-				'y': location['TotalCases']
+		total_by_area = OpenData.fetch('total_by_area')['records']
+		cases = { x['CA']: x['TotalCases'] for x in total_by_area }
+
+		prevalence = []
+		for pop in populations:
+			if pop['CA'] not in councils:
+				continue
+			
+			# Work out cases per thousand people
+			quotient = pop['AllAges'] / 1000
+			per_thousand = cases[pop['CA']] / quotient
+			
+			prevalence.append({
+				'council': councils[pop['CA']],
+				'population': format(pop['AllAges'], ','),
+				'cases': format(cases[pop['CA']], ','),
+				'per_thousand': round(per_thousand, 3)
 			})
 
-		sets = sorted(sets, key=lambda k: k['x'])
-		return {
-			'labels': sorted(set(councils.values())),
-			'datasets': [{
-				'backgroundColor': [ SCOVID.color(item['x']) for item in sets ],
-				'label': 'Cases by population', # TODO
-				'data': sets
-			}]
-		}
+		return sorted(prevalence, key=lambda x: x['per_thousand'], reverse=True)
 
 	# Get the last updated time of the OpenData stats
 	# Based on the latest date in the "Daily and Cumulative Cases" data set
