@@ -51,6 +51,12 @@ fi
 
 # Dev using flask
 if [[ $flask == 'up' ]]; then
+	# Set up virtual env if not already done
+	if [[ ! -d venv ]]; then
+		python -m venv venv
+		source venv/bin/activate
+		pip install -r requirements.txt
+	fi
 
 	if [[ $env == 'dev' ]]; then
 		source venv/bin/activate

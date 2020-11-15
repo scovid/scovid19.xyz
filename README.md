@@ -25,16 +25,7 @@ tail -f src/app.log
 
 #### Without Docker
 ```bash
-# Create a virtualenv
-python -m venv venv
-
-# Activate venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run
+# Run (sets up virtualenv, installs dependencies and starts flask server)
 ./control.sh --env dev --flask up
 
 # Logs
