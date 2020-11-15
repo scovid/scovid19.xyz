@@ -1,61 +1,30 @@
 {% import 'partials/chart.html' as chart %}
+{% import 'partials/tile.html' as tile %}
 
 {% extends 'layouts/wrapper.html' %}
 {% block body %}
 <!-- Stats-->
 <section id="stats" class="columns">
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #249596; color: white;">
-				<p class="heading is-size-6">Total Positive Cases</p>
-				<p id="totalCases" class="title">{{ summary['cases']['total'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('Total Cases', summary['cases']['total'], '#249596') }}
 	</div>
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #67a23f; color: white;">
-				<p class="heading is-size-6">New cases in last 7 days</p>
-				<p id="newCases" class="title">{{ summary['cases']['new'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('New Cases', summary['cases']['new'], '#67a23f', 'in last 7 days') }}
 	</div>
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #f6ae33; color: white;">
-				<p class="heading is-size-6">Total Deaths</p>
-				<p id="totalDeaths" class="title">{{ summary['deaths']['total'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('Total Deaths', summary['deaths']['total'], '#f6ae33') }}
 	</div>
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #f94333; color: white;">
-				<p class="heading is-size-6">New deaths in last 7 days</p>
-				<p id="newDeaths" class="title">{{ summary['deaths']['new'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('New Deaths', summary['deaths']['new'], '#f94333', 'in last 7 days') }}
 	</div>
 </section>
 
 <section id="moreStats" class="columns slider closed">
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #469C6B; color: white;">
-				<p class="heading is-size-6">Most cases in one day</p>
-				<p id="totalCases" class="title is-marginless">{{ summary['cases']['most']['number'] }}</p>
-				<p class="heading is-size-6">On {{ summary['cases']['most']['date'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('Most cases in one day', summary['cases']['most']['number'], '#469C6B', "On " + summary['cases']['most']['date']) }}
 	</div>
 	<div class="column">
-		<div class="tile is-parent">
-			<article class="has-text-centered tile is-child notification" style="background-color: #F87933; color: white;">
-				<p class="heading is-size-6">Most deaths in one day</p>
-				<p id="totalDeaths" class="title is-marginless">{{ summary['deaths']['most']['number'] }}</p>
-				<p class="heading is-size-6">On {{ summary['deaths']['most']['date'] }}</p>
-			</article>
-		</div>
+		{{ tile.tile('Most deaths in one day', summary['deaths']['most']['number'], '#F87933', "On " + summary['deaths']['most']['date']) }}
 	</div>
 </section>
 

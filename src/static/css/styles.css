@@ -56,6 +56,10 @@
   color: grey;
 }
 
+.notification {
+  height: 120px;
+}
+
 /*
 * For some reason the stats and moreStats columns are wider than the page
 * https://github.com/jgthms/bulma/issues/449
