@@ -35,9 +35,13 @@ def cacheable(func):
 	@functools.wraps(func)
 	def wrapper(*args, **kwargs):
 		this = args[0]
+		
+		args_key   = [ str(x) for x in args[1:] ]
+		kwargs_key = [ f'{k}:{v}' for k,v in kwargs.items() ]
+		cache_key  = ';'.join([ func.__name__, *args_key, *kwargs_key ])
 
-		if hasattr(this, '_cache') and func.__name__ in this._cache:
-			return this._cache[func.__name__]
+		if hasattr(this, '_cache') and cache_key in this._cache:
+			return this._cache[cache_key]
 		
 		result = func(*args, **kwargs)
 		this._cache[func.__name__] = result
