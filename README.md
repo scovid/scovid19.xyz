@@ -48,6 +48,11 @@ sudo service nginx restart
 
 # Certbot
 sudo certbot --nginx
+
+# Update
+git pull
+./control.sh --docker down
+./control.sh --docker up --env prod --force
 ```
 
 #### Without Docker
