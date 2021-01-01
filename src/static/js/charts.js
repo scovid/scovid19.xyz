@@ -60,7 +60,11 @@ let chartConfig = {
 Chart.defaults.line.spanGaps = true;
 
 // Draw the charts for the first time
-window.onload = () => initCharts();
+window.addEventListener('load', () => {
+	Promise.all(
+		Object.keys(chartConfig).map(i => initCharts(i))
+	);
+});
 
 /*
 * Charts
