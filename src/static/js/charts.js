@@ -1,11 +1,27 @@
 // All of the charts
 let charts = {};
 
+Chart.defaults.global.tooltips.mode = "single";
+Chart.defaults.global.tooltips.enabled = true;
+Chart.defaults.global.tooltips.callbacks.label = (item, data) => {
+	// Line charts have a yLabel property
+	if (item && item.yLabel) {
+		return item.yLabel.toLocaleString("en")
+	}
+
+	// Pie/dougnuts do not have the yLable property so figure it out from the $data
+	return data.datasets[0].data[item.index].toLocaleString("en")
+};
+
+// Need to copy the defaults into the dougnut due to a bug
+// https://github.com/chartjs/Chart.js/issues/5539
+Chart.defaults.doughnut.tooltips = Chart.defaults.global.tooltips;
+
 let scales = {
 	scales: {
 		yAxes: [{
 			ticks: {
-				beginAtZero: true
+				beginAtZero: true,
 			}
 		}]
 	}
@@ -15,25 +31,28 @@ let scales = {
 let chartConfig = {
 	'trendChart': {
 		type: 'bar',
-		options: { legend: false, ...scales },
+		options: { legend: false },
 		endpoint: 'trend',
+		...scales,
 	},
 
 	'breakdownChart': {
 		type: 'doughnut',
 		endpoint: 'breakdown',
 	},
+
 	'totalLocationChart': {
 		type: 'bar',
-		options: { legend: false, ...scales },
+		options: { legend: false },
 		endpoint: 'locations/total',
+		...scales,
 	},
-	'newLocationChart': {
 
+	'newLocationChart': {
 		type: 'bar',
-		options: { legend: false, ...scales },
+		options: { legend: false },
 		endpoint: 'locations/new',
-		...scales
+		...scales,
 	}
 };
 

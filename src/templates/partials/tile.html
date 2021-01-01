@@ -3,7 +3,7 @@
 <div class="tile is-parent">
 	<article class="has-text-centered tile is-child notification" style="background-color: {{ color }}; color: white;">
 		<p class="heading is-size-6 has-text-weight-bold">{{ title }}</p>
-		<p id="newCases" class="title" style="margin-bottom: 5px;">{{ number }}</p>
+		<p id="{{ title.replace(' ', '_').lower() }}" class="title" style="margin-bottom: 5px;">{{ '{:,}'.format(number) }}</p>
 		{% if subtitle %}
 			<p class="heading is-size-7">{{ subtitle }}</p>
 		{% endif %}
