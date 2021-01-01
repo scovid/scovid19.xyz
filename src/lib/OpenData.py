@@ -2,6 +2,7 @@ import requests
 import sys
 import logging
 
+
 class OpenData:
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"
 
@@ -16,6 +17,7 @@ class OpenData:
 		'councils':             '967937c4-8d67-4f39-974f-fd58c4acfda5', # Mapping of council ID to name
 		'population':           '09ebfefb-33f4-4f6a-8312-2d14e2b02ace', # Population by council
 	}
+
 
 	@staticmethod
 	def fetch(resource, **kwargs):
@@ -32,6 +34,7 @@ class OpenData:
 
 		json = r.json()
 		return json['result']
+
 
 	# Util method to just return the records from fetch()
 	@staticmethod

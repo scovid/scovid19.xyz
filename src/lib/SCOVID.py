@@ -3,15 +3,16 @@ from lib.Util import Util
 from datetime import datetime
 from collections import defaultdict
 from lib.Decorators import cacheable
-import logging
 
-# TODO: 
+# TODO:
 # - Confirm @cacheable decorator works
 # - Add heavier caching for things that won't change
+
 
 class SCOVID:
 	def __init__(self):
 		self._cache = {}
+
 
 	# Get the mapping of council IDs to council names
 	@cacheable
@@ -19,11 +20,13 @@ class SCOVID:
 		councils = OpenData.fetch('councils')
 		return { council['CA']: council['CAName'] for council in councils['records'] }
 
+
 	# Get the population of each council area for 2019
 	@cacheable
 	def population(self):
 		populations = OpenData.fetch('population', limit=10000)['records']
 		return [x for x in populations if x['Year'] == 2019 and x['Sex'] == 'All']
+
 
 	# Return the summary of stats
 	def summary(self):
@@ -49,7 +52,7 @@ class SCOVID:
 
 			if not max_deaths or new_deaths > max_deaths['number']:
 				max_deaths['number'] = new_deaths
-				max_deaths['date'] = Util.strpstrf(day['Date'], strf='%d %b %Y')
+				max_deaths['date']   = Util.strpstrf(day['Date'], strf='%d %b %Y')
 
 			if not max_cases or day['DailyCases'] > max_cases['number']:
 				# On Apr 19th the stats started to include UK test centres
@@ -60,9 +63,10 @@ class SCOVID:
 
 			prev_day = day
 
-		summary['cases']['most']  = max_cases
+		summary['cases']['most'] = max_cases
 		summary['deaths']['most'] = max_deaths
 		return summary
+
 
 	# Return the overall cases by day for Scotland
 	def trend(self, params={}):
@@ -102,6 +106,7 @@ class SCOVID:
 			}]
 		}
 
+
 	def breakdown(self):
 		positive, negative, deaths = 0, 0, 0
 
@@ -123,6 +128,7 @@ class SCOVID:
 				'data': [ positive, negative, deaths ]
 			}]
 		}
+
 
 	def locations_total(self):
 		total_by_area = OpenData.fetch('total_by_area')
@@ -146,6 +152,7 @@ class SCOVID:
 				'data': sets
 			}]
 		}
+
 
 	def locations_new(self):
 		councils = self.councils()
@@ -176,6 +183,7 @@ class SCOVID:
 			}]
 		}
 
+
 	def prevalence(self):
 		councils = self.councils()
 		populations = self.population()
@@ -201,6 +209,7 @@ class SCOVID:
 
 		return sorted(prevalence, key=lambda x: x['per_thousand'], reverse=True)
 
+
 	# Get the last updated time of the OpenData stats
 	# Based on the latest date in the "Daily and Cumulative Cases" data set
 	def last_updated(self, format=None):
@@ -212,6 +221,7 @@ class SCOVID:
 			return datetime.strftime(last_updated, format)
 		
 		return last_updated
+
 
 	@staticmethod
 	def color(key):
