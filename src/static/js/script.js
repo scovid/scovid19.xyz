@@ -7,6 +7,25 @@ window.addEventListener('load', () => {
 /*
 * Event handlers
 */
+// Toggle dark mode on and off
+let DARK_MODE = false;
+function toggleDarkMode(e) {
+
+	if (DARK_MODE) {
+		e.classList = ["fas fa-moon fa-2x"];
+		DarkReader.disable();
+	} else {
+		e.classList = ["fas fa-sun fa-2x"];
+		DarkReader.setFetchMethod(window.fetch);
+		DarkReader.enable({
+			brightness: 100,
+			contrast: 100,
+		});
+	}
+
+	DARK_MODE = !DARK_MODE;
+}
+
 // Toggles the extra stat cards
 function toggleExtraCards(e) {
 	let moreStats = document.getElementById('moreStats');

@@ -3,6 +3,14 @@
   background-color: #005eb8;
 }
 
+#darkToggle {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: -30px;
+}
+
 @media only screen and (min-width: 1000px) {
   .chart-container {
     position: relative;

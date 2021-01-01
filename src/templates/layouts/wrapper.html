@@ -24,7 +24,8 @@
 		<script defer src="js/charts.js"></script>
 		<script async defer src="js/script.js"></script>
 
-		<script async defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+		<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/darkreader@4.9.26/darkreader.min.js"></script>
 	</head>
 
 	<body>
@@ -32,6 +33,13 @@
 		<!-- Hero -->
 		<section class="hero scotflag">
 			<div class="hero-body">
+				<!-- Dark mode button -->
+				<div id="darkToggle">
+					<span class="icon">
+						<i onclick="toggleDarkMode(this)" style="color: white" class="fas fa-moon fa-2x"></i>
+					</span>
+				</div>
+
 				<div class="level">
 					<div class="level-left">
 						<div>
@@ -43,7 +51,7 @@
 						</div>
 					</div>
 					<div class="level-right">
-						<div>
+						<div class="container">
 							<p class="subtitle is-6 scotflag">Don't be an eejit, wear a mask</p>
 						</div>
 					</div>

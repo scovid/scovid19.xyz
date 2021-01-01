@@ -8,6 +8,7 @@ The new and improved Scottish COVID-19 tracker.
 - [NHS OpenData API](https://www.opendata.nhs.scot/dataset)
 - [Chart.js](https://www.chartjs.org/)
 - [flatpickr](https://flatpickr.js.org/)
+- [DarkReader](https://www.npmjs.com/package/darkreader)
 
 
 ## Running locally
