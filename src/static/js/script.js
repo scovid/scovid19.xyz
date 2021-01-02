@@ -1,4 +1,12 @@
+// Color theme ('light' or 'dark')
+let theme = 'light';
+
 window.addEventListener('load', () => {
+	// Enable dark mode if state is stored
+	const prefersDark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+	theme = window.localStorage.getItem('color_theme') || (prefersDark ? 'dark' : 'light');
+	setTheme();
+
 	// TODO: Add range limits to pickers
 	flatpickr('.datepicker', {});
 	toggleInfo();
@@ -7,23 +15,10 @@ window.addEventListener('load', () => {
 /*
 * Event handlers
 */
-// Toggle dark mode on and off
-let DARK_MODE = false;
-function toggleDarkMode(e) {
-
-	if (DARK_MODE) {
-		e.classList = ["fas fa-moon fa-2x"];
-		DarkReader.disable();
-	} else {
-		e.classList = ["fas fa-sun fa-2x"];
-		DarkReader.setFetchMethod(window.fetch);
-		DarkReader.enable({
-			brightness: 100,
-			contrast: 100,
-		});
-	}
-
-	DARK_MODE = !DARK_MODE;
+// Toggle color theme between light and dark
+function toggleDarkMode() {
+	theme = theme == 'dark' ? 'light' : 'dark';
+	setTheme();
 }
 
 // Toggles the extra stat cards
@@ -67,4 +62,27 @@ function saveSettings() {
 function closeSettings() {
 	document.querySelector('#settings').setAttribute('type', null);
 	document.querySelector('#settings').classList.remove('is-active');
+}
+
+// Set the color theme
+function setTheme() {
+	const btn = document.querySelector('#themeToggle');
+
+	// If on then disable and set icon to moon
+	if (theme == 'light') {
+		btn.classList = ['fas fa-moon fa-2x'];
+		DarkReader.disable();
+
+	// If off then enable and set icon to sun
+	} else {
+		btn.classList = ['fas fa-sun fa-2x'];
+		DarkReader.setFetchMethod(window.fetch);
+		DarkReader.enable({
+			brightness: 100,
+			contrast: 100,
+		});
+	}
+
+	// Save in localStorage
+	window.localStorage.setItem('color_theme', theme);
 }
