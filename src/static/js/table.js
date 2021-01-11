@@ -18,6 +18,8 @@ async function loadTable(limit = 5) {
 			cell.appendChild(document.createTextNode(item[field]));
 		});
 	}
+
+	document.querySelector('#tableProgress').classList.add('is-hidden');
 }
 
 async function tableLess(e) {

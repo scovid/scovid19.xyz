@@ -33,16 +33,23 @@ class SCOVID:
 		cases_by_day = OpenData.fetch('daily', limit=1000, sort='Date ASC')
 		records = cases_by_day['records']
 
+		# NOTE: Latest stat always trickles in so use the slice -8:-1 instead
 		summary = {
 			'cases': {
 				'total': records[-1]['CumulativeCases'],
-				'new': sum([x['DailyCases'] for x in records[-7:]])
+				'new': sum([x['DailyCases'] for x in records[-8:-1]]),
+				'today': records[-2]['DailyCases']
 			},
 			'deaths': {
 				'total': records[-1]['Deaths'],
-				'new': records[-1]['Deaths'] - records[-7]['Deaths']
+				'new': records[-2]['Deaths'] - records[-8]['Deaths'],
+				'today': records[-2]['Deaths']
 			}
 		}
+
+		# Work out 7 day average
+		summary['cases']['avg'] = int(round(summary['cases']['new'] / 7))
+		summary['deaths']['avg'] = int(round(summary['deaths']['new'] / 7))
 
 		max_deaths = {}
 		max_cases = {}
@@ -188,14 +195,22 @@ class SCOVID:
 		councils = self.councils()
 		populations = self.population()
 
-		total_by_area = OpenData.fetch('total_by_area')['records']
-		cases = { x['CA']: x['TotalCases'] for x in total_by_area }
+		# Fetch the daily trends by council for the last 7 days
+		daily_by_area = OpenData.fetch('daily_by_area', limit=(len(councils) * 7), sort='Date DESC')['records']
+
+		# Total up the cases
+		cases = {}
+		for record in daily_by_area:
+			if record['CA'] not in cases:
+				cases[record['CA']] = 0
+			cases[record['CA']] += record['DailyPositive']
+
 
 		prevalence = []
 		for pop in populations:
 			if pop['CA'] not in councils:
 				continue
-			
+
 			# Work out cases per thousand people
 			quotient = pop['AllAges'] / 1000
 			per_thousand = cases[pop['CA']] / quotient
@@ -204,7 +219,8 @@ class SCOVID:
 				'council': councils[pop['CA']],
 				'population': format(pop['AllAges'], ','),
 				'cases': format(cases[pop['CA']], ','),
-				'per_thousand': round(per_thousand, 3)
+				'per_thousand': round(per_thousand, 3),
+				'percentage': format(cases[pop['CA']] / pop['AllAges'], ',')
 			})
 
 		return sorted(prevalence, key=lambda x: x['per_thousand'], reverse=True)

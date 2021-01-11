@@ -9,13 +9,13 @@
 		{{ tile.tile('Total Cases', summary['cases']['total'], '#249596') }}
 	</div>
 	<div class="column">
-		{{ tile.tile('New Cases', summary['cases']['new'], '#67a23f', 'in last 7 days') }}
+		{{ tile.tile('New cases per day', summary['cases']['avg'], '#67a23f', 'average over last 7 days') }}
 	</div>
 	<div class="column">
 		{{ tile.tile('Total Deaths', summary['deaths']['total'], '#f6ae33') }}
 	</div>
 	<div class="column">
-		{{ tile.tile('New Deaths', summary['deaths']['new'], '#f94333', 'in last 7 days') }}
+		{{ tile.tile('New deaths per day', summary['deaths']['avg'], '#f94333', 'average over last 7 days') }}
 	</div>
 </section>
 
@@ -39,7 +39,7 @@
 
 <!-- Prevalence per council -->
 <section id="prevalence" class="section" style="overflow-x: scroll;">
-	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 1000 people</p>
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 1000 people in last 7 days</p>
 	<table class="table is-striped is-hoverable is-fullwidth slider closed">
 		<thead>
 			<tr>
@@ -49,9 +49,10 @@
 				<th>Cases</th>
 			</tr>
 		</thead>
-		<tbody id='tableBody'>
+		<tbody id="tableBody">
 		</tbody>
 	</table>
+	<progress id="tableProgress" class="progress"></progress>
 
 	<!-- More councils -->
 	<div class="field has-addons is-justify-content-center">

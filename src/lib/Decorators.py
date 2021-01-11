@@ -1,6 +1,7 @@
 import functools
 from flask import jsonify, render_template
 import logging
+import traceback
 
 # Endpoint decorator
 # Try/Except and return JSON
@@ -9,8 +10,9 @@ def endpoint(func):
 	def wrapper(*args, **kwargs):
 		try:
 			return jsonify(func(*args, **kwargs))
-		except Exception as e:
-			logging.error(f"Error when calling endpoint '{func.__name__}': {e}")
+		except Exception:
+			err = traceback.format_exc()
+			logging.error(f"Error when calling endpoint '{func.__name__}': {err}")
 			return jsonify({ 'error': 'Something went wrong' })
 	
 	return wrapper
@@ -23,8 +25,9 @@ def page(func):
 	def wrapper(*args, **kwargs):
 		try:
 			return func(*args, **kwargs)
-		except Exception as e:
-			logging.error(f"Error when loading page '{func.__name__}': {e}")
+		except Exception:
+			err = traceback.format_exc()
+			logging.error(f"Error when loading page '{func.__name__}': {err}")
 			return render_template('error.html')
 	
 	return wrapper
