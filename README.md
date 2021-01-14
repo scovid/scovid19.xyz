@@ -43,7 +43,7 @@ tail -f src/app.log
 ./control.sh --env prod --docker up
 
 # nginx
-sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
 sudo service nginx restart
 
