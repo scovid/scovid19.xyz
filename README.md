@@ -70,17 +70,9 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# selinux
-cd system/selinux/
-./install.sh scovid19.te
-
 # systemd
-sudo chcon -t bin_t /code/scovid19.xyz/system/systemd/scovid19.service
 sudo systemctl enable /code/scovid19.xyz/system/systemd/scovid19.service
-sudo service scovid19 start
-
-# Start
-sudo service start scovid19
+sudo systemctl start scovid19
 
 # nginx
 sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
