@@ -39,6 +39,7 @@ Docker
 	up:      Builds and starts a container, pass -f to force rebuild
 	down:    Stop a container
 	restart: Restart a container
+	deploy:  Stops and recreates the container
 EOF
 
 	exit 0
@@ -84,7 +85,7 @@ if [[ -n $docker ]]; then
 		fi
 	}
 
-	name='scovid-container'
+	name='scovid'
 
 	# Build and run
 	if [[ $docker == 'up' ]]; then
@@ -134,6 +135,9 @@ if [[ -n $docker ]]; then
 	elif [[ $docker == 'restart' ]]; then
 		dockman restart $name
 		echo "Container $name restarted"
+
+	elif [[ $docker == 'deploy' ]]; then
+		$0 --docker down && $0 --docker up --env prod --force
 
 	else
 		echo "Invalid docker subcommand '$sub'"

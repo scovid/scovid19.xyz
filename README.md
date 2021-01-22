@@ -52,8 +52,7 @@ sudo certbot --nginx
 
 # Update
 git pull
-./control.sh --docker down
-./control.sh --docker up --env prod --force
+./control.sh --docker deploy
 ```
 
 #### Without Docker
