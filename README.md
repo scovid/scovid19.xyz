@@ -9,6 +9,7 @@ The new and improved Scottish COVID-19 tracker.
 - [Chart.js](https://www.chartjs.org/)
 - [flatpickr](https://flatpickr.js.org/)
 - [DarkReader](https://www.npmjs.com/package/darkreader)
+- [Plausible Analytics](https://plausible.io/)
 
 
 ## Running locally
