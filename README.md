@@ -19,9 +19,9 @@ The new and improved Scottish COVID-19 tracker.
 ./control.sh --env dev --docker up
 
 # Logs
-sudo docker logs --tail 200 -f scovid-container
+sudo docker logs --tail 200 -f scovid
 
-sudo docker exec -it scovid-container /bin/bash
+sudo docker exec -it scovid /bin/bash
 tail -f src/app.log
 ```
 
