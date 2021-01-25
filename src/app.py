@@ -19,9 +19,16 @@ scovid = SCOVID()
 def index():
 	return render_template('index.html',
 		summary=scovid.summary(),
-		last_updated=scovid.last_updated(format='%d %B %Y')
+		last_updated=scovid.last_updated(format='%d %B %Y'),
+		tab="overview"
 	)
 
+@app.route('/vaccine')
+@page
+def vaccine():
+	return render_template('vaccine.html',
+		tab="vaccine"
+	)
 
 @app.route('/locations')
 @page
