@@ -71,16 +71,12 @@ function setTheme() {
 	// If on then disable and set icon to moon
 	if (theme == 'light') {
 		btn.classList = ['fas fa-moon fa-2x'];
-		DarkReader.disable();
+		document.querySelector('#darkly').disabled = true;
 
 	// If off then enable and set icon to sun
 	} else {
 		btn.classList = ['fas fa-sun fa-2x'];
-		DarkReader.setFetchMethod(window.fetch);
-		DarkReader.enable({
-			brightness: 100,
-			contrast: 100,
-		});
+		document.querySelector('#darkly').disabled = false;
 	}
 
 	// Save in localStorage

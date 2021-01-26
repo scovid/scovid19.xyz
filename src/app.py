@@ -27,7 +27,8 @@ def index():
 @page
 def vaccine():
 	return render_template('vaccine.html',
-		tab="vaccine"
+		tab="vaccine",
+		last_updated=scovid.last_updated(format='%d %B %Y'),
 	)
 
 @app.route('/locations')

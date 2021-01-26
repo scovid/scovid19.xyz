@@ -65,7 +65,12 @@
 }
 
 .notification {
-	height: 130px;
+  height: 130px;
+}
+
+/* Fix the non active text color */
+.tabs a {
+  color: white;
 }
 
 /*
