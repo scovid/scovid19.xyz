@@ -14,7 +14,10 @@ The new and improved Scottish COVID-19 tracker.
 
 ## Running locally
 
+Once done open http://127.0.0.1:5000 in your browser.  
+
 #### With Docker/Podman
+The `control.sh` script uses docker but will fallback to podman if docker is not installed.  
 ```bash
 ./control.sh --env dev --docker up
 
@@ -37,8 +40,10 @@ tail -f src/app.log
 ## Deploy
 #### With Docker/Podman
 ```bash
-# Bootstrap
-[[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
+# Dependencies
+sudo apt install docker nginx certbot
+sudo systemctl enable docker
+sudo systemctl start docker
 
 # run
 ./control.sh --env prod --docker up
@@ -58,8 +63,8 @@ git pull
 
 #### Without Docker
 ```bash
-# Bootstrap
-[[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)
+# Dependencies
+sudo apt install nginx certbot
 
 # Create a virtualenv
 python -m venv venv
@@ -71,7 +76,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # systemd
-sudo systemctl enable /code/scovid19.xyz/system/systemd/scovid19.service
+sudo systemctl enable $(pwd)/system/systemd/scovid19.service
 sudo systemctl start scovid19
 
 # nginx
