@@ -21,10 +21,16 @@ sudo apt install docker docker-compose
 ./control.sh --env dev --docker up
 
 # Logs
-sudo docker logs --tail 200 -f scovid
+docker logs --tail 200 -f scovid
 
-sudo docker exec -it scovid /bin/bash
+docker exec -it scovid /bin/bash
 tail -f src/app.log
+
+# Tests
+docker-compose build app
+docker-compose run app pytest
+# OR
+docker exec -it scovid pytest
 ```
 
 #### Without Docker
@@ -34,6 +40,9 @@ tail -f src/app.log
 
 # Logs
 tail -f src/app.log
+
+# Tests
+pytest
 ```
 
 ## Deploy
