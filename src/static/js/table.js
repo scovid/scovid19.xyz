@@ -1,3 +1,4 @@
+/* JS for the table */
 window.addEventListener('load', () => loadTable());
 
 const tableBody = document.querySelector('#tableBody');

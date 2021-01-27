@@ -1,4 +1,4 @@
-// All of the charts
+/* All of the chart logic lives here */
 let charts = {};
 
 Chart.defaults.global.tooltips.mode = "single";
@@ -17,13 +17,16 @@ Chart.defaults.global.tooltips.callbacks.label = (item, data) => {
 // https://github.com/chartjs/Chart.js/issues/5539
 Chart.defaults.doughnut.tooltips = Chart.defaults.global.tooltips;
 
+// Change the default color to look decent in both dark mode and light mode
+Chart.defaults.global.defaultFontColor = 'grey'
+
 let scales = {
 	scales: {
 		yAxes: [{
 			ticks: {
 				beginAtZero: true,
 			}
-		}]
+		}],
 	}
 };
 

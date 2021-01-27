@@ -1,3 +1,5 @@
+/* Misc JS and event listeners */
+
 // Color theme ('light' or 'dark')
 let theme = 'light';
 
