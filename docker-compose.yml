@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    container_name: 'scovid'
+    restart: always
+    ports:
+      - 5000-5001:5000
+    environment:
+      ENV: ${ENV:-prod}

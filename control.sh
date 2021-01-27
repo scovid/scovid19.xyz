@@ -76,68 +76,58 @@ fi
 
 # Docker
 if [[ -n $docker ]]; then
-	# Wrapper function that uses Podman if Docker isn't installed
-	function dockman() {
-		if [[ $(type -P podman) && ! $(type -P docker) ]]; then
-			sudo podman "$@"
-		else
-			sudo docker "$@"
-		fi
-	}
-
 	name='scovid'
 
 	# Build and run
 	if [[ $docker == 'up' ]]; then
-		exists=$(dockman ps -q -a -f name=$name)
-		running=$(dockman ps -q -f name=$name)
+        running=$(docker ps -q -f name=$name)
 
-		# Delete and recreate
+		if [[ $running && -z $force ]]; then
+			echo "$name container is already running, pass --force to rebuild"
+			exit 1
+		fi
+
+		# If prod mode then
+		# - ensure we restart on failure
+		# - pull the latest base image
+		# - don't use the cache (https://pythonspeed.com/articles/docker-cache-insecure-images/)
+		[[ $env == 'prod' ]] && extra_build='--pull --no-cache'
+		[[ $env == 'prod' ]] && extra_run='--restart=unless-stopped'
+		export ENV=$env
+
+		extra=""
 		if [[ -n $force ]]; then
-			if [[ $exists ]]; then
-				echo "-f flag passed, deleting existing container"
-				dockman rm -f $name
-			fi
-
-			unset exists
-			unset running
+			extra=" --build --no-deps"
 		fi
 
-		if [[ $exists && $running ]]; then
-			echo 'Container already running'
-
-		elif [[ $exists ]]; then
-			dockman start $name
-			echo "Started $name"
-
-		else
-			extra=''
-
-			# If prod mode then
-			# - ensure we restart on failure
-			# - pull the latest base image
-			# - don't use the cache (https://pythonspeed.com/articles/docker-cache-insecure-images/)
-			[[ $env == 'prod' ]] && extra_build='--pull --no-cache'
-			[[ $env == 'prod' ]] && extra_run='--restart=unless-stopped'
-
-			echo "dockman build --build-arg env=$env -t vm_docker_scovid ."
-			dockman build $extra_build --build-arg env=$env -t vm_docker_scovid .
-			dockman run -d $extra_run --name $name -p 5000:5000 vm_docker_scovid
-			echo "Built and started $name"
-		fi
+		docker-compose up -d $extra
+		echo "Built and started $name"
 
 	# Stop
 	elif [[ $docker == 'down' ]]; then
-		dockman stop $name
-		echo "Container $name stopped"
+		docker-compose down
+		echo "Container $name brought down"
 
 	# Restart
 	elif [[ $docker == 'restart' ]]; then
-		dockman restart $name
+		docker-compose stop
+		docker-compose start
 		echo "Container $name restarted"
 
 	elif [[ $docker == 'deploy' ]]; then
-		$0 --docker down && $0 --docker up --env prod --force
+		# Scale up to 2 containers, the new one being our new build
+		# Kill the old container, then scale down to 1
+		echo "Scaling up $name (NOTE: You can ignore the following two warnings about the container name and port)"
+		docker rename $name "${name}_old"
+		docker-compose up -d --scale app=2 --no-recreate
+
+		echo "Building new container"
+		sleep 20
+
+		echo "New container built, removing old one"
+		docker rm -f "${name}_old"
+		docker-compose up -d --scale app=1 --no-recreate
+		echo "Deploy finished"
 
 	else
 		echo "Invalid docker subcommand '$sub'"
