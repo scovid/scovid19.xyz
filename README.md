@@ -15,9 +15,9 @@ The new and improved Scottish COVID-19 tracker.
 
 Once done open http://127.0.0.1:5000 in your browser.  
 
-#### With Docker/Podman
-The `control.sh` script uses docker but will fallback to podman if docker is not installed.  
+#### With Docker
 ```bash
+sudo apt install docker docker-compose
 ./control.sh --env dev --docker up
 
 # Logs
@@ -37,10 +37,10 @@ tail -f src/app.log
 ```
 
 ## Deploy
-#### With Docker/Podman
+#### With Docker
 ```bash
 # Dependencies
-sudo apt install docker nginx certbot
+sudo apt install docker docker-compose nginx certbot
 sudo systemctl enable docker
 sudo systemctl start docker
 
