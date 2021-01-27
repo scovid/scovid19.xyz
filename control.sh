@@ -86,20 +86,14 @@ if [[ -n $docker ]]; then
 			echo "$name container is already running, pass --force to rebuild"
 			exit 1
 		fi
-
-		# If prod mode then
-		# - ensure we restart on failure
-		# - pull the latest base image
-		# - don't use the cache (https://pythonspeed.com/articles/docker-cache-insecure-images/)
-		[[ $env == 'prod' ]] && extra_build='--pull --no-cache'
-		[[ $env == 'prod' ]] && extra_run='--restart=unless-stopped'
-		export ENV=$env
-
+		
+		# If running with --force then always rebuild
 		extra=""
 		if [[ -n $force ]]; then
 			extra=" --build --no-deps"
 		fi
 
+		export ENV=$env
 		docker-compose up -d $extra
 		echo "Built and started $name"
 
