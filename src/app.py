@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 import logging
+from lib.Vaccine import Vaccine
 from lib.Infections import Infections
 from lib.Decorators import page, endpoint
-
 
 app = Flask(__name__, static_url_path='')
 logging.basicConfig(
@@ -12,6 +12,7 @@ logging.basicConfig(
 )
 
 infections = Infections()
+vaccine = Vaccine()
 
 # Page routes
 @app.route('/')
@@ -61,6 +62,10 @@ def locations_total():
 def locations_new():
 	return infections.locations_new()
 
+@app.route('/api/vaccines/weekly')
+@endpoint
+def vaccines_weekly():
+	return vaccine.vaccines_weekly()
 
 @app.route('/api/prevalence')
 @endpoint
