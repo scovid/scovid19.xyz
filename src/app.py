@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 infections = Infections()
-vaccine = Vaccine()
+vaccines = Vaccine()
 
 # Page routes
 @app.route('/')
@@ -29,6 +29,7 @@ def index():
 def vaccine():
 	return render_template('vaccine.html',
 		tab="vaccine",
+		weekly=vaccines.vaccines_weekly(),
 		last_updated=infections.last_updated(format='%d %B %Y'),
 	)
 
@@ -65,7 +66,7 @@ def locations_new():
 @app.route('/api/vaccines/weekly')
 @endpoint
 def vaccines_weekly():
-	return vaccine.vaccines_weekly()
+	return vaccines.vaccines_weekly()
 
 @app.route('/api/prevalence')
 @endpoint
