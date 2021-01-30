@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 import logging
-from lib.SCOVID import SCOVID
+from lib.Vaccine import Vaccine
+from lib.Infections import Infections
 from lib.Decorators import page, endpoint
-
 
 app = Flask(__name__, static_url_path='')
 logging.basicConfig(
@@ -11,15 +11,16 @@ logging.basicConfig(
 	format='[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s'
 )
 
-scovid = SCOVID()
+infections = Infections()
+vaccines = Vaccine()
 
 # Page routes
 @app.route('/')
 @page
 def index():
 	return render_template('index.html',
-		summary=scovid.summary(),
-		last_updated=scovid.last_updated(format='%d %B %Y'),
+		summary=infections.summary(),
+		last_updated=infections.last_updated(format='%d %B %Y'),
 		tab="overview"
 	)
 
@@ -28,7 +29,8 @@ def index():
 def vaccine():
 	return render_template('vaccine.html',
 		tab="vaccine",
-		last_updated=scovid.last_updated(format='%d %B %Y'),
+		weekly=vaccines.vaccines_weekly(),
+		last_updated=infections.last_updated(format='%d %B %Y'),
 	)
 
 @app.route('/locations')
@@ -41,32 +43,36 @@ def locations():
 @app.route('/api/trend')
 @endpoint
 def trend():
-	return scovid.trend(request.args)
+	return infections.trend(request.args)
 
 
 @app.route('/api/breakdown')
 @endpoint
 def breakdown():
-	return scovid.breakdown()
+	return infections.breakdown()
 
 
 @app.route('/api/locations/total')
 @endpoint
 def locations_total():
-	return scovid.locations_total()
+	return infections.locations_total()
 
 
 @app.route('/api/locations/new')
 @endpoint
 def locations_new():
-	return scovid.locations_new()
+	return infections.locations_new()
 
+@app.route('/api/vaccines/weekly')
+@endpoint
+def vaccines_weekly():
+	return vaccines.vaccines_weekly()
 
 @app.route('/api/prevalence')
 @endpoint
 def prevalence():
 	limit = int(request.args['limit']) if 'limit' in request.args else -1
-	return scovid.prevalence()[0:limit]
+	return infections.prevalence()[0:limit]
 
 
 if __name__ == '__main__':

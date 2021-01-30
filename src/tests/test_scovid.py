@@ -7,7 +7,7 @@ The mock responses are stored in src/tests/responses/
 import pytest
 import responses
 import json
-from lib.SCOVID import SCOVID
+from lib.Infections import Infections
 
 def read_response(name, as_json=True):
 	with open(f'src/tests/responses/{name}', 'r') as f:
@@ -15,7 +15,7 @@ def read_response(name, as_json=True):
 			return json.loads(f.read())
 		return f.read()
 
-class TestScovid():
+class TestInfections():
 	@responses.activate
 	def test_councils(self):
 		responses.add(
@@ -25,6 +25,6 @@ class TestScovid():
 			status=200,
 		)
 
-		scovid = SCOVID()
-		councils = scovid.councils()
+		infections = Infections()
+		councils = infections.councils()
 		assert len(councils.keys()) == 36
