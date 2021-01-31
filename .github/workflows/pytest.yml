@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on:
   push:
@@ -9,11 +9,11 @@ on:
       master
 
 jobs:
-  black:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: 'Run pytest'
         run: |
           ./control.sh --docker up
-          docker exec scovid python -m black --check src/
+          docker exec scovid pytest
