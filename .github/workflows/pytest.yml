@@ -3,11 +3,11 @@ name: Test
 on: [push, pull_request]
 
 jobs:
-  test:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: 'Run pytest'
         run: |
           ./control.sh --docker up
-          docker exec -it scovid pytest
+          docker exec scovid pytest
