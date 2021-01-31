@@ -1,11 +1,19 @@
 name: Lint
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      master
 
 jobs:
   black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: psf/black@stable
+      - name: 'Run pytest'
+        run: |
+          ./control.sh --docker up
+          docker exec scovid python -m black --check src/
