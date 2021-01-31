@@ -1,6 +1,14 @@
 version: "3.7"
 
+# This file has two versions of the app
+# One for dev and one for prod
+# Everything is managed by control.sh - so please use that rather than calling docker-compose manually
+# Main differences for the dev version are
+# - Only one port is exposed since we don't need to scale in dev mode
+# - The local src/ directory is mounted to src/ in the container for easy editing
+
 services:
+  # Prod version of our app
   app:
     build: .
     container_name: 'scovid'
@@ -8,4 +16,16 @@ services:
     ports:
       - 5000-5001:5000
     environment:
-      ENV: ${ENV:-prod}
+      ENV: prod
+
+  # Dev version of our app
+  app-dev:
+    build: .
+    container_name: 'scovid'
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - './src:/home/code/scovid19/src'
+    environment:
+      ENV: dev

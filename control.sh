@@ -77,11 +77,20 @@ fi
 # Docker
 if [[ -n $docker ]]; then
 	name='scovid'
+	running=$(docker ps -q -f name=$name)
+
+	# Set which app we're starting
+	[[ $env == 'dev' ]] && app_name='app-dev' || app_name='app'
+
+	# If not running and trying to deploy, then just start
+	[[ -z $running && $docker == 'deploy' ]] && docker='up'
+
+	# If running in dev mode then only run on one port
+	# In production we need two ports to deploy without downtime
+	[[ $env == 'dev' ]] && export PORTS=5000
 
 	# Build and run
 	if [[ $docker == 'up' ]]; then
-        running=$(docker ps -q -f name=$name)
-
 		if [[ $running && -z $force ]]; then
 			echo "$name container is already running, pass --force to rebuild"
 			exit 1
@@ -94,7 +103,7 @@ if [[ -n $docker ]]; then
 		fi
 
 		export ENV=$env
-		docker-compose up -d $extra
+		docker-compose up -d $extra $app_name
 		echo "Built and started $name"
 
 	# Stop
@@ -104,11 +113,16 @@ if [[ -n $docker ]]; then
 
 	# Restart
 	elif [[ $docker == 'restart' ]]; then
-		docker-compose stop
-		docker-compose start
+		docker-compose stop $app_name
+		docker-compose start $app_name
 		echo "Container $name restarted"
 
 	elif [[ $docker == 'deploy' ]]; then
+		if [[ $env == 'dev' ]]; then
+			echo "Cannot deploy while in dev mode, pass `--env prod`"
+			exit 1
+		fi
+
 		# Scale up to 2 containers, the new one being our new build
 		# Kill the old container, then scale down to 1
 		echo "Scaling up $name (NOTE: You can ignore the following two warnings about the container name and port)"
@@ -124,7 +138,7 @@ if [[ -n $docker ]]; then
 		echo "Deploy finished"
 
 	else
-		echo "Invalid docker subcommand '$sub'"
+		echo "Invalid docker subcommand '$docker'"
 	fi
 
 	exit 0
