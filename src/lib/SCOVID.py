@@ -1,6 +1,7 @@
 from lib.OpenData import OpenData
 from lib.Decorators import cacheable
 
+
 class SCOVID:
     def __init__(self):
         self._cache = {}
@@ -8,12 +9,11 @@ class SCOVID:
     # Get the mapping of council IDs to council names
     @cacheable
     def councils(self):
-        councils = OpenData.fetch('councils')
-        return { council['CA']: council['CAName'] for council in councils['records'] }
+        councils = OpenData.fetch("councils")
+        return {council["CA"]: council["CAName"] for council in councils["records"]}
 
-	# Get the population of each council area for 2019
+    # Get the population of each council area for 2019
     @cacheable
     def population(self):
-        populations = OpenData.fetch('population', limit=10000)['records']
-        return [x for x in populations if x['Year'] == 2019 and x['Sex'] == 'All']
-
+        populations = OpenData.fetch("population", limit=10000)["records"]
+        return [x for x in populations if x["Year"] == 2019 and x["Sex"] == "All"]
