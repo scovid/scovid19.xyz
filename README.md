@@ -11,42 +11,33 @@ The new and improved Scottish COVID-19 tracker.
 - [Plausible Analytics](https://plausible.io/)
 
 
-## Running locally
+## How to
 
-Once done open http://127.0.0.1:5000 in your browser.  
+The following instructions use docker, if you'd rather not use docker then see `docs/WITHOUT_DOCKER.md`.  
 
-#### With Docker
+### Run locally
 ```bash
+# Dependencies
 sudo apt install docker docker-compose
+
+# Start the container in dev mode
+# This mounts `./src/` as a docker volume so you can edit the container code directly
 ./control.sh --env dev --docker up
 
-# Logs
+# Docker logs
 docker logs --tail 200 -f scovid
 
-docker exec -it scovid /bin/bash
-tail -f src/app.log
+# App logs
+docker exec -it scovid tail -f app.log
 
 # Tests
-docker-compose build app
-docker-compose run app pytest
-# OR
 docker exec -it scovid pytest
+
+# Format
+docker exec -it scovid python -m black src/
 ```
 
-#### Without Docker
-```bash
-# Run (sets up virtualenv, installs dependencies and starts flask server)
-./control.sh --env dev --flask up
-
-# Logs
-tail -f src/app.log
-
-# Tests
-pytest
-```
-
-## Deploy
-#### With Docker
+### Deploy
 ```bash
 # Dependencies
 sudo apt install docker docker-compose nginx certbot
@@ -65,37 +56,12 @@ sudo service nginx restart
 sudo certbot --nginx
 
 # Update
+# Uses docker-compose scaling to deploy without downtime
 git pull
 ./control.sh --docker deploy
 ```
 
-#### Without Docker
-```bash
-# Dependencies
-sudo apt install nginx certbot
 
-# Create a virtualenv
-python -m venv venv
-
-# Activate venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# systemd
-sudo systemctl enable $(pwd)/system/systemd/scovid19.service
-sudo systemctl start scovid19
-
-# nginx
-sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
-sudo service nginx restart
-
-# Certbot
-sudo certbot --nginx
-```
-
-### Notes
+## Notes
 Open Data API reference:  
 https://docs.ckan.org/en/latest/maintaining/datastore.html#api-reference
