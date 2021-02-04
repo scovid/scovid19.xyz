@@ -35,11 +35,16 @@ class Vaccine(SCOVID):
 
         for record in records:
             logging.info(record["Dose"])
+
+            # BUG: For some reason the AstraZeneca data has a blank number vaccinated
+            if record["NumberVaccinated"].strip() == "":
+                continue
+
             if record["Dose"] == "Dose 1":
                 if record["NumberVaccinated"]:
-                    totals["dose1"] += record["NumberVaccinated"]
+                    totals["dose1"] += int(record["NumberVaccinated"])
             elif record["Dose"] == "Dose 2":
                 if record["NumberVaccinated"]:
-                    totals["dose2"] += record["NumberVaccinated"]
+                    totals["dose2"] += int(record["NumberVaccinated"])
 
         return totals
