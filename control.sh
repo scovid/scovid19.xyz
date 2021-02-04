@@ -127,7 +127,7 @@ if [[ -n $docker ]]; then
 		# Kill the old container, then scale down to 1
 		echo "Scaling up $name (NOTE: You can ignore the following two warnings about the container name and port)"
 		docker rename $name "${name}_old"
-		docker-compose up -d --scale app=2 --no-recreate
+		docker-compose up -d --scale app=2 --no-recreate app
 
 		echo "Building new container"
 		sleep 20
