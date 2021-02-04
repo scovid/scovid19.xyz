@@ -1,5 +1,6 @@
 from lib.SCOVID import SCOVID
 from lib.OpenData import OpenData
+from datetime import datetime
 import logging
 
 
@@ -23,7 +24,7 @@ class Vaccine(SCOVID):
         weekly = self.get_totals(latestrecords)
 
         return {
-            "this week": {"Dose 1": weekly["dose1"], "Dose 2": weekly["dose2"]},
+            "this week": {"Dose 1": weekly["dose1"], "Dose 2": weekly["dose2"], 'Week Ending': datetime.strptime(str(records[-1]['WeekEnding']), '%Y%m%d').strftime('%d/%m/%Y')},
             "totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
         }
 
