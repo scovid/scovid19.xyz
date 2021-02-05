@@ -33,6 +33,7 @@ def vaccine():
         "vaccine.html",
         tab="vaccine",
         weekly=vaccines.vaccines_weekly(),
+        percentage=vaccines.percentage_vaccinated(),
         last_updated=infections.last_updated(format="%d %B %Y"),
     )
 
@@ -68,10 +69,10 @@ def locations_new():
     return infections.locations_new()
 
 
-@app.route("/api/vaccines/weekly")
+@app.route("/api/vaccines/breakdown")
 @endpoint
-def vaccines_weekly():
-    return vaccines.vaccines_weekly()
+def percentage_vaccinated():
+    return vaccines.percentage_vaccinated()
 
 
 @app.route("/api/prevalence")

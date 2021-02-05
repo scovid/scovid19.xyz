@@ -5,47 +5,67 @@ import logging
 
 
 class Vaccine(SCOVID):
-    def __init__(self):
-        self._cache = {}
+	def __init__(self):
+		self._cache = {}
 
-    def vaccines_weekly(self):
-        cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
-        records = cases_by_week["records"]
+	def vaccines_weekly(self):
+		cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
+		records = cases_by_week["records"]
 
-        latestrecords = []
+		latestrecords = []
 
-        latestweek = records[-1]["WeekEnding"]
-        for record in records:
-            if record["WeekEnding"] == latestweek:
-                latestrecords.append(record)
+		latestweek = records[-1]["WeekEnding"]
+		for record in records:
+			if record["WeekEnding"] == latestweek:
+				latestrecords.append(record)
 
-        councils = self.councils()
-        totals = self.get_totals(records)
-        weekly = self.get_totals(latestrecords)
+		councils = self.councils()
+		totals = self.get_totals(records)
+		weekly = self.get_totals(latestrecords)
 
-        return {
-            "this week": {"Dose 1": weekly["dose1"], "Dose 2": weekly["dose2"], 'Week Ending': datetime.strptime(str(records[-1]['WeekEnding']), '%Y%m%d').strftime('%d/%m/%Y')},
-            "totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
-        }
+		return {
+			"this week": {"Dose 1": weekly["dose1"], "Dose 2": weekly["dose2"], 'Week Ending': datetime.strptime(str(records[-1]['WeekEnding']), '%Y%m%d').strftime('%d/%m/%Y')},
+			"totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
+		}
 
-    def get_totals(self, records):
-        totals = {
-            "dose1": 0,
-            "dose2": 0,
-        }
+	def get_totals(self, records):
+		totals = {
+			"dose1": 0,
+			"dose2": 0,
+		}
 
-        for record in records:
-            logging.info(record["Dose"])
+		for record in records:
+			# BUG: For some reason the AstraZeneca data has a blank number vaccinated
+			if record["NumberVaccinated"].strip() == "":
+				continue
 
-            # BUG: For some reason the AstraZeneca data has a blank number vaccinated
-            if record["NumberVaccinated"].strip() == "":
-                continue
+			if record["Dose"] == "Dose 1":
+				if record["NumberVaccinated"]:
+					totals["dose1"] += int(record["NumberVaccinated"])
+			elif record["Dose"] == "Dose 2":
+				if record["NumberVaccinated"]:
+					totals["dose2"] += int(record["NumberVaccinated"])
 
-            if record["Dose"] == "Dose 1":
-                if record["NumberVaccinated"]:
-                    totals["dose1"] += int(record["NumberVaccinated"])
-            elif record["Dose"] == "Dose 2":
-                if record["NumberVaccinated"]:
-                    totals["dose2"] += int(record["NumberVaccinated"])
+		return totals
+		
+	def percentage_vaccinated(self):
+		population = self.scottish_population()
 
-        return totals
+		cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
+		records = cases_by_week["records"]
+
+		totals = self.get_totals(records)
+		remainder = population - totals['dose2'] - totals['dose1']
+
+		return {
+			"labels": ["Second Dose received", "First Dose received", "Un-vaccinated"],
+			"datasets": [
+				{
+					"backgroundColor": ["lightgreen", "blue", "red"],
+					"borderColor": ["lightgreen", "blue", "red"],
+					"label": "Vaccinations by total population",
+					"data": [totals['dose2'], totals['dose1'], remainder]
+				}
+
+			]
+		}

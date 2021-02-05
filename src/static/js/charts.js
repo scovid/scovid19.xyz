@@ -44,6 +44,11 @@ let chartConfig = {
 		endpoint: 'breakdown',
 	},
 
+	'vaccineChart': {
+		type: 'doughnut',
+		endpoint: 'vaccines/breakdown',
+	},
+
 	'totalLocationChart': {
 		type: 'bar',
 		options: { legend: false },
