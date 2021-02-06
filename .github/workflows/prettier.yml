@@ -1,4 +1,4 @@
-name: Formatting - Black
+name: Formatting - Prettier
 
 on:
   push:
@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: 'Run black check'
+      - name: 'Run prettier check'
         run: |
-          ./control.sh --docker up
-          docker exec scovid python -m black --check src/
+          npm i -g prettier
+          prettier --check **.html **.js **.css
+
