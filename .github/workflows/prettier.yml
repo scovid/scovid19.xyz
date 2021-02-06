@@ -23,4 +23,4 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: :art: Auto-format with prettier
+          commit_message: ':art: Auto-format with prettier'
