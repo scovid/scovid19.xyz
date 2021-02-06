@@ -13,8 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: 'Run prettier check'
-        run: |
-          npm i -g prettier
-          prettier --check **.html **.js **.css
+        with:
+          ref: ${{ github.head_ref }}
 
+      - name: 'Run prettier'
+        uses: creyD/prettier_action@v3.1
+        with:
+          prettier_options: --write **.html **.js **.css
+
+        - uses: stefanzweifel/git-auto-commit-action@v4
+          with:
+            commit_message: :art: Auto-format with prettier
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
