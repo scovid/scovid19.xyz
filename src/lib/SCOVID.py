@@ -17,3 +17,12 @@ class SCOVID:
     def population(self):
         populations = OpenData.fetch("population", limit=10000)["records"]
         return [x for x in populations if x["Year"] == 2019 and x["Sex"] == "All"]
+
+    # Get the population for Scotland
+    @cacheable
+    def scottish_population(self):
+        populations = self.population()
+
+        for pop in populations:
+            if pop["CA"] == "S92000003":
+                return int(pop["AllAges"])
