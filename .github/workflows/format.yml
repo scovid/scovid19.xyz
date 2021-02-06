@@ -1,4 +1,4 @@
-name: Formatting - Prettier
+name: Auto Format
 
 on:
   push:
@@ -10,6 +10,19 @@ on:
 
 jobs:
   black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Run black check'
+        run: |
+          ./control.sh --docker up
+          docker exec scovid python -m black src/
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ':art: Auto-format with black'
+
+  prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
