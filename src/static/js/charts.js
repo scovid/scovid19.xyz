@@ -18,7 +18,7 @@ Chart.defaults.global.tooltips.callbacks.label = (item, data) => {
 Chart.defaults.doughnut.tooltips = Chart.defaults.global.tooltips;
 
 // Change the default color to look decent in both dark mode and light mode
-Chart.defaults.global.defaultFontColor = "grey";
+Chart.defaults.global.defaultFontColor = 'grey';
 
 // Global ChartJS Configuration
 Chart.defaults.line.spanGaps = true;
