@@ -49,6 +49,20 @@ let chartConfig = {
 		endpoint: 'vaccines/breakdown',
 	},
 
+	'vaccineCouncilChart': {
+		type: 'bar',
+		options: { legend: false },
+		endpoint: 'vaccines/council',
+		...scales,
+	},
+
+	'vaccineTrendChart': {
+		type: 'bar',
+		options: { legend: false },
+		endpoint: 'vaccines/trend',
+		...scales,
+	},
+
 	'totalLocationChart': {
 		type: 'bar',
 		options: { legend: false },
