@@ -1,33 +1,17 @@
-{% import 'partials/chart.html' as chart %}
-{% import 'partials/tile.html' as tile %}
-
-{% extends 'layouts/wrapper.html' %}
-{% block body %}
+{% import 'partials/chart.html' as chart %} {% import 'partials/tile.html' as tile %} {% extends 'layouts/wrapper.html' %} {% block body %}
 <script defer src="js/table.js"></script>
 
 <!-- Stats-->
 <section id="stats" class="columns">
-	<div class="column">
-		{{ tile.tile('Total Cases', summary['cases']['total'], '#249596') }}
-	</div>
-	<div class="column">
-		{{ tile.tile('New cases per day', summary['cases']['avg'], '#67a23f', 'average over last 7 days') }}
-	</div>
-	<div class="column">
-		{{ tile.tile('Total Deaths', summary['deaths']['total'], '#f6ae33') }}
-	</div>
-	<div class="column">
-		{{ tile.tile('New deaths per day', summary['deaths']['avg'], '#f94333', 'average over last 7 days') }}
-	</div>
+	<div class="column">{{ tile.tile('Total Cases', summary['cases']['total'], '#249596') }}</div>
+	<div class="column">{{ tile.tile('New cases per day', summary['cases']['avg'], '#67a23f', 'average over last 7 days') }}</div>
+	<div class="column">{{ tile.tile('Total Deaths', summary['deaths']['total'], '#f6ae33') }}</div>
+	<div class="column">{{ tile.tile('New deaths per day', summary['deaths']['avg'], '#f94333', 'average over last 7 days') }}</div>
 </section>
 
 <section id="moreStats" class="columns slider closed">
-	<div class="column">
-		{{ tile.tile('Most cases in one day', summary['cases']['most']['number'], '#469C6B', "On " + summary['cases']['most']['date']) }}
-	</div>
-	<div class="column">
-		{{ tile.tile('Most deaths in one day', summary['deaths']['most']['number'], '#F87933', "On " + summary['deaths']['most']['date']) }}
-	</div>
+	<div class="column">{{ tile.tile('Most cases in one day', summary['cases']['most']['number'], '#469C6B', "On " + summary['cases']['most']['date']) }}</div>
+	<div class="column">{{ tile.tile('Most deaths in one day', summary['deaths']['most']['number'], '#F87933', "On " + summary['deaths']['most']['date']) }}</div>
 </section>
 
 <!-- More stats button -->
@@ -37,10 +21,10 @@
 	</a>
 </div>
 
-<hr>
+<hr />
 
 <!-- Prevalence per council -->
-<section id="prevalence" class="section" style="overflow-x: scroll;">
+<section id="prevalence" class="section" style="overflow-x: scroll">
 	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 1000 people in last 7 days</p>
 	<table class="table is-striped is-hoverable is-fullwidth slider closed">
 		<thead>
@@ -51,8 +35,7 @@
 				<th>Cases</th>
 			</tr>
 		</thead>
-		<tbody id="tableBody">
-		</tbody>
+		<tbody id="tableBody"></tbody>
 	</table>
 	<progress id="tableProgress" class="progress"></progress>
 
@@ -67,19 +50,13 @@
 	</div>
 </section>
 
-<hr>
+<hr />
 
 <!-- Charts -->
 <section id="charts" class="section">
-	<div class="columns is-desktop">
-		{{ chart.chart('trendChart', 'Daily Trends', show_cog=True) }}
-		{{ chart.chart('breakdownChart', 'Breakdown') }}
-	</div>
+	<div class="columns is-desktop">{{ chart.chart('trendChart', 'Daily Trends', show_cog=True) }} {{ chart.chart('breakdownChart', 'Breakdown') }}</div>
 	<div id="sep"></div>
-	<div class="columns is-desktop">
-		{{ chart.chart('totalLocationChart', 'Total cases by location') }}
-		{{ chart.chart('newLocationChart', 'New cases by location', subtitle='Last 7 days') }}
-	</div>
+	<div class="columns is-desktop">{{ chart.chart('totalLocationChart', 'Total cases by location') }} {{ chart.chart('newLocationChart', 'New cases by location', subtitle='Last 7 days') }}</div>
 </section>
 
 {% include 'partials/settings.html' %}

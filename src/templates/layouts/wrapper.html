@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Scottish COVID-19 Stats" />
 		<meta name="keywords" content="COVID-19, Coronavirus, Scotland, Stats, SCOVID-19, Scottish" />
 		<meta name="author" content="Dan Stewart" />
@@ -11,16 +11,16 @@
 
 		<!-- Bulma and bulma swatch themes -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
-		<link rel="stylesheet" id="flatly" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css">
-		<link rel="stylesheet" id="darkly" disabled href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css">
+		<link rel="stylesheet" id="flatly" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css" />
+		<link rel="stylesheet" id="darkly" disabled href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css" />
 
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 		<link rel="stylesheet" href="css/styles.css" />
 
 		<!-- From https://favicon.io/ -->
-		<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
 
 		<script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
@@ -48,10 +48,10 @@
 							<p class="title is-2 scotflag">SCOVID-19</p>
 							<p class="subtitle is-5 scotflag">COVID-19 Stats for Scotland</p>
 							{% if last_updated: %}
-								<p class="subtitle is-7 has-text-grey-lighter ">Last Updated: {{ last_updated }}</p>
+							<p class="subtitle is-7 has-text-grey-lighter">Last Updated: {{ last_updated }}</p>
 							{% else %}
 							<!-- TODO: The spacing for the dark toggle is a little off when last_updated is not set -->
-								<br />
+							<br />
 							{% endif %}
 						</div>
 					</div>
@@ -62,7 +62,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<section id="tabs">
 				<div class="tabs is-centered is-boxed">
 					<ul>
@@ -73,7 +73,7 @@
 			</section>
 		</section>
 
-		<br>
+		<br />
 
 		<section id="message" class="is-hidden">
 			<div class="container">
@@ -83,25 +83,25 @@
 						<button class="delete" onclick="toggleInfo(this)"></button>
 					</div>
 					<div class="message-body">
-					<ul>
-						<li>&bull; On April 2nd the process for counting deaths changed, <a href="https://www.gov.scot/news/new-process-for-reporting-covid-19-deaths/">see more</a></li>
-						<li>&bull; The figure for new cases on April 20th is skewed due to a change in reporting, this date is ignored from the charts but the cases reported were 776</li>
-						<li>&bull; As of June 15th the data now includes cases at UK Government Regional Testing Centres</li>
-					</ul>
+						<ul>
+							<li>&bull; On April 2nd the process for counting deaths changed, <a href="https://www.gov.scot/news/new-process-for-reporting-covid-19-deaths/">see more</a></li>
+							<li>&bull; The figure for new cases on April 20th is skewed due to a change in reporting, this date is ignored from the charts but the cases reported were 776</li>
+							<li>&bull; As of June 15th the data now includes cases at UK Government Regional Testing Centres</li>
+						</ul>
 					</div>
 				</div>
-				<br>
+				<br />
 			</div>
 		</section>
 
 		{% block body %}{% endblock %}
 
-		<br>
+		<br />
 
 		<footer class="footer">
 			<div class="content has-text-centered">
 				<p>All stats are from the <a href="https://www.opendata.nhs.scot/dataset/covid-19-in-scotland">NHS OpenData</a> API</p>
-				<hr>
+				<hr />
 				<div><i class="fas fa-envelope"></i> <a href="mailto:SCOVID@mail.danstewart.dev">SCOVID@mail.danstewart.dev</a></div>
 				<div><i class="fab fa-github"></i> <a href="https://github.com/scovid/scovid19.xyz">Source Code</a></div>
 			</div>

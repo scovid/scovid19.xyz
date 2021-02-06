@@ -1,16 +1,16 @@
 /* All of the chart logic lives here */
 let charts = {};
 
-Chart.defaults.global.tooltips.mode = "single";
+Chart.defaults.global.tooltips.mode = 'single';
 Chart.defaults.global.tooltips.enabled = true;
 Chart.defaults.global.tooltips.callbacks.label = (item, data) => {
 	// Line charts have a yLabel property
 	if (item && item.yLabel) {
-		return item.yLabel.toLocaleString("en")
+		return item.yLabel.toLocaleString('en');
 	}
 
 	// Pie/dougnuts do not have the yLable property so figure it out from the $data
-	return data.datasets[0].data[item.index].toLocaleString("en")
+	return data.datasets[0].data[item.index].toLocaleString('en');
 };
 
 // Need to copy the defaults into the dougnut due to a bug
@@ -18,14 +18,14 @@ Chart.defaults.global.tooltips.callbacks.label = (item, data) => {
 Chart.defaults.doughnut.tooltips = Chart.defaults.global.tooltips;
 
 // Change the default color to look decent in both dark mode and light mode
-Chart.defaults.global.defaultFontColor = 'grey'
+Chart.defaults.global.defaultFontColor = 'grey';
 
 // Global ChartJS Configuration
 Chart.defaults.line.spanGaps = true;
 
 /*
-* Charts
-*/
+ * Charts
+ */
 async function initCharts(chartConfig) {
 	Promise.all(
 		Object.keys(chartConfig).map(async chartId => {
@@ -58,8 +58,8 @@ function makeChart(id, config, data) {
 		options: {
 			maintainAspectRatio: false,
 			responsive: true,
-			...config.options
-		}
+			...config.options,
+		},
 	});
 
 	chart.key = config.key;
@@ -79,7 +79,11 @@ function reloadChart(id, query) {
 async function getData(id, query) {
 	let queryString = '';
 	if (query) {
-		queryString = '?' + Object.keys(query).map(k => `${k}=${query[k]}`).join('&');
+		queryString =
+			'?' +
+			Object.keys(query)
+				.map(k => `${k}=${query[k]}`)
+				.join('&');
 	}
 
 	let res = await fetch(`/api/${id}${queryString}`);

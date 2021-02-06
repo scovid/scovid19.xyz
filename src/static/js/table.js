@@ -14,7 +14,7 @@ async function loadTable(limit = 5) {
 	for (let item of data) {
 		let row = tableBody.insertRow();
 
-		[ 'council', 'per_thousand', 'population', 'cases' ].forEach(field => {
+		['council', 'per_thousand', 'population', 'cases'].forEach(field => {
 			let cell = row.insertCell();
 			cell.appendChild(document.createTextNode(item[field]));
 		});
@@ -27,7 +27,7 @@ async function tableLess(e) {
 	await loadTable(tableBody.rows.length - 5);
 	document.querySelector('#tableMore').disabled = false;
 
-	console.log(tableBody.rows.length)
+	console.log(tableBody.rows.length);
 	if (tableBody.rows.length <= 5) {
 		e.disabled = true;
 	}
