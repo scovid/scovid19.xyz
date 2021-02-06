@@ -25,7 +25,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: 'Run black check'
-        run: python -m black src/
+        run: |
+          source venv/bin/activate
+          python -m black src/
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
