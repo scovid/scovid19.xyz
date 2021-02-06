@@ -3,6 +3,8 @@
 
 {% extends 'layouts/wrapper.html' %}
 {% block body %}
+<script defer src="js/table.js"></script>
+
 <!-- Stats-->
 <section id="stats" class="columns">
 	<div class="column">
@@ -82,4 +84,48 @@
 
 {% include 'partials/settings.html' %}
 
+<!-- Initialise our charts -->
+<script>
+	const scales = {
+		scales: {
+			yAxes: [
+				{
+					ticks: {
+						beginAtZero: true,
+					},
+				},
+			],
+		},
+	};
+
+	const chartConfig = {
+		trendChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'trend',
+			...scales,
+		},
+
+		breakdownChart: {
+			type: 'doughnut',
+			endpoint: 'breakdown',
+		},
+
+		totalLocationChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'locations/total',
+			...scales,
+		},
+
+		newLocationChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'locations/new',
+			...scales,
+		},
+	};
+
+	window.addEventListener('load', () => initCharts(chartConfig));
+</script>
 {% endblock %}

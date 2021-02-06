@@ -32,4 +32,41 @@
     </div>
 </section>
 
+<!-- Initialise our charts -->
+<script>
+	const scales = {
+		scales: {
+			yAxes: [
+				{
+					ticks: {
+						beginAtZero: true,
+					},
+				},
+			],
+		},
+	};
+
+	const chartConfig = {
+		vaccineChart: {
+			type: 'doughnut',
+			endpoint: 'vaccines/breakdown',
+		},
+
+		vaccineCouncilChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'vaccines/council',
+			...scales,
+		},
+
+		vaccineTrendChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'vaccines/trend',
+			...scales,
+		},
+	};
+
+	window.addEventListener('load', () => initCharts(chartConfig));
+</script>
 {% endblock %}

@@ -20,99 +20,32 @@ Chart.defaults.doughnut.tooltips = Chart.defaults.global.tooltips;
 // Change the default color to look decent in both dark mode and light mode
 Chart.defaults.global.defaultFontColor = 'grey'
 
-let scales = {
-	scales: {
-		yAxes: [{
-			ticks: {
-				beginAtZero: true,
-			}
-		}],
-	}
-};
-
-// Chart configuration
-let chartConfig = {
-	'trendChart': {
-		type: 'bar',
-		options: { legend: false },
-		endpoint: 'trend',
-		...scales,
-	},
-
-	'breakdownChart': {
-		type: 'doughnut',
-		endpoint: 'breakdown',
-	},
-
-	'vaccineChart': {
-		type: 'doughnut',
-		endpoint: 'vaccines/breakdown',
-	},
-
-	'vaccineCouncilChart': {
-		type: 'bar',
-		options: { legend: false },
-		endpoint: 'vaccines/council',
-		...scales,
-	},
-
-	'vaccineTrendChart': {
-		type: 'bar',
-		options: { legend: false },
-		endpoint: 'vaccines/trend',
-		...scales,
-	},
-
-	'totalLocationChart': {
-		type: 'bar',
-		options: { legend: false },
-		endpoint: 'locations/total',
-		...scales,
-	},
-
-	'newLocationChart': {
-		type: 'bar',
-		options: { legend: false },
-		endpoint: 'locations/new',
-		...scales,
-	}
-};
-
 // Global ChartJS Configuration
 Chart.defaults.line.spanGaps = true;
-
-// Draw the charts for the first time
-window.addEventListener('load', () => {
-	Promise.all(
-		Object.keys(chartConfig).map(i => initCharts(i))
-	);
-});
 
 /*
 * Charts
 */
-async function initCharts(chartId) {
-	// Generate charts
-	for (let id of Object.keys(chartConfig)) {
-		if (chartId && id != chartId) continue;
+async function initCharts(chartConfig) {
+	Promise.all(
+		Object.keys(chartConfig).map(async chartId => {
+			const config = chartConfig[chartId];
+			let data = await getData(config.endpoint, config.query);
 
-		const config = chartConfig[id];
-
-		let data = await getData(config.endpoint, config.query);
-
-		if (data.error) {
-			// TODO: This could be improved
-			console.error(`Error response from ${config.endpoint}`);
-			const err = document.createElement('p');
-			err.innerHTML = 'Failed to load data';
-			err.style = 'text-align: center; margin-top: 15px';
-			err.classList.add('is-family-monospace');
-			document.querySelector('#' + id).parentElement.prepend(err);
-		} else {
-			chart = makeChart(id, config, data);
-			charts[id] = chart;
-		}
-	}
+			if (data.error) {
+				// TODO: This could be improved
+				console.error(`Error response from ${config.endpoint}`);
+				const err = document.createElement('p');
+				err.innerHTML = 'Failed to load data';
+				err.style = 'text-align: center; margin-top: 15px';
+				err.classList.add('is-family-monospace');
+				document.querySelector('#' + chartId).parentElement.prepend(err);
+			} else {
+				chart = makeChart(chartId, config, data);
+				charts[chartId] = chart;
+			}
+		})
+	);
 }
 
 // Instantiates the Chart()
