@@ -74,10 +74,12 @@ def locations_new():
 def percentage_vaccinated():
     return vaccines.percentage_vaccinated()
 
+
 @app.route("/api/vaccines/council")
 @endpoint
 def council_breakdown():
     return vaccines.council_breakdown()
+
 
 @app.route("/api/vaccines/trend")
 @endpoint
