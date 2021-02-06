@@ -17,7 +17,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Install
-        run: yarn install prettier
+        run: yarn add prettier
  
       - name: Run prettier
         run: yarn run prettier --write **.html **.js **.css
