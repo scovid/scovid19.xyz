@@ -1,0 +1,54 @@
+name: Auto Format
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      master
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+ 
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: 'Run black check'
+        run: |
+          source venv/bin/activate
+          python -m black src/
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ':art: Auto-format with black'
+
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+        
+      - name: Install
+        run: yarn add prettier
+ 
+      - name: Run prettier
+        run: yarn run prettier --write **.html **.js **.css
+
+      - name: Cleanup
+        run: rm -rf node_modules package.json yarn.lock
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ':art: Auto-format with prettier'

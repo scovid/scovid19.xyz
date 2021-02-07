@@ -1,35 +1,55 @@
-{% import 'partials/chart.html' as chart %}
-{% import 'partials/tile.html' as tile %}
-
-{% extends 'layouts/wrapper.html' %}
-{% block body %}
+{% import 'partials/chart.html' as chart %} {% import 'partials/tile.html' as tile %} {% extends 'layouts/wrapper.html' %} {% block body %}
 
 <div class="has-text-centered">
-    <p class="heading is-size-5 has-text-centered has-text-weight-medium">Vaccination Stats</p>
-    <section id="stats" class="columns">
-        <div class="column">
-            {{ tile.tile('First Dosage', weekly['this week']['Dose 1'], '#249596', 'Week Ending ' + weekly['this week']['Week Ending']) }}
-        </div>
-        <div class="column">
-            {{ tile.tile('Second Dosage', weekly['this week']['Dose 2'], '#67a23f', 'Week Ending ' + weekly['this week']['Week Ending']) }}
-        </div>
-        <div class="column">
-            {{ tile.tile('First Dosage', weekly['totals']['Dose 1'], '#f6ae33', 'Total') }}
-        </div>
-        <div class="column">
-            {{ tile.tile('Second Dosage', weekly['totals']['Dose 2'], '#f94333', 'Total') }}
-        </div>
-    </section>
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Vaccination Stats</p>
+	<section id="stats" class="columns">
+		<div class="column">{{ tile.tile('First Dosage', weekly['this week']['Dose 1'], '#249596', 'Week Ending ' + weekly['this week']['Week Ending']) }}</div>
+		<div class="column">{{ tile.tile('Second Dosage', weekly['this week']['Dose 2'], '#67a23f', 'Week Ending ' + weekly['this week']['Week Ending']) }}</div>
+		<div class="column">{{ tile.tile('First Dosage', weekly['totals']['Dose 1'], '#f6ae33', 'Total') }}</div>
+		<div class="column">{{ tile.tile('Second Dosage', weekly['totals']['Dose 2'], '#f94333', 'Total') }}</div>
+	</section>
 </div>
 
 <section id="charts" class="section">
-    <div class="columns is-desktop">
-        {{ chart.chart('vaccineCouncilChart', 'Vaccinations by council', show_cog=False) }}
-        {{ chart.chart('vaccineChart', 'Vaccinations by total population') }}
-    </div>
-    <div class="columns is-desktop">
-        {{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}
-    </div>
+	<div class="columns is-desktop">{{ chart.chart('vaccineCouncilChart', 'Vaccinations by council', show_cog=False) }} {{ chart.chart('vaccineChart', 'Vaccinations by total population') }}</div>
+	<div class="columns is-desktop">{{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}</div>
 </section>
 
+<!-- Initialise our charts -->
+<script>
+	const scales = {
+		scales: {
+			yAxes: [
+				{
+					ticks: {
+						beginAtZero: true,
+					},
+				},
+			],
+		},
+	};
+
+	const chartConfig = {
+		vaccineChart: {
+			type: 'doughnut',
+			endpoint: 'vaccines/breakdown',
+		},
+
+		vaccineCouncilChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'vaccines/council',
+			...scales,
+		},
+
+		vaccineTrendChart: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'vaccines/trend',
+			...scales,
+		},
+	};
+
+	window.addEventListener('load', () => initCharts(chartConfig));
+</script>
 {% endblock %}

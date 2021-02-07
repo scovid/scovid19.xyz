@@ -5,7 +5,7 @@ let theme = 'light';
 
 window.addEventListener('load', () => {
 	// Enable dark mode if state is stored
-	const prefersDark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+	const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 	theme = window.localStorage.getItem('color_theme') || (prefersDark ? 'dark' : 'light');
 	setTheme();
 
@@ -15,8 +15,8 @@ window.addEventListener('load', () => {
 });
 
 /*
-* Event handlers
-*/
+ * Event handlers
+ */
 // Toggle color theme between light and dark
 function toggleDarkMode() {
 	theme = theme == 'dark' ? 'light' : 'dark';
@@ -50,9 +50,9 @@ function showSettings(type) {
 function saveSettings() {
 	let query = {};
 
-	const type  = document.querySelector('#settings').getAttribute('type');
+	const type = document.querySelector('#settings').getAttribute('type');
 	const start = document.querySelector('#start-date').value;
-	const end   = document.querySelector('#end-date').value;
+	const end = document.querySelector('#end-date').value;
 
 	if (start) query.start = start;
 	if (end) query.end = end;
@@ -75,7 +75,7 @@ function setTheme() {
 		btn.classList = ['fas fa-moon fa-2x'];
 		document.querySelector('#darkly').disabled = true;
 
-	// If off then enable and set icon to sun
+		// If off then enable and set icon to sun
 	} else {
 		btn.classList = ['fas fa-sun fa-2x'];
 		document.querySelector('#darkly').disabled = false;
