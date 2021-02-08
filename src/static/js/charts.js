@@ -71,7 +71,9 @@ function makeChart(id, config, data) {
 function reloadChart(id, query) {
 	charts[id].destroy();
 	chartConfig[id].query = query;
-	initCharts(id);
+
+	// NOTE: This weird [id] syntax treats id as a var, not a literal
+	initCharts({ [id]: chartConfig[id] });
 }
 
 // Return the appropriate data for this chart
