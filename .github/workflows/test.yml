@@ -17,3 +17,12 @@ jobs:
         run: |
           ./control.sh --docker up
           docker exec scovid pytest
+
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Run pytest'
+        run: |
+          ./control.sh --docker up
+          docker exec scovid bandit -c .banditrc -r src/
