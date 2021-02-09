@@ -17,6 +17,7 @@ RUN mkdir -p /home/code/scovid19
 WORKDIR /home/code/scovid19
 
 COPY --chown=code:code requirements.txt ./
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY --chown=code:code . ./
