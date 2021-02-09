@@ -9,7 +9,7 @@ on:
       master
 
 jobs:
-  black:
+  tan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,14 +24,14 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: 'Run black check'
+      - name: 'Run tan'
         run: |
           source venv/bin/activate
-          python -m black src/
+          tan --use-tabs src/
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: ':art: Auto-format with black'
+          commit_message: ':art: Auto-format with tan'
 
   prettier:
     runs-on: ubuntu-latest
