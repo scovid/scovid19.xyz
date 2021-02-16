@@ -63,6 +63,10 @@ class Vaccine(SCOVID):
 		totals = self.get_totals(records)
 		remainder = population - totals["dose2"] - totals["dose1"]
 
+		dose1 = float(totals["dose1"] / population * 100)
+		dose2 = float(totals["dose2"] / population * 100)
+		remainder = float(remainder / population * 100)
+
 		return {
 			"labels": ["Second Dose received", "First Dose received", "Un-vaccinated"],
 			"datasets": [
@@ -70,7 +74,7 @@ class Vaccine(SCOVID):
 					"backgroundColor": ["green", "lightblue", "red"],
 					"borderColor": ["green", "lightblue", "red"],
 					"label": "Vaccinations by total population",
-					"data": [totals["dose2"], totals["dose1"], remainder],
+					"data": [dose2, dose1, remainder],
 				}
 			],
 		}
