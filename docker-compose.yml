@@ -7,6 +7,9 @@ version: "3.7"
 # - Only one port is exposed since we don't need to scale in dev mode
 # - The local src/ directory is mounted to src/ in the container for easy editing
 
+volumes:
+  data:
+
 services:
   # Prod version of our app
   app:
@@ -18,8 +21,7 @@ services:
     environment:
       ENV: prod
     volumes:
-      - '/data/scovid:/home/code/scovid19/data'
-      - '/var/log/scovid:/home/code/scovid19/logs'
+      - data:/home/code/scovid19/data
 
   # Dev version of our app
   app-dev:
@@ -30,7 +32,6 @@ services:
       - 5000:5000
     volumes:
       - './src:/home/code/scovid19/src'
-      - '/data/scovid:/home/code/scovid19/data'
-      - '/var/log/scovid:/home/code/scovid19/logs'
+      - data:/home/code/scovid19/data
     environment:
       ENV: dev

@@ -6,7 +6,7 @@ from lib.Decorators import page, endpoint
 
 app = Flask(__name__, static_url_path="")
 logging.basicConfig(
-	filename="app.log",
+	filename="logs/app.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )

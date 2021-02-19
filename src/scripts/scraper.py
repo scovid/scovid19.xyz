@@ -11,7 +11,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 logging.basicConfig(
-	filename="/home/code/scovid19/logs/scraper.log",
+	filename="logs/scraper.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
@@ -37,7 +37,7 @@ def main():
 	return
 
 def write_file(content):
-	filepath = '/home/code/scovid19/data/vaccine.json'
+	filepath = 'data/vaccine.json'
 
 	fh = open(filepath, "a")
 	fh.write(content)
