@@ -1,3 +1,4 @@
+import json
 from lib.SCOVID import SCOVID
 from lib.OpenData import OpenData
 from datetime import datetime
@@ -20,9 +21,8 @@ class Vaccine(SCOVID):
 				latestrecords.append(record)
 
 		councils = self.councils()
-		totals = self.get_totals(records)
+		totals = self.get_scraper_data() #self.get_totals(records)
 		weekly = self.get_totals(latestrecords)
-
 		return {
 			"this week": {
 				"Dose 1": weekly["dose1"],
@@ -147,6 +147,17 @@ class Vaccine(SCOVID):
 				{"label": "Dose 2", "backgroundColor": "lightgreen", "data": dose2},
 			],
 		}
+
+	def get_scraper_data(self):
+		filepath = "/home/code/scovid19/data/vaccine.json"
+
+		with open(filepath) as fh:
+			contents = json.loads(fh.read())
+			
+			return { 
+				"dose1": int(contents['dose1']), 
+				"dose2": int(contents['dose2']) 
+			}
 
 	@staticmethod
 	def color(key):
