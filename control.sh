@@ -50,6 +50,9 @@ if [[ ! -d src || ! -f src/app.py ]]; then
 	exit 1
 fi
 
+# Load secrets
+[[ -f secrets.bash ]] && source secrets.bash
+
 # Dev using flask
 if [[ $flask == 'up' ]]; then
 	# Set up virtual env if not already done
