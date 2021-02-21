@@ -11,7 +11,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 logging.basicConfig(
-	filename="logs/scraper.log",
+	filename="/home/code/scovid19/logs/scraper.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
@@ -41,9 +41,9 @@ def main():
 
 
 def write_file(content):
-	filepath = "data/vaccine.json"
+	filepath = "/home/code/scovid19/data/vaccine.json"
 
-	fh = open(filepath, "a")
+	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
 	fh.close()
 
@@ -59,11 +59,14 @@ def get_summary(parsed):
 
 
 def get_first_doses(summary):
-	return summary[0]
+	dose1 = summary[0].replace(",", "")
+	return dose1
 
 
 def get_second_doses(summary):
-	return summary[3]
+	dose2 = summary[3].replace(",", "")
+
+	return dose2
 
 
 main()
