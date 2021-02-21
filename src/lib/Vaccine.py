@@ -21,7 +21,7 @@ class Vaccine(SCOVID):
 				latestrecords.append(record)
 
 		councils = self.councils()
-		totals = self.get_scraper_data() #self.get_totals(records)
+		totals = self.get_scraper_data()  # self.get_totals(records)
 		weekly = self.get_totals(latestrecords)
 		return {
 			"this week": {
@@ -57,10 +57,10 @@ class Vaccine(SCOVID):
 	def percentage_vaccinated(self):
 		population = self.scottish_population()
 
-		#cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
-		#records = cases_by_week["records"]
+		# cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
+		# records = cases_by_week["records"]
 
-		#totals = self.get_totals(records)
+		# totals = self.get_totals(records)
 		totals = self.get_scraper_data()
 		remainder = population - totals["dose2"] - totals["dose1"]
 
@@ -154,11 +154,8 @@ class Vaccine(SCOVID):
 
 		with open(filepath) as fh:
 			contents = json.loads(fh.read())
-			
-			return { 
-				"dose1": int(contents['dose1']), 
-				"dose2": int(contents['dose2']) 
-			}
+
+			return {"dose1": int(contents["dose1"]), "dose2": int(contents["dose2"])}
 
 	@staticmethod
 	def color(key):

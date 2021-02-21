@@ -43,7 +43,7 @@ def main():
 def write_file(content):
 	filepath = "/home/code/scovid19/data/vaccine.json"
 
-	fh = open(filepath, "w", encoding='utf8')
+	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
 	fh.close()
 
@@ -59,12 +59,12 @@ def get_summary(parsed):
 
 
 def get_first_doses(summary):
-	dose1 = summary[0].replace(',','')
+	dose1 = summary[0].replace(",", "")
 	return dose1
 
 
 def get_second_doses(summary):
-	dose2 = summary[3].replace(',','')
+	dose2 = summary[3].replace(",", "")
 
 	return dose2
 
