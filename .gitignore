@@ -1,5 +1,7 @@
 .vscode/
-src/app.log
+logs/*
+data/*
+secrets.bash
 
 # From https://github.com/github/gitignore/blob/master/Python.gitignore
 

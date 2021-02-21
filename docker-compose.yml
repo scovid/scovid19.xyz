@@ -18,10 +18,14 @@ services:
     restart: always
     ports:
       - 5000-5001:5000
-    environment:
-      ENV: prod
     volumes:
       - data:/home/code/scovid19/data
+    environment:
+      ENV: prod
+      SCOVID_TWITTER_API_KEY: ${SCOVID_TWITTER_API_KEY}
+      SCOVID_TWITTER_API_SECRET: ${SCOVID_TWITTER_API_SECRET}
+      SCOVID_TWITTER_ACCESS_TOKEN: ${SCOVID_TWITTER_ACCESS_TOKEN}
+      SCOVID_TWITTER_ACCESS_SECRET: ${SCOVID_TWITTER_ACCESS_SECRET}
 
   # Dev version of our app
   app-dev:
