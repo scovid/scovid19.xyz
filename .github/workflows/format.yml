@@ -6,13 +6,15 @@ on:
       - master
   pull_request:
     branches:
-      master
+      - master
 
 jobs:
   tan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
  
       - uses: actions/setup-python@v2
         with:
