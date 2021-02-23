@@ -1,6 +1,6 @@
-import json
-from lib.SCOVID import SCOVID
-from lib.OpenData import OpenData
+import os, json
+from scovid19.lib.SCOVID import SCOVID
+from scovid19.lib.OpenData import OpenData
 from datetime import datetime
 import logging
 
@@ -150,7 +150,7 @@ class Vaccine(SCOVID):
 		}
 
 	def get_scraper_data(self):
-		filepath = "/home/code/scovid19/data/vaccine.json"
+		filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
 
 		with open(filepath) as fh:
 			contents = json.loads(fh.read())

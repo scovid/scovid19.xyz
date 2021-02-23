@@ -1,6 +1,6 @@
-from lib.SCOVID import SCOVID
-from lib.OpenData import OpenData
-from lib.Util import Util
+from scovid19.lib.SCOVID import SCOVID
+from scovid19.lib.OpenData import OpenData
+from scovid19.lib.Util import Util
 from datetime import datetime
 from collections import defaultdict
 

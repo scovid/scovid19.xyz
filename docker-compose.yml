@@ -5,7 +5,7 @@ version: "3.7"
 # Everything is managed by control.sh - so please use that rather than calling docker-compose manually
 # Main differences for the dev version are
 # - Only one port is exposed since we don't need to scale in dev mode
-# - The local src/ directory is mounted to src/ in the container for easy editing
+# - The local scovid/ directory is mounted to scovid/ in the container for easy editing
 
 volumes:
   data:
@@ -22,6 +22,7 @@ services:
       - data:/home/code/scovid19/data
     environment:
       ENV: prod
+      PROJECT_ROOT: /home/code/scovid19/
       SCOVID_TWITTER_API_KEY: ${SCOVID_TWITTER_API_KEY}
       SCOVID_TWITTER_API_SECRET: ${SCOVID_TWITTER_API_SECRET}
       SCOVID_TWITTER_ACCESS_TOKEN: ${SCOVID_TWITTER_ACCESS_TOKEN}
@@ -35,7 +36,8 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - './src:/home/code/scovid19/src'
+      - './scovid:/home/code/scovid19/scovid'
       - data:/home/code/scovid19/data
     environment:
       ENV: dev
+      PROJECT_ROOT: /home/code/scovid19/

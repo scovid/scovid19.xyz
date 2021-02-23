@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 
-import os
-import re
-import sys
-import json
+import os, re, sys, json
 import requests
 import logging
-
 from datetime import datetime
 from bs4 import BeautifulSoup
 
 logging.basicConfig(
-	filename="/home/code/scovid19/logs/scraper.log",
+	filename=os.environ["PROJECT_ROOT"] + "/logs/scraper.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
@@ -41,7 +37,7 @@ def main():
 
 
 def write_file(content):
-	filepath = "/home/code/scovid19/data/vaccine.json"
+	filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
 
 	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
@@ -59,14 +55,26 @@ def get_summary(parsed):
 
 
 def get_first_doses(summary):
-	dose1 = summary[0].replace(",", "")
+	dose1 = clean_str(summary[0].replace(",", ""))
 	return dose1
 
 
 def get_second_doses(summary):
-	dose2 = summary[3].replace(",", "")
+	dose2 = clean_str(summary[3].replace(",", ""))
+
+	if (
+		not dose2
+	):  # Fallback on this hack if they split the second dose between span tags....
+		first, *middle, last = summary[1].split()
+		dose2 = clean_str(last + summary[2].replace(",", ""))
 
 	return dose2
+
+
+def clean_str(string):
+	if not string:
+		return ""
+	return str(string).strip().replace(u"\u00a0", " ")
 
 
 main()

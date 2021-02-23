@@ -6,7 +6,7 @@ Type=simple
 User=dstewart
 Group=code
 Environment="PATH=/code/scovid19.xyz/venv/bin"
-ExecStart=/code/scovid19.xyz/venv/bin/gunicorn --bind 0.0.0.0:5000 --chdir /code/scovid19.xyz/src/ wsgi:app
+ExecStart=/code/scovid19.xyz/venv/bin/gunicorn --bind 0.0.0.0:5000 --chdir /code/scovid19.xyz/ scovid19:app
 
 [Install]
 WantedBy=multi-user.target

@@ -28,4 +28,4 @@ RUN pip install -r requirements.txt
 COPY --chown=code:code . ./
 
 EXPOSE 5000
-ENTRYPOINT [ "/home/code/scovid19/src/entrypoint.sh" ]
+ENTRYPOINT [ "/home/code/scovid19/scovid19/entrypoint.sh" ]
