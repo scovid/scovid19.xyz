@@ -45,13 +45,21 @@ EOF
 	exit 0
 fi
 
-if [[ ! -d src || ! -f src/app.py ]]; then
-	echo 'This script needs to be ran from the app root'
+# Load secrets
+[[ -f secrets.bash ]] && source secrets.bash
+
+# Check our root is set for flask
+if [[ -n $flask && -z $PROJECT_ROOT ]]; then
+	echo "PROJECT_ROOT is not set, add this to secrets.bash or run me like: PROJECT_ROOT=$(pwd) $0"
 	exit 1
 fi
 
-# Load secrets
-[[ -f secrets.bash ]] && source secrets.bash
+# If using flask then we need to be in the proj root
+if [[ -n $flask &&  $(realpath $(pwd)) != $(realpath $PROJECT_ROOT) ]]; then
+	echo "This script needs to be ran from the app root ($PROJECT_ROOT)"
+	echo "You are in $(pwd)"
+	exit 1
+fi
 
 # Dev using flask
 if [[ $flask == 'up' ]]; then
@@ -64,11 +72,11 @@ if [[ $flask == 'up' ]]; then
 
 	if [[ $env == 'dev' ]]; then
 		source venv/bin/activate
-		FLASK_APP=src/app.py FLASK_ENV=development FLASK_DEBUG=True flask run --host 0.0.0.0
+		FLASK_APP=scovid19 FLASK_ENV=development FLASK_DEBUG=True flask run --host 0.0.0.0
 
 	elif [[ $env == 'prod' ]]; then
 		source venv/bin/activate
-		gunicorn --bind 0.0.0.0:5000 --chdir src/ wsgi:app
+		gunicorn --bind 0.0.0.0:5000 scovid19:app
 
 	else
 		echo "Invalid env value '$env'"

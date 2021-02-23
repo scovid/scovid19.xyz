@@ -1,27 +1,24 @@
-import os
-import sys
+#!/usr/bin/env python3
+
+import os, sys
 import tweepy
 import logging
-
 from datetime import datetime
-
-sys.path.append("../")
-
-from lib.Vaccine import Vaccine
-from lib.Infections import Infections
+from scovid19.lib.Vaccine import Vaccine
+from scovid19.lib.Infections import Infections
 
 logging.basicConfig(
-	filename="/home/code/scovid19/logs/bot.log",
+	filename=os.environ['PROJECT_ROOT'] + "/logs/bot.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
 
 # Add your credentials here
 twitter_keys = {
-	"consumer_key": os.environ["SCOVID_TWITTER_API_KEY"],
-	"consumer_secret": os.environ["SCOVID_TWITTER_API_SECRET"],
-	"access_token_key": os.environ["SCOVID_TWITTER_ACCESS_TOKEN"],
-	"access_token_secret": os.environ["SCOVID_TWITTER_ACCESS_SECRET"],
+	"consumer_key": os.environ.get("SCOVID_TWITTER_API_KEY"),
+	"consumer_secret": os.environ.get("SCOVID_TWITTER_API_SECRET"),
+	"access_token_key": os.environ.get("SCOVID_TWITTER_ACCESS_TOKEN"),
+	"access_token_secret": os.environ.get("SCOVID_TWITTER_ACCESS_SECRET"),
 }
 
 vaccine = Vaccine()
@@ -50,6 +47,10 @@ v = {
 	"daily_cases": daily_cases,
 }
 text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new infection cases confirmed \n\n For more stats visit www.scovid19.xyz"
+
+if '--dry-run' in sys.argv:
+	print(f"--dry-run passed, would be tweeeting the following message:\n{text.format(**v)}")
+	sys.exit(0)
 
 try:
 	api.update_status(text.format(**v))

@@ -1,16 +1,16 @@
 ### Running locally
 ```bash
 # Run (sets up virtualenv, installs dependencies and starts flask server)
-./control.sh --env dev --flask up
+PROJECT_ROOT=$(pwd) ./control.sh --env dev --flask up
 
 # Logs
-tail -f src/app.log
+tail -f logs/app.log
 
 # Tests
 pytest
 
 # Formatting
-python -m black src/
+python -m tan --use-tabs scovid19/
 ```
 
 ### Deploy

@@ -25,4 +25,4 @@ jobs:
       - name: 'Run pytest'
         run: |
           ./control.sh --docker up
-          docker exec scovid bandit -c .banditrc -r src/
+          docker exec scovid bandit -c .banditrc -r scovid19/

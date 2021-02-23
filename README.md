@@ -21,7 +21,7 @@ The following instructions use docker, if you'd rather not use docker then see `
 sudo apt install docker docker-compose
 
 # Start the container in dev mode
-# This mounts `./src/` as a docker volume so you can edit the container code directly
+# This mounts `./scovid/` as a docker volume so you can edit the container code directly
 ./control.sh --env dev --docker up
 
 # Docker logs
@@ -32,9 +32,6 @@ docker exec -it scovid tail -f app.log
 
 # Tests
 docker exec -it scovid pytest
-
-# Format
-docker exec -it scovid python -m black src/
 ```
 
 ### Deploy

@@ -1,5 +1,5 @@
-from lib.OpenData import OpenData
-from lib.Decorators import cacheable
+from scovid19.lib.OpenData import OpenData
+from scovid19.lib.Decorators import cacheable
 
 
 class SCOVID:

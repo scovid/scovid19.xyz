@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
-import logging
-from lib.Vaccine import Vaccine
-from lib.Infections import Infections
-from lib.Decorators import page, endpoint
+
+import os, logging
+from scovid19.lib.Vaccine import Vaccine
+from scovid19.lib.Infections import Infections
+from scovid19.lib.Decorators import page, endpoint
 
 app = Flask(__name__, static_url_path="")
 logging.basicConfig(
-	filename="/home/code/scovid19/logs/app.log",
+	filename=os.environ['PROJECT_ROOT'] + "/logs/app.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )

@@ -1,17 +1,17 @@
 """
 Tests for SCOVID.py using pytest
 Uses the responses module to return dummy data to http requests
-The mock responses are stored in src/tests/responses/
+The mock responses are stored in scovid19/tests/responses/
 """
 
 import pytest
 import responses
 import json
-from lib.Infections import Infections
+from scovid19.lib.Infections import Infections
 
 
 def read_response(name, as_json=True):
-	with open(f"src/tests/responses/{name}", "r") as f:
+	with open(f"scovid19/tests/responses/{name}", "r") as f:
 		if as_json:
 			return json.loads(f.read())
 		return f.read()
