@@ -43,27 +43,34 @@ function toggleInfo(e) {
 }
 
 function showSettings(type) {
-	document.querySelector('#settings').setAttribute('type', type);
-	document.querySelector('#settings').classList.add('is-active');
+	const settings_id = type.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`) + '_settings';
+	
+
+	document.querySelector(`#${settings_id}`).setAttribute('type', type);
+	document.querySelector(`#${settings_id}`).classList.add('is-active');
 }
 
-function saveSettings() {
+function saveSettings(e) {
 	let query = {};
 
-	const type = document.querySelector('#settings').getAttribute('type');
-	const start = document.querySelector('#start-date').value;
-	const end = document.querySelector('#end-date').value;
+	// Grab all fields which have a data-param attr set
+	const type = e.getAttribute('type');
+	for (let field of e.querySelectorAll('[data-param')) {
+		let key = field.getAttribute('data-param');
+		let value = field.value;
 
-	if (start) query.start = start;
-	if (end) query.end = end;
+		if (key && value)
+			query[key] = value
+	}
 
+	// Reload the chart using our new querystring
 	reloadChart(type, query);
-	closeSettings();
+	closeSettings(e);
 }
 
-function closeSettings() {
-	document.querySelector('#settings').setAttribute('type', null);
-	document.querySelector('#settings').classList.remove('is-active');
+function closeSettings(e) {
+	e.setAttribute('type', null);
+	e.classList.remove('is-active');
 }
 
 // Set the color theme
