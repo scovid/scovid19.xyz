@@ -7,7 +7,7 @@ from scovid19.lib.Decorators import page, endpoint
 
 app = Flask(__name__, static_url_path="")
 logging.basicConfig(
-	filename=os.environ['PROJECT_ROOT'] + "/logs/app.log",
+	filename=os.environ["PROJECT_ROOT"] + "/logs/app.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )

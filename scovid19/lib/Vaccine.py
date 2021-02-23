@@ -150,7 +150,7 @@ class Vaccine(SCOVID):
 		}
 
 	def get_scraper_data(self):
-		filepath = os.environ['PROJECT_ROOT'] + "/data/vaccine.json"
+		filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
 
 		with open(filepath) as fh:
 			contents = json.loads(fh.read())

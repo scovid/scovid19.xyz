@@ -8,7 +8,7 @@ from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
 
 logging.basicConfig(
-	filename=os.environ['PROJECT_ROOT'] + "/logs/bot.log",
+	filename=os.environ["PROJECT_ROOT"] + "/logs/bot.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
@@ -48,8 +48,10 @@ v = {
 }
 text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new infection cases confirmed \n\n For more stats visit www.scovid19.xyz"
 
-if '--dry-run' in sys.argv:
-	print(f"--dry-run passed, would be tweeeting the following message:\n{text.format(**v)}")
+if "--dry-run" in sys.argv:
+	print(
+		f"--dry-run passed, would be tweeeting the following message:\n{text.format(**v)}"
+	)
 	sys.exit(0)
 
 try:

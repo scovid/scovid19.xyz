@@ -7,7 +7,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 logging.basicConfig(
-	filename=os.environ['PROJECT_ROOT'] + "/logs/scraper.log",
+	filename=os.environ["PROJECT_ROOT"] + "/logs/scraper.log",
 	level=logging.INFO,
 	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
 )
@@ -37,7 +37,7 @@ def main():
 
 
 def write_file(content):
-	filepath = os.environ['PROJECT_ROOT']+ "/data/vaccine.json"
+	filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
 
 	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
@@ -62,7 +62,9 @@ def get_first_doses(summary):
 def get_second_doses(summary):
 	dose2 = clean_str(summary[3].replace(",", ""))
 
-	if not dose2: # Fallback on this hack if they split the second dose between span tags....
+	if (
+		not dose2
+	):  # Fallback on this hack if they split the second dose between span tags....
 		first, *middle, last = summary[1].split()
 		dose2 = clean_str(last + summary[2].replace(",", ""))
 
@@ -70,8 +72,9 @@ def get_second_doses(summary):
 
 
 def clean_str(string):
-	if not string: return ''
-	return str(string).strip().replace(u'\u00a0', ' ')
+	if not string:
+		return ""
+	return str(string).strip().replace(u"\u00a0", " ")
 
 
 main()
