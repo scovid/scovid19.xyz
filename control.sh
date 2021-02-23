@@ -50,8 +50,12 @@ fi
 
 # Check our root is set for flask
 if [[ -n $flask && -z $PROJECT_ROOT ]]; then
-	echo "PROJECT_ROOT is not set, add this to secrets.bash or run me like: PROJECT_ROOT=$(pwd) $0"
-	exit 1
+	if [[ -d scovid19 && -f scovid19/__init__.py ]]; then
+		export PROJECT_ROOT=$(pwd)
+	else
+		echo "PROJECT_ROOT is not set, add this to secrets.bash or run me like: PROJECT_ROOT=$(pwd) $0"
+		exit 1
+	fi
 fi
 
 # If using flask then we need to be in the proj root
