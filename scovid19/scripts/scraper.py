@@ -55,14 +55,23 @@ def get_summary(parsed):
 
 
 def get_first_doses(summary):
-	dose1 = summary[0].replace(",", "")
+	dose1 = clean_str(summary[0].replace(",", ""))
 	return dose1
 
 
 def get_second_doses(summary):
-	dose2 = summary[3].replace(",", "")
+	dose2 = clean_str(summary[3].replace(",", ""))
+
+	if not dose2: # Fallback on this hack if they split the second dose between span tags....
+		first, *middle, last = summary[1].split()
+		dose2 = clean_str(last + summary[2].replace(",", ""))
 
 	return dose2
+
+
+def clean_str(string):
+	if not string: return ''
+	return str(string).strip().replace(u'\u00a0', ' ')
 
 
 main()
