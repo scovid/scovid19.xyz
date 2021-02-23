@@ -44,7 +44,6 @@ function toggleInfo(e) {
 
 function showSettings(type) {
 	const settings_id = type.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`) + '_settings';
-	
 
 	document.querySelector(`#${settings_id}`).setAttribute('type', type);
 	document.querySelector(`#${settings_id}`).classList.add('is-active');
@@ -59,8 +58,7 @@ function saveSettings(e) {
 		let key = field.getAttribute('data-param');
 		let value = field.value;
 
-		if (key && value)
-			query[key] = value
+		if (key && value) query[key] = value;
 	}
 
 	// Reload the chart using our new querystring
