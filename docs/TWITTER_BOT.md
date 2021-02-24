@@ -1,15 +1,15 @@
 ## Set up
 
-Create a `secrets.bash` file in the root of the project with the following items
+Create a `.env` file in the root of the project with the following items
 ```
 # Config
-export PROJECT_ROOT=''
+PROJECT_ROOT=''
 
 # Twitter credentials
-export SCOVID_TWITTER_API_KEY=''
-export SCOVID_TWITTER_API_SECRET=''
-export SCOVID_TWITTER_ACCESS_TOKEN=''
-export SCOVID_TWITTER_ACCESS_SECRET=''
+SCOVID_TWITTER_API_KEY=''
+SCOVID_TWITTER_API_SECRET=''
+SCOVID_TWITTER_ACCESS_TOKEN=''
+SCOVID_TWITTER_ACCESS_SECRET=''
 ```
 
 ## Running
