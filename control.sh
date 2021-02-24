@@ -9,6 +9,7 @@ while [[ "$#" -gt 0 ]]; do
 		--env) env=$2; shift ;;
 		--docker) docker=$2; shift ;;
 		--flask) flask=$2; shift ;;
+		--in-container) in_container=1; shift ;;
 		-h|--help) help=1 ;;
 		-f|--force) force=1 ;;
 		--) shift; break ;;
@@ -25,12 +26,14 @@ fi
 
 if [[ $help ]]; then
 	cat << EOF
-./control.sh --env <dev|prod> [--flask cmd] [--docker cmd] [--flags]
+./control.sh --env <dev|prod> [--flask cmd] [--docker cmd] [--in-container]
 
 Used for running the scovid19.xyz web app.
 Should be ran from the app root.
 
 env should be either 'dev' or 'prod' (defaults to dev).
+
+in-container should be passed from docker as an indicator not to load .env
 
 Flask
 	up: Starts the flask server
@@ -45,8 +48,13 @@ EOF
 	exit 0
 fi
 
-# Load secrets
-[[ -f secrets.bash ]] && source secrets.bash
+# Load .env, if we're not within a container
+# Docker should handle all env from the .env at creation
+if [[ -z $in_container && -f .env ]]; then
+	set -o allexport
+	source .env
+	set +o allexport
+fi
 
 # Check our root is set for flask
 if [[ -n $flask && -z $PROJECT_ROOT ]]; then
