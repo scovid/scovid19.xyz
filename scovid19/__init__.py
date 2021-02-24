@@ -8,13 +8,22 @@ from dotenv import load_dotenv
 
 # Load .env
 load_dotenv()
+project_root = os.environ["PROJECT_ROOT"]
 
 app = Flask(__name__, static_url_path="")
-logging.basicConfig(
-	filename=os.environ["PROJECT_ROOT"] + "/logs/app.log",
-	level=logging.INFO,
-	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-)
+
+
+def get_logger(name, file_path, level=logging.INFO):
+	logger = logging.getLogger(name)
+	formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s")
+	handler = logging.FileHandler(file_path)
+	handler.setFormatter(formatter)
+	logger.addHandler(handler)
+	return logger
+
+
+# Set up logger
+app_logger = get_logger("app", f"{project_root}/logs/app.log")
 
 infections = Infections()
 vaccines = Vaccine()

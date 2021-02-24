@@ -6,12 +6,9 @@ import logging
 from datetime import datetime
 from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
+from scovid19 import get_logger, project_root
 
-logging.basicConfig(
-	filename=os.environ["PROJECT_ROOT"] + "/logs/bot.log",
-	level=logging.INFO,
-	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-)
+tweet_logger = get_logger("tweet_bot", f"{project_root}/logs/tweet_bot.log")
 
 # Add your credentials here
 twitter_keys = {
@@ -56,11 +53,11 @@ if "--dry-run" in sys.argv:
 
 try:
 	api.update_status(text.format(**v))
-except tweepy.TweepError as e:
-	logging.error("Error: " + e.response.text)
-	sys.exit(1)
 except tweepy.RateLimitError as e:
-	logging.error("Error: " + e.response.text)
+	tweet_logger.error("Error: " + e.response.text)
+	sys.exit(1)
+except tweepy.TweepError as e:
+	tweet_logger.error("Error: " + e.response.text)
 	sys.exit(1)
 except:
 	logging.error("Unknown Error.")
