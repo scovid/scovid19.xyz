@@ -4,6 +4,10 @@ import os, logging
 from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
 from scovid19.lib.Decorators import page, endpoint
+from dotenv import load_dotenv
+
+# Load .env
+load_dotenv()
 
 app = Flask(__name__, static_url_path="")
 logging.basicConfig(
