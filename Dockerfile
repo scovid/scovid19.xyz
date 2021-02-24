@@ -29,7 +29,7 @@ COPY --chown=code:code . ./
 
 # Don't need a .env in the container
 # env is set by docker-compose
-RUN [ -f .env ] && rm .env
+RUN if [ -f .env ]; then rm .env; fi
 
 EXPOSE 5000
 ENTRYPOINT [ "/home/code/scovid19/scovid19/entrypoint.sh" ]
