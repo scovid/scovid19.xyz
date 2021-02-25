@@ -24,8 +24,12 @@ def main():
 
 	summary = get_summary(parsed)
 
-	dose1 = get_first_doses(summary)
-	dose2 = get_second_doses(summary)
+	try:
+		dose1 = get_first_doses(summary)
+		dose2 = get_second_doses(summary)
+	except:
+		logging.error("Error scraping doses")
+		exit(1)
 
 	date = datetime.today().strftime("%Y-%m-%d")
 
@@ -62,11 +66,12 @@ def get_first_doses(summary):
 def get_second_doses(summary):
 	dose2 = clean_str(summary[3].replace(",", ""))
 
-	if (
-		not dose2
-	):  # Fallback on this hack if they split the second dose between span tags....
-		first, *middle, last = summary[1].split()
-		dose2 = clean_str(last + summary[2].replace(",", ""))
+	if not dose2: # This is where the fun begins
+		if summary[4]:
+			dose2 = clean_str(summary[4].replace(",", ""))
+		else:
+			first, *middle, last = summary[1].split()
+			dose2 = clean_str(last + summary[2].replace(",", ""))
 
 	return dose2
 
