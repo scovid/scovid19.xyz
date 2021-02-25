@@ -1,9 +1,9 @@
-<div id="{{ id }}" class="modal" data-type="">
+<div id="{{ modal_id }}" class="modal" data-type="">
 	<div class="modal-background"></div>
 	<div class="modal-card">
 		<header class="modal-card-head">
 			<p class="modal-card-title">{% block title %}Edit{% endblock %}</p>
-			<button class="delete" aria-label="close" onclick="closeSettings({{ id }})"></button>
+			<button class="delete" aria-label="close" onclick="closeSettings({{ modal_id }})"></button>
 		</header>
 		<section class="modal-card-body">
 			{% block body %}
@@ -17,8 +17,8 @@
 		</section>
 		<footer class="modal-card-foot">
 			{% block footer %}
-			<button class="button is-success" onclick="saveSettings({{ id }})">Submit</button>
-			<button class="button" onclick="closeSettings({{ id }})">Cancel</button>
+			<button class="button is-success" onclick="saveSettings({{ modal_id }})">Submit</button>
+			<button class="button" onclick="closeSettings({{ modal_id }})">Cancel</button>
 			{% endblock %}
 		</footer>
 	</div>

@@ -28,7 +28,7 @@ def page(func):
 		except Exception:
 			err = traceback.format_exc()
 			logging.error(f"Error when loading page '{func.__name__}': {err}")
-			return render_template("error.html")
+			return render_template("error.html.j2")
 
 	return wrapper
 
