@@ -66,7 +66,7 @@ def get_first_doses(summary):
 def get_second_doses(summary):
 	dose2 = clean_str(summary[3].replace(",", ""))
 
-	if not dose2: # This is where the fun begins
+	if not dose2:  # This is where the fun begins
 		if summary[4]:
 			dose2 = clean_str(summary[4].replace(",", ""))
 		else:
