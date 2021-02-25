@@ -1,0 +1,25 @@
+<div id="{{ modal_id }}" class="modal" data-type="">
+	<div class="modal-background"></div>
+	<div class="modal-card">
+		<header class="modal-card-head">
+			<p class="modal-card-title">{% block title %}Edit{% endblock %}</p>
+			<button class="delete" aria-label="close" onclick="closeSettings({{ modal_id }})"></button>
+		</header>
+		<section class="modal-card-body">
+			{% block body %}
+			<p>Default setting modal body</p>
+
+			<!-- All fields with a data-param attribute will be built into the request query string -->
+			<!-- The param key will be the attr value and the param value will be the .value element of the field -->
+			<!-- eg. The value of the below field will be sent in the request as myField=defaultValue -->
+			<input id="fake-input" data-param="myField" value="defaultValue" />
+			{% endblock %}
+		</section>
+		<footer class="modal-card-foot">
+			{% block footer %}
+			<button class="button is-success" onclick="saveSettings({{ modal_id }})">Submit</button>
+			<button class="button" onclick="closeSettings({{ modal_id }})">Cancel</button>
+			{% endblock %}
+		</footer>
+	</div>
+</div>

@@ -1,4 +1,4 @@
-{% import 'partials/chart.html' as chart %} {% import 'partials/tile.html' as tile %} {% extends 'layouts/wrapper.html' %} {% block body %}
+{% import 'partials/chart.html.j2' as chart %} {% import 'partials/tile.html.j2' as tile %} {% extends 'layouts/wrapper.html.j2' %} {% block body %}
 <script defer src="js/table.js"></script>
 
 <!-- Stats-->
@@ -24,7 +24,7 @@
 <hr />
 
 <!-- Prevalence per council -->
-<section id="prevalence" class="section" style="overflow-x: scroll">
+<section id="prevalence" class="section" style="overflow-x: auto">
 	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 1000 people in last 7 days</p>
 	<table class="table is-striped is-hoverable is-fullwidth slider closed">
 		<thead>
@@ -59,7 +59,8 @@
 	<div class="columns is-desktop">{{ chart.chart('totalLocationChart', 'Total cases by location') }} {{ chart.chart('newLocationChart', 'New cases by location', subtitle='Last 7 days') }}</div>
 </section>
 
-{% include 'partials/settings.html' %}
+<!-- List of settings modals to load -->
+{% include 'partials/settings/trend_chart.html.j2' %}
 
 <!-- Initialise our charts -->
 <script>

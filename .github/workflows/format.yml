@@ -46,7 +46,7 @@ jobs:
         run: yarn add prettier
  
       - name: Run prettier
-        run: yarn run prettier --write **.html **.js **.css
+        run: yarn run prettier --write **.html.j2 **.js **.css
 
       - name: Cleanup
         run: rm -rf node_modules package.json yarn.lock

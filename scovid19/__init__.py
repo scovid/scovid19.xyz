@@ -33,7 +33,7 @@ vaccines = Vaccine()
 @page
 def index():
 	return render_template(
-		"index.html",
+		"index.html.j2",
 		summary=infections.summary(),
 		last_updated=infections.last_updated(format="%d %B %Y"),
 		tab="overview",
@@ -44,7 +44,7 @@ def index():
 @page
 def vaccine():
 	return render_template(
-		"vaccine.html",
+		"vaccine.html.j2",
 		tab="vaccine",
 		weekly=vaccines.vaccines_weekly(),
 		percentage=vaccines.percentage_vaccinated(),
@@ -55,7 +55,7 @@ def vaccine():
 @app.route("/locations")
 @page
 def locations():
-	return render_template("locations.html")
+	return render_template("locations.html.j2")
 
 
 # API routes
