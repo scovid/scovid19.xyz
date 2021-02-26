@@ -52,12 +52,13 @@ def vaccine():
 	)
 
 
-#== API routes ==#
+# == API routes ==#
 
 # Misc
 @app.route("/api/ping")
 def ping():
 	return "Ok"
+
 
 # Infections
 @app.route("/api/infections/trend")
@@ -65,16 +66,19 @@ def ping():
 def trend():
 	return infections.trend(request.args)
 
+
 @app.route("/api/infections/breakdown")
 @endpoint
 def breakdown():
 	return infections.breakdown()
 
+
 @app.route("/api/infections/locations")
 @endpoint
 def locations():
-	full = request.args.get('full', False)
+	full = request.args.get("full", False)
 	return infections.locations(full)
+
 
 # Vaccines
 @app.route("/api/vaccines/breakdown")
@@ -82,15 +86,18 @@ def locations():
 def percentage_vaccinated():
 	return vaccines.percentage_vaccinated()
 
+
 @app.route("/api/vaccines/council")
 @endpoint
 def council_breakdown():
 	return vaccines.council_breakdown()
 
+
 @app.route("/api/vaccines/trend")
 @endpoint
 def vaccine_trend():
 	return vaccines.vaccine_trend()
+
 
 @app.route("/api/prevalence")
 @endpoint

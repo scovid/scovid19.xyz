@@ -126,7 +126,7 @@ class Infections(SCOVID):
 		"""
 		if full:
 			return self._locations_total()
-		
+
 		return self._locations_new()
 
 	def _locations_total(self):
