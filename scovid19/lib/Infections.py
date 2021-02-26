@@ -94,6 +94,9 @@ class Infections(SCOVID):
 		}
 
 	def breakdown(self):
+		"""
+		Breakdown of postive, negative and deaths over the full time period
+		"""
 		positive, negative, deaths = 0, 0, 0
 
 		# There doesn't seem to be a good endpoint for getting total negatives
@@ -117,7 +120,19 @@ class Infections(SCOVID):
 			],
 		}
 
-	def locations_total(self):
+	def locations(self, full=False):
+		"""
+		Wrapper around _locations_total() and _locations_new()
+		"""
+		if full:
+			return self._locations_total()
+		
+		return self._locations_new()
+
+	def _locations_total(self):
+		"""
+		Total infections by location
+		"""
 		total_by_area = OpenData.fetch("total_by_area")
 		records = total_by_area["records"]
 
@@ -139,7 +154,10 @@ class Infections(SCOVID):
 			],
 		}
 
-	def locations_new(self):
+	def _locations_new(self):
+		"""
+		Infections by location for the last 7 days
+		"""
 		councils = self.councils()
 		daily_by_area = OpenData.fetch(
 			"daily_by_area", limit=(len(councils) * 7), sort="Date DESC"

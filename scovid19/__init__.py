@@ -33,7 +33,7 @@ vaccines = Vaccine()
 @page
 def index():
 	return render_template(
-		"index.html.j2",
+		"infections.html.j2",
 		summary=infections.summary(),
 		last_updated=infections.last_updated(format="%d %B %Y"),
 		tab="overview",
@@ -52,54 +52,45 @@ def vaccine():
 	)
 
 
-@app.route("/locations")
-@page
-def locations():
-	return render_template("locations.html.j2")
+#== API routes ==#
 
+# Misc
+@app.route("/api/ping")
+def ping():
+	return "Ok"
 
-# API routes
-@app.route("/api/trend")
+# Infections
+@app.route("/api/infections/trend")
 @endpoint
 def trend():
 	return infections.trend(request.args)
 
-
-@app.route("/api/breakdown")
+@app.route("/api/infections/breakdown")
 @endpoint
 def breakdown():
 	return infections.breakdown()
 
-
-@app.route("/api/locations/total")
+@app.route("/api/infections/locations")
 @endpoint
-def locations_total():
-	return infections.locations_total()
+def locations():
+	full = request.args.get('full', False)
+	return infections.locations(full)
 
-
-@app.route("/api/locations/new")
-@endpoint
-def locations_new():
-	return infections.locations_new()
-
-
+# Vaccines
 @app.route("/api/vaccines/breakdown")
 @endpoint
 def percentage_vaccinated():
 	return vaccines.percentage_vaccinated()
-
 
 @app.route("/api/vaccines/council")
 @endpoint
 def council_breakdown():
 	return vaccines.council_breakdown()
 
-
 @app.route("/api/vaccines/trend")
 @endpoint
 def vaccine_trend():
 	return vaccines.vaccine_trend()
-
 
 @app.route("/api/prevalence")
 @endpoint
