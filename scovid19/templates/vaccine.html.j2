@@ -12,9 +12,13 @@
 
 <section id="charts" class="section">
 	<div class="columns is-desktop">
-		{{ chart.chart('vaccineCouncilChart', 'Vaccinations by council', show_cog=False) }} {{ chart.chart('vaccineChart', 'Vaccinations by total population (percentage)') }}
+		<div class="column">{{ chart.chart('vaccineCouncilChart', 'Vaccinations by council', show_cog=False) }}</div>
+		<div class="column">{{ chart.chart('vaccineChart', 'Vaccinations by total population (percentage)') }}</div>
 	</div>
-	<div class="columns is-desktop">{{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}</div>
+	<div class="columns is-desktop">
+		<div class="column">{{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}</div>
+		<div class="column"></div>
+	</div>
 </section>
 
 <!-- Initialise our charts -->
