@@ -4,10 +4,9 @@ import os, re, sys, json
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-import logging
-from scovid19 import get_logger, project_root
+from scovid19.lib.Util import get_logger, project_root
 
-scraper_logger = get_logger("scraper", f"{project_root}/logs/scraper.log")
+scraper_logger = get_logger("scraper", f"{project_root()}/logs/scraper.log")
 
 URL = "https://www.gov.scot/publications/coronavirus-covid-19-daily-data-for-scotland/"
 

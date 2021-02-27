@@ -2,13 +2,12 @@
 
 import os, sys
 import tweepy
-import logging
 from datetime import datetime
 from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
-from scovid19 import get_logger, project_root
+from scovid19.lib.Util import get_logger, project_root
 
-tweet_logger = get_logger("tweet_bot", f"{project_root}/logs/tweet_bot.log")
+tweet_logger = get_logger("tweet_bot", f"{project_root()}/logs/tweet_bot.log")
 
 # Add your credentials here
 twitter_keys = {

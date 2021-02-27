@@ -1,29 +1,19 @@
 from flask import Flask, render_template, request
 
+# Load .env
+from dotenv import load_dotenv
+load_dotenv()
+
 import os, logging
 from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
 from scovid19.lib.Decorators import page, endpoint
-from dotenv import load_dotenv
-
-# Load .env
-load_dotenv()
-project_root = os.environ["SCOVID_PROJECT_ROOT"]
+from scovid19.lib.Util import project_root, get_logger
 
 app = Flask(__name__, static_url_path="")
 
-
-def get_logger(name, file_path, level=logging.INFO):
-	logger = logging.getLogger(name)
-	formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s")
-	handler = logging.FileHandler(file_path)
-	handler.setFormatter(formatter)
-	logger.addHandler(handler)
-	return logger
-
-
 # Set up logger
-app_logger = get_logger("app", f"{project_root}/logs/app.log")
+app_logger = get_logger("app", f"{project_root()}/logs/app.log")
 
 infections = Infections()
 vaccines = Vaccine()
