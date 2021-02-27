@@ -22,7 +22,7 @@ services:
       - data:/home/code/scovid19/data
     environment:
       ENV: prod
-      PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/code/scovid19/
       SCOVID_TWITTER_API_KEY: ${SCOVID_TWITTER_API_KEY}
       SCOVID_TWITTER_API_SECRET: ${SCOVID_TWITTER_API_SECRET}
       SCOVID_TWITTER_ACCESS_TOKEN: ${SCOVID_TWITTER_ACCESS_TOKEN}
@@ -40,4 +40,4 @@ services:
       - data:/home/code/scovid19/data
     environment:
       ENV: dev
-      PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/code/scovid19/

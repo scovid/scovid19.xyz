@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 # Load .env
 load_dotenv()
-project_root = os.environ["PROJECT_ROOT"]
+project_root = os.environ["SCOVID_PROJECT_ROOT"]
 
 app = Flask(__name__, static_url_path="")
 

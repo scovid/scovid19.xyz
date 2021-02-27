@@ -2,15 +2,12 @@
 
 import os, re, sys, json
 import requests
-import logging
 from datetime import datetime
 from bs4 import BeautifulSoup
+import logging
+from scovid19 import get_logger, project_root
 
-logging.basicConfig(
-	filename=os.environ["PROJECT_ROOT"] + "/logs/scraper.log",
-	level=logging.INFO,
-	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-)
+scraper_logger = get_logger("scraper", f"{project_root}/logs/scraper.log")
 
 URL = "https://www.gov.scot/publications/coronavirus-covid-19-daily-data-for-scotland/"
 
@@ -27,8 +24,8 @@ def main():
 	try:
 		dose1 = get_first_doses(summary)
 		dose2 = get_second_doses(summary)
-	except:
-		logging.error("Error scraping doses")
+	except Exception as e:
+		scraper_logger.error(f"Error scraping doses: {e}")
 		exit(1)
 
 	date = datetime.today().strftime("%Y-%m-%d")
@@ -41,7 +38,7 @@ def main():
 
 
 def write_file(content):
-	filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
+	filepath = f"{project_root}/data/vaccine.json"
 
 	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)

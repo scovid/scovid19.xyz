@@ -14,5 +14,5 @@ SCOVID_TWITTER_ACCESS_SECRET=''
 
 ## Running
 ```
-cd $PROJECT_ROOT && python3 -m scovid19.scripts.tweet [--dry-run]
+cd $SCOVID_PROJECT_ROOT && python3 -m scovid19.scripts.tweet [--dry-run]
 ```
