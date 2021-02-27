@@ -57,18 +57,18 @@ if [[ -z $in_container && -f .env ]]; then
 fi
 
 # Check our root is set for flask
-if [[ -n $flask && -z $PROJECT_ROOT ]]; then
+if [[ -n $flask && -z $SCOVID_PROJECT_ROOT ]]; then
 	if [[ -d scovid19 && -f scovid19/__init__.py ]]; then
-		export PROJECT_ROOT=$(pwd)
+		export SCOVID_PROJECT_ROOT=$(pwd)
 	else
-		echo "PROJECT_ROOT is not set, add this to secrets.bash or run me like: PROJECT_ROOT=$(pwd) $0"
+		echo "SCOVID_PROJECT_ROOT is not set, add this to secrets.bash or run me like: SCOVID_PROJECT_ROOT=$(pwd) $0"
 		exit 1
 	fi
 fi
 
 # If using flask then we need to be in the proj root
-if [[ -n $flask &&  $(realpath $(pwd)) != $(realpath $PROJECT_ROOT) ]]; then
-	echo "This script needs to be ran from the app root ($PROJECT_ROOT)"
+if [[ -n $flask &&  $(realpath $(pwd)) != $(realpath $SCOVID_PROJECT_ROOT) ]]; then
+	echo "This script needs to be ran from the app root ($SCOVID_PROJECT_ROOT)"
 	echo "You are in $(pwd)"
 	exit 1
 fi

@@ -1,7 +1,7 @@
 ### Running locally
 ```bash
 # Run (sets up virtualenv, installs dependencies and starts flask server)
-PROJECT_ROOT=$(pwd) ./control.sh --env dev --flask up
+SCOVID_PROJECT_ROOT=$(pwd) ./control.sh --env dev --flask up
 
 # Logs
 tail -f logs/app.log

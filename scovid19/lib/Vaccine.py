@@ -1,8 +1,8 @@
 import os, json
 from scovid19.lib.SCOVID import SCOVID
 from scovid19.lib.OpenData import OpenData
+from scovid19.lib.Util import project_root
 from datetime import datetime
-import logging
 
 
 class Vaccine(SCOVID):
@@ -20,7 +20,6 @@ class Vaccine(SCOVID):
 			if record["WeekEnding"] == latestweek:
 				latestrecords.append(record)
 
-		councils = self.councils()
 		totals = self.get_scraper_data()  # self.get_totals(records)
 		weekly = self.get_totals(latestrecords)
 		return {
@@ -150,7 +149,7 @@ class Vaccine(SCOVID):
 		}
 
 	def get_scraper_data(self):
-		filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
+		filepath = f"{project_root()}/data/vaccine.json"
 
 		with open(filepath) as fh:
 			contents = json.loads(fh.read())

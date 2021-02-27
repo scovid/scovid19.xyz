@@ -28,7 +28,7 @@ RUN pip install -r requirements.txt
 COPY --chown=code:code . ./
 
 # Don't need a .env in the container
-# env is set by docker-compose
+# env is set built in entrypoint.sh based on docker-compose
 RUN if [ -f .env ]; then rm .env; fi
 
 EXPOSE 5000

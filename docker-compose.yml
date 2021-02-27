@@ -22,7 +22,7 @@ services:
       - data:/home/code/scovid19/data
     environment:
       ENV: prod
-      PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/code/scovid19/
       SCOVID_TWITTER_API_KEY: ${SCOVID_TWITTER_API_KEY}
       SCOVID_TWITTER_API_SECRET: ${SCOVID_TWITTER_API_SECRET}
       SCOVID_TWITTER_ACCESS_TOKEN: ${SCOVID_TWITTER_ACCESS_TOKEN}
@@ -36,8 +36,8 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - './scovid:/home/code/scovid19/scovid'
+      - './scovid19:/home/code/scovid19/scovid19'
       - data:/home/code/scovid19/data
     environment:
       ENV: dev
-      PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/code/scovid19/
