@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 # Load .env
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import os, logging

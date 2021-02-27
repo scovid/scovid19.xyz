@@ -75,7 +75,7 @@ def get_second_doses(summary):
 def clean_str(string):
 	if not string:
 		return ""
-	return str(string).strip().replace(u"\u00a0", " ")
+	return str(string).strip().replace("\u00a0", " ")
 
 
 main()

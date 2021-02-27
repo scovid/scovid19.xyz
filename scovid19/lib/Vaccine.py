@@ -4,6 +4,7 @@ from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Util import project_root
 from datetime import datetime
 
+
 class Vaccine(SCOVID):
 	def __init__(self):
 		self._cache = {}
