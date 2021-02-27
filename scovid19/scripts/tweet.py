@@ -59,5 +59,5 @@ except tweepy.TweepError as e:
 	tweet_logger.error("Error: " + e.response.text)
 	sys.exit(1)
 except:
-	logging.error("Unknown Error.")
+	tweet_logger.error("Unknown Error.")
 	sys.exit(1)
