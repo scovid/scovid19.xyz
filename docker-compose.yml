@@ -21,7 +21,7 @@ services:
     volumes:
       - data:/home/code/scovid19/data
     environment:
-      ENV: prod
+      SCOVID_ENV: prod
       SCOVID_PROJECT_ROOT: /home/code/scovid19/
       SCOVID_TWITTER_API_KEY: ${SCOVID_TWITTER_API_KEY}
       SCOVID_TWITTER_API_SECRET: ${SCOVID_TWITTER_API_SECRET}
@@ -39,5 +39,5 @@ services:
       - './scovid19:/home/code/scovid19/scovid19'
       - data:/home/code/scovid19/data
     environment:
-      ENV: dev
+      SCOVID_ENV: dev
       SCOVID_PROJECT_ROOT: /home/code/scovid19/

@@ -12,6 +12,10 @@ def project_root():
 	return os.environ.get("SCOVID_PROJECT_ROOT", "/home/code/scovid19")
 
 
+def env():
+	return os.environ.get("SCOVID_ENV", "prod")
+
+
 def get_logger(name, file_path, level=logging.INFO):
 	logger = logging.getLogger(name)
 	formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s")
