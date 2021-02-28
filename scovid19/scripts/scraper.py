@@ -37,7 +37,7 @@ def main():
 
 
 def write_file(content):
-	filepath = f"{project_root}/data/vaccine.json"
+	filepath = f"{project_root()}/data/vaccine.json"
 
 	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
