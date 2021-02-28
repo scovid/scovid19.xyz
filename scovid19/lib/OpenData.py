@@ -1,7 +1,15 @@
-import requests
 import sys
+import requests
 import logging
+import scovid19.lib.Cache as Cache
+from scovid19.lib.Decorators import cacheable
 
+# Define our cache
+# File cacher with an expiry of 2 hours
+CACHER = Cache.Cacher(
+	system=Cache.System.FILE,
+	valid_for=Cache.Duration.hours(2)
+)
 
 class OpenData:
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"
@@ -21,6 +29,7 @@ class OpenData:
 	}
 
 	@staticmethod
+	@cacheable(cacher=CACHER)
 	def fetch(resource, **kwargs):
 		if resource not in OpenData.resources:
 			logging.error(f"ERROR: Requested resource '{resource}' is not valid")
