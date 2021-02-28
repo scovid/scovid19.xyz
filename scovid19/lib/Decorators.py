@@ -36,7 +36,6 @@ def page(func):
 
 # Cacheable decorator
 def cacheable(og_func=None, cacher=Cacher.default()):
-
 	def decorate(func):
 		@functools.wraps(func)
 		def wrapper(*args, **kwargs):

@@ -6,10 +6,8 @@ from scovid19.lib.Decorators import cacheable
 
 # Define our cache
 # File cacher with an expiry of 2 hours
-CACHER = Cache.Cacher(
-	system=Cache.System.FILE,
-	valid_for=Cache.Duration.hours(2)
-)
+CACHER = Cache.Cacher(system=Cache.System.FILE, valid_for=Cache.Duration.hours(2))
+
 
 class OpenData:
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"

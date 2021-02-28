@@ -15,14 +15,16 @@ class System(Enum):
 	"""
 	Caching methods
 	"""
-	OBJECT=1
-	FILE=2
+
+	OBJECT = 1
+	FILE = 2
 
 
-class Duration():
+class Duration:
 	"""
 	Cache duration
 	"""
+
 	@staticmethod
 	def seconds(num):
 		return num
@@ -43,12 +45,13 @@ class Duration():
 """
 Cache configuration and functions
 """
+
+
 @dataclass
 class Cacher:
 	system: System
 	valid_for: int  # Seconds cache is valid for
 	is_method: bool = False
-
 
 	@classmethod
 	def default(cls):
@@ -56,12 +59,7 @@ class Cacher:
 		Default cache configuration
 		A class instance cacher, valid for 2 hours
 		"""
-		return cls(
-			system=System.OBJECT,
-			valid_for=Duration.hours(2),
-			is_method=True
-		)
-
+		return cls(system=System.OBJECT, valid_for=Duration.hours(2), is_method=True)
 
 	def cache(self, func, *args, **kwargs):
 		"""
@@ -72,7 +70,6 @@ class Cacher:
 
 		if self.system == System.FILE:
 			return self.file_cache(func, *args, **kwargs)
-
 
 	# Cache in object instance
 	def object_cache(self, func, *args, **kwargs):
@@ -85,17 +82,13 @@ class Cacher:
 
 		if hasattr(this, "_cache") and cache_key in this._cache:
 			cached = this._cache[cache_key]
-			if cached.get('expires', 0) > time():
-				return cached.get('value')
+			if cached.get("expires", 0) > time():
+				return cached.get("value")
 
 		result = func(*args, **kwargs)
-		cached = {
-			'value': result,
-			'expires': time() + self.valid_for
-		}
+		cached = {"value": result, "expires": time() + self.valid_for}
 		this._cache[func.__name__] = cached
 		return result
-
 
 	# Cache in file
 	def file_cache(self, func, *args, **kwargs):
@@ -108,25 +101,21 @@ class Cacher:
 		else:
 			cache_key = Cacher._make_key(func.__name__, *args, **kwargs)
 
-		cache_file = f'{project_root()}/cache/{cache_key}'
+		cache_file = f"{project_root()}/cache/{cache_key}"
 
 		if os.path.isfile(cache_file):
-			with open(cache_file, 'r') as cache_reader:
+			with open(cache_file, "r") as cache_reader:
 				cached = json.loads(cache_reader.read())
-				if cached.get('expires', 0) > time():
-					return cached.get('value')
+				if cached.get("expires", 0) > time():
+					return cached.get("value")
 
 		result = func(*args, **kwargs)
-		cached = {
-			'value': result,
-			'expires': time() + self.valid_for
-		}
+		cached = {"value": result, "expires": time() + self.valid_for}
 
-		with open(cache_file, 'w') as cache_writer:
+		with open(cache_file, "w") as cache_writer:
 			cache_writer.write(json.dumps(cached))
-		
-		return result
 
+		return result
 
 	@staticmethod
 	def _make_key(name, *args, **kwargs):

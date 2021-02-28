@@ -9,6 +9,7 @@ HEAVY_CACHER = Cache.Cacher(
 	is_method=True,
 )
 
+
 class SCOVID:
 	def __init__(self):
 		self._cache = {}
