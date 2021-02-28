@@ -82,6 +82,7 @@ if [[ $flask == 'up' ]]; then
 		pip install -r requirements.txt
 	fi
 
+	export SCOVID_ENV=$env
 	if [[ $env == 'dev' ]]; then
 		source venv/bin/activate
 		FLASK_APP=scovid19 FLASK_ENV=development FLASK_DEBUG=True flask run --host 0.0.0.0
@@ -125,7 +126,7 @@ if [[ -n $docker ]]; then
 			extra=" --build --no-deps"
 		fi
 
-		export ENV=$env
+		export SCOVID_ENV=$env
 		docker-compose up -d $extra $app_name
 		echo "Built and started $name"
 

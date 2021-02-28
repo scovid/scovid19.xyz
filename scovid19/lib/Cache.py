@@ -4,7 +4,7 @@ from time import time
 from enum import Enum
 from typing import Any
 from dataclasses import dataclass
-from scovid19.lib.Util import project_root
+from scovid19.lib.Util import project_root, env
 
 
 class CacheException(Exception):
@@ -65,6 +65,10 @@ class Cacher:
 		"""
 		Wrapper that calls the appropriate cache function
 		"""
+		# Only use cache on prod
+		if env() != 'prod':
+			return func(*args, **kwargs)
+
 		if self.system == System.OBJECT:
 			return self.object_cache(func, *args, **kwargs)
 
