@@ -42,13 +42,11 @@ class Duration:
 		return num * 24 * 60 * 60
 
 
-"""
-Cache configuration and functions
-"""
-
-
 @dataclass
 class Cacher:
+	"""
+	Cache configuration and functions
+	"""
 	system: System
 	valid_for: int  # Seconds cache is valid for
 	is_method: bool = False
