@@ -66,7 +66,7 @@ class Cacher:
 		Wrapper that calls the appropriate cache function
 		"""
 		# Only use cache on prod
-		if env() != 'prod':
+		if env() != "prod":
 			return func(*args, **kwargs)
 
 		if self.system == System.OBJECT:
