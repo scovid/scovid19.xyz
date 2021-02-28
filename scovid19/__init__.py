@@ -14,7 +14,7 @@ from scovid19.lib.Util import project_root, get_logger
 app = Flask(__name__, static_url_path="")
 
 # Set up logger
-app_logger = get_logger("app", f"{project_root()}/logs/app.log")
+app_logger = get_logger("app")
 
 infections = Infections()
 vaccines = Vaccine()

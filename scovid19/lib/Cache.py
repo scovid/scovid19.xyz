@@ -4,7 +4,7 @@ from time import time
 from enum import Enum
 from typing import Any
 from dataclasses import dataclass
-from scovid19.lib.Util import project_root, env
+from scovid19.lib.Util import project_root, env, get_logger
 
 
 class CacheException(Exception):

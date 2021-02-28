@@ -16,7 +16,10 @@ def env():
 	return os.environ.get("SCOVID_ENV", "prod")
 
 
-def get_logger(name, file_path, level=logging.INFO):
+def get_logger(name="app", file_path=None, level=logging.INFO):
+	if file_path is None:
+		file_path = f'{project_root()}/logs/{name}.log'
+
 	logger = logging.getLogger(name)
 	formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s")
 	handler = logging.FileHandler(file_path)

@@ -3,8 +3,8 @@
 # Start cron
 sudo service cron start
 
-# Default to prod
-[[ -z $ENV ]] && ENV='prod'
+# Default to dev
+[[ -z $SCOVID_ENV ]] && SCOVID_ENV='dev'
 
 # Create our env file
 printenv | grep -e '^SCOVID_' > "$SCOVID_PROJECT_ROOT/.env"
@@ -21,4 +21,4 @@ PATH="$PATH:/usr/local/bin"
 EOF
 
 # Start web server
-./control.sh --env $ENV --flask up --in-container
+./control.sh --env $SCOVID_ENV --flask up --in-container

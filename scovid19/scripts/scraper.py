@@ -6,7 +6,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from scovid19.lib.Util import get_logger, project_root
 
-scraper_logger = get_logger("scraper", f"{project_root()}/logs/scraper.log")
+scraper_logger = get_logger("scraper")
 
 URL = "https://www.gov.scot/publications/coronavirus-covid-19-daily-data-for-scotland/"
 

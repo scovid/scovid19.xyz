@@ -7,10 +7,6 @@ LABEL version="0.0.1"
 # Install deps
 RUN apt-get update -y && apt-get install -y sudo cron
 
-# Need to set this as an env var to use in the CMD below
-ARG env='dev'
-ENV ENV $env
-
 ENV PATH="/home/code/.local/bin:${PATH}"
 
 # Add user, make sudo, do not require password
