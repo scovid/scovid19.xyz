@@ -7,10 +7,6 @@ LABEL version="0.0.1"
 # Install deps
 RUN apt-get update -y && apt-get install -y sudo cron
 
-# Need to set this as an env var to use in the CMD below
-ARG env='dev'
-ENV ENV $env
-
 ENV PATH="/home/code/.local/bin:${PATH}"
 
 # Add user, make sudo, do not require password
@@ -28,7 +24,7 @@ RUN pip install -r requirements.txt
 COPY --chown=code:code . ./
 
 # Don't need a .env in the container
-# env is set by docker-compose
+# env is set built in entrypoint.sh based on docker-compose
 RUN if [ -f .env ]; then rm .env; fi
 
 EXPOSE 5000

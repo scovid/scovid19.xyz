@@ -2,15 +2,11 @@
 
 import os, re, sys, json
 import requests
-import logging
 from datetime import datetime
 from bs4 import BeautifulSoup
+from scovid19.lib.Util import get_logger, project_root
 
-logging.basicConfig(
-	filename=os.environ["PROJECT_ROOT"] + "/logs/scraper.log",
-	level=logging.INFO,
-	format="[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s",
-)
+scraper_logger = get_logger("scraper")
 
 URL = "https://www.gov.scot/publications/coronavirus-covid-19-daily-data-for-scotland/"
 
@@ -41,7 +37,7 @@ def main():
 
 
 def write_file(content):
-	filepath = os.environ["PROJECT_ROOT"] + "/data/vaccine.json"
+	filepath = f"{project_root()}/data/vaccine.json"
 
 	fh = open(filepath, "w", encoding="utf8")
 	fh.write(content)
@@ -76,12 +72,12 @@ def get_second_doses(summary):
 	else:
 		dose2 = clean_str(summary[3].replace(",", ""))
 
-		if not dose2: # This is where the fun begins 
-			if summary[4]:
-				dose2 = clean_str(summary[4].replace(",", ""))
-			else:
-				first, *middle, last = summary[1].split()
-				dose2 = clean_str(last + summary[2].replace(",", ""))
+	if not dose2:  # This is where the fun begins
+		if summary[4]:
+			dose2 = clean_str(summary[4].replace(",", ""))
+		else:
+			first, *middle, last = summary[1].split()
+			dose2 = clean_str(last + summary[2].replace(",", ""))
 
 	if not dose2:
 		raise ValueError("dose 2 is empty")
@@ -92,7 +88,7 @@ def get_second_doses(summary):
 def clean_str(string):
 	if not string:
 		return ""
-	return str(string).strip().replace(u"\u00a0", " ")
+	return str(string).strip().replace("\u00a0", " ")
 
 
 main()

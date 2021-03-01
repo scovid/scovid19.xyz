@@ -1,7 +1,8 @@
 import functools
-from flask import jsonify, render_template
 import logging
 import traceback
+from flask import jsonify, render_template
+from scovid19.lib.Cache import Cacher
 
 # Endpoint decorator
 # Try/Except and return JSON
@@ -28,26 +29,21 @@ def page(func):
 		except Exception:
 			err = traceback.format_exc()
 			logging.error(f"Error when loading page '{func.__name__}': {err}")
-			return render_template("error.html")
+			return render_template("error.html.j2")
 
 	return wrapper
 
 
 # Cacheable decorator
-def cacheable(func):
-	@functools.wraps(func)
-	def wrapper(*args, **kwargs):
-		this = args[0]
+def cacheable(og_func=None, cacher=Cacher.default()):
+	def decorate(func):
+		@functools.wraps(func)
+		def wrapper(*args, **kwargs):
+			return cacher.cache(func, *args, **kwargs)
 
-		args_key = [str(x) for x in args[1:]]
-		kwargs_key = [f"{k}:{v}" for k, v in kwargs.items()]
-		cache_key = ";".join([func.__name__, *args_key, *kwargs_key])
+		return wrapper
 
-		if hasattr(this, "_cache") and cache_key in this._cache:
-			return this._cache[cache_key]
+	if og_func:
+		return decorate(og_func)
 
-		result = func(*args, **kwargs)
-		this._cache[func.__name__] = result
-		return result
-
-	return wrapper
+	return decorate

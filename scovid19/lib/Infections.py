@@ -1,6 +1,6 @@
 from scovid19.lib.SCOVID import SCOVID
 from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Util import Util
+from scovid19.lib.Util import strpstrf
 from datetime import datetime
 from collections import defaultdict
 
@@ -44,14 +44,14 @@ class Infections(SCOVID):
 
 			if not max_deaths or new_deaths > max_deaths["number"]:
 				max_deaths["number"] = new_deaths
-				max_deaths["date"] = Util.strpstrf(day["Date"], strf="%d %b %Y")
+				max_deaths["date"] = strpstrf(day["Date"], strf="%d %b %Y")
 
 			if not max_cases or day["DailyCases"] > max_cases["number"]:
 				# On Apr 19th the stats started to include UK test centres
 				# So this day isn't really an accurate representation
 				if day["Date"] != 20200420:
 					max_cases["number"] = day["DailyCases"]
-					max_cases["date"] = Util.strpstrf(day["Date"], strf="%d %b %Y")
+					max_cases["date"] = strpstrf(day["Date"], strf="%d %b %Y")
 
 			prev_day = day
 
@@ -84,7 +84,7 @@ class Infections(SCOVID):
 			if day["Date"] == 20200420:
 				day["DailyCases"] = 0
 
-			date = Util.strpstrf(str(day["Date"]), strf="%d %b %y")
+			date = strpstrf(str(day["Date"]), strf="%d %b %y")
 			dates.append(date)
 			cases.append(day["DailyCases"])
 
@@ -94,6 +94,9 @@ class Infections(SCOVID):
 		}
 
 	def breakdown(self):
+		"""
+		Breakdown of postive, negative and deaths over the full time period
+		"""
 		positive, negative, deaths = 0, 0, 0
 
 		# There doesn't seem to be a good endpoint for getting total negatives
@@ -117,7 +120,19 @@ class Infections(SCOVID):
 			],
 		}
 
-	def locations_total(self):
+	def locations(self, full=False):
+		"""
+		Wrapper around _locations_total() and _locations_new()
+		"""
+		if full:
+			return self._locations_total()
+
+		return self._locations_new()
+
+	def _locations_total(self):
+		"""
+		Total infections by location
+		"""
 		total_by_area = OpenData.fetch("total_by_area")
 		records = total_by_area["records"]
 
@@ -139,7 +154,10 @@ class Infections(SCOVID):
 			],
 		}
 
-	def locations_new(self):
+	def _locations_new(self):
+		"""
+		Infections by location for the last 7 days
+		"""
 		councils = self.councils()
 		daily_by_area = OpenData.fetch(
 			"daily_by_area", limit=(len(councils) * 7), sort="Date DESC"

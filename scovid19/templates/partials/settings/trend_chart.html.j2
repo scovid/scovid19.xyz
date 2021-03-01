@@ -1,0 +1,12 @@
+{% extends "partials/settings/base.html.j2" %} {% set modal_id = 'trend_chart_settings' %} {% block title %}Edit Date Range{% endblock %} {% block body %}
+<div class="columns">
+	<div class="column is-half">
+		<label class="label" for="start-date">Start Date</label>
+		<input id="start-date" class="datepicker" data-param="start" type="text" placeholder="select start date" />
+	</div>
+	<div class="column is-half">
+		<label class="label" for="end-date">End Date</label>
+		<input id="end-date" class="datepicker" data-param="end" type="text" placeholder="select end date" />
+	</div>
+</div>
+{% endblock %} {% block footer %} {{ super() }} {% endblock %}

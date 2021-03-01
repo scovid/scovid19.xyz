@@ -1,29 +1,20 @@
 from flask import Flask, render_template, request
 
+# Load .env
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import os, logging
 from scovid19.lib.Vaccine import Vaccine
 from scovid19.lib.Infections import Infections
 from scovid19.lib.Decorators import page, endpoint
-from dotenv import load_dotenv
-
-# Load .env
-load_dotenv()
-project_root = os.environ["PROJECT_ROOT"]
+from scovid19.lib.Util import project_root, get_logger
 
 app = Flask(__name__, static_url_path="")
 
-
-def get_logger(name, file_path, level=logging.INFO):
-	logger = logging.getLogger(name)
-	formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s")
-	handler = logging.FileHandler(file_path)
-	handler.setFormatter(formatter)
-	logger.addHandler(handler)
-	return logger
-
-
 # Set up logger
-app_logger = get_logger("app", f"{project_root}/logs/app.log")
+app_logger = get_logger("app")
 
 infections = Infections()
 vaccines = Vaccine()
@@ -33,7 +24,7 @@ vaccines = Vaccine()
 @page
 def index():
 	return render_template(
-		"index.html",
+		"infections.html.j2",
 		summary=infections.summary(),
 		last_updated=infections.last_updated(format="%d %B %Y"),
 		tab="overview",
@@ -44,7 +35,7 @@ def index():
 @page
 def vaccine():
 	return render_template(
-		"vaccine.html",
+		"vaccine.html.j2",
 		tab="vaccine",
 		weekly=vaccines.vaccines_weekly(),
 		percentage=vaccines.percentage_vaccinated(),
@@ -52,37 +43,35 @@ def vaccine():
 	)
 
 
-@app.route("/locations")
-@page
-def locations():
-	return render_template("locations.html")
+# == API routes ==#
+
+# Misc
+@app.route("/api/ping")
+def ping():
+	return "Ok"
 
 
-# API routes
-@app.route("/api/trend")
+# Infections
+@app.route("/api/infections/trend")
 @endpoint
 def trend():
 	return infections.trend(request.args)
 
 
-@app.route("/api/breakdown")
+@app.route("/api/infections/breakdown")
 @endpoint
 def breakdown():
 	return infections.breakdown()
 
 
-@app.route("/api/locations/total")
+@app.route("/api/infections/locations")
 @endpoint
-def locations_total():
-	return infections.locations_total()
+def locations():
+	full = request.args.get("full", False)
+	return infections.locations(full)
 
 
-@app.route("/api/locations/new")
-@endpoint
-def locations_new():
-	return infections.locations_new()
-
-
+# Vaccines
 @app.route("/api/vaccines/breakdown")
 @endpoint
 def percentage_vaccinated():

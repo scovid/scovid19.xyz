@@ -2,8 +2,23 @@
 
 # Start cron
 sudo service cron start
-(crontab -l 2>/dev/null; echo "0 15 * * * bash -c 'cd $PROJECT_ROOT && /usr/local/bin/python3 -m scovid19.scripts.scraper'") | crontab -
-(crontab -l 2>/dev/null; echo "5 15 * * * bash -c 'cd $PROJECT_ROOT && /usr/local/bin/python3 -m scovid19.scripts.tweet'") | crontab -
+
+# Default to dev
+[[ -z $SCOVID_ENV ]] && SCOVID_ENV='dev'
+
+# Create our env file
+printenv | grep -e '^SCOVID_' > "$SCOVID_PROJECT_ROOT/.env"
+
+# Create user cron if it doesn't exist
+# NOTE: This exits with a non zero
+crontab -l >/dev/null 2>&1
+
+# Add to cron
+# Every day at 15:00 run the scraper and tweet results
+cat << EOF | crontab -
+PATH="$PATH:/usr/local/bin"
+0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m scovid19.scripts.scraper && python3 -m scovid19.scripts.tweet'
+EOF
 
 # Start web server
-./control.sh --env $ENV --flask up --in-container
+./control.sh --env $SCOVID_ENV --flask up --in-container

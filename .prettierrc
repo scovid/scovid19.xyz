@@ -7,4 +7,13 @@
   "bracketSpacing": true,
   "arrowParens": "avoid",
   "printWidth": 200,
+
+  "overrides": [
+    {
+      "files": "*.html.j2",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
 }
