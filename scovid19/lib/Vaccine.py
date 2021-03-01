@@ -42,7 +42,7 @@ class Vaccine(SCOVID):
 			"dose1": 0,
 			"dose2": 0,
 		}
-		
+
 		for record in records:
 			if record["Product"] == "Total":
 				if record["Dose"] == "Dose 1":
