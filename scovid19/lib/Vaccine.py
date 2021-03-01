@@ -1,13 +1,14 @@
 import os, json
 from scovid19.lib.SCOVID import SCOVID
 from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Util import project_root
+from scovid19.lib.Util import project_root, get_logger
 from datetime import datetime
 
 
 class Vaccine(SCOVID):
 	def __init__(self):
 		self._cache = {}
+		self.logger = get_logger("app")
 
 	def vaccines_weekly(self):
 		cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
@@ -20,7 +21,7 @@ class Vaccine(SCOVID):
 			if record["WeekEnding"] == latestweek:
 				latestrecords.append(record)
 
-		totals = self.get_scraper_data()  # self.get_totals(records)
+		totals = self.vaccines_daily()
 		weekly = self.get_totals(latestrecords)
 		return {
 			"this week": {
@@ -32,6 +33,24 @@ class Vaccine(SCOVID):
 			},
 			"totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
 		}
+
+	def vaccines_daily(self):
+		cases_by_day = OpenData.fetch("daily_vaccine", limit=1000)
+		records = cases_by_day["records"]
+
+		totals = {
+			"dose1": 0,
+			"dose2": 0,
+		}
+
+		for record in records:
+			if record["Product"] == "Total":
+				if record["Dose"] == "Dose 1":
+					totals["dose1"] += int(record["NumberVaccinated"])
+				elif record["Dose"] == "Dose 2":
+					totals["dose2"] += int(record["NumberVaccinated"])
+
+		return totals
 
 	def get_totals(self, records):
 		totals = {
@@ -56,11 +75,7 @@ class Vaccine(SCOVID):
 	def percentage_vaccinated(self):
 		population = self.scottish_population()
 
-		# cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
-		# records = cases_by_week["records"]
-
-		# totals = self.get_totals(records)
-		totals = self.get_scraper_data()
+		totals = self.vaccines_daily()
 		remainder = population - totals["dose2"] - totals["dose1"]
 
 		dose1 = float(totals["dose1"] / population * 100)
