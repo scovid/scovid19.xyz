@@ -24,8 +24,10 @@ def main():
 		dose1 = get_first_doses(summary)
 		dose2 = get_second_doses(summary)
 	except ValueError as e:
-		logging.error(e)
+		scraper_logger.error(e)
 		exit(1)
+	except Exception as e:
+		scraper_logger.error(e)
 
 	date = datetime.today().strftime("%Y-%m-%d")
 
