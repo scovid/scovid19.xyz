@@ -27,8 +27,8 @@ def main():
 	try:
 		dose1 = get_first_doses(summary)
 		dose2 = get_second_doses(summary)
-	except:
-		logging.error("Error scraping doses")
+	except ValueError as e:
+		logging.error(e)
 		exit(1)
 
 	date = datetime.today().strftime("%Y-%m-%d")
@@ -59,21 +59,34 @@ def get_summary(parsed):
 
 
 def get_first_doses(summary):
-	dose1 = clean_str(summary[0].replace(",", ""))
-	return dose1
+	if "\n" in summary[0]:
+		dose1 = clean_str(summary[1].partition(' ')[0].replace(",", ""))
+	else:	
+		dose1 = clean_str(summary[0].replace(",", ""))
+
+	if not dose1:
+		raise ValueError("dose 1 is empty")
+	else:
+		return dose1
 
 
 def get_second_doses(summary):
-	dose2 = clean_str(summary[3].replace(",", ""))
+	if "\n" in summary[0]:
+		dose2 = clean_str(summary[1].split()[12].replace(",", ""))
+	else:
+		dose2 = clean_str(summary[3].replace(",", ""))
 
-	if not dose2: # This is where the fun begins
-		if summary[4]:
-			dose2 = clean_str(summary[4].replace(",", ""))
-		else:
-			first, *middle, last = summary[1].split()
-			dose2 = clean_str(last + summary[2].replace(",", ""))
+		if not dose2: # This is where the fun begins 
+			if summary[4]:
+				dose2 = clean_str(summary[4].replace(",", ""))
+			else:
+				first, *middle, last = summary[1].split()
+				dose2 = clean_str(last + summary[2].replace(",", ""))
 
-	return dose2
+	if not dose2:
+		raise ValueError("dose 2 is empty")
+	else: 
+		return dose2
 
 
 def clean_str(string):
@@ -83,3 +96,4 @@ def clean_str(string):
 
 
 main()
+
