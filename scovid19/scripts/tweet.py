@@ -29,7 +29,7 @@ auth.set_access_token(
 
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-vaccine_data = vaccine.get_scraper_data()
+vaccine_data = vaccine.vaccines_daily()
 infection_data = infections.summary()
 
 daily_cases = f"{infection_data['cases']['today']:,.0f}"

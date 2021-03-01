@@ -19,6 +19,7 @@ class OpenData:
 		"daily_by_area": "427f9a25-db22-4014-a3bc-893b68243055",  # Daily Case Trends By Council Area
 		"total_by_deprivation": "a965ee86-0974-4c93-bbea-e839e27d7085",  # Total Cases By Deprivation
 		# Vaccine
+		"daily_vaccine": "42f17a3c-a4db-4965-ba68-3dffe6bca13a",  # Daily vaccinations
 		"weekly_vaccine": "93a86415-9b3e-488a-ba50-1a70793a3208",  # Weekly vaccinations
 		"vaccine_council": "4ec38438-c8b3-4946-9283-ee99f7a86a3b",  # Vaccinations by council area
 		# Other
