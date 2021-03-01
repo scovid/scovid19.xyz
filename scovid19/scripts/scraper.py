@@ -56,8 +56,8 @@ def get_summary(parsed):
 
 def get_first_doses(summary):
 	if "\n" in summary[0]:
-		dose1 = clean_str(summary[1].partition(' ')[0].replace(",", ""))
-	else:	
+		dose1 = clean_str(summary[1].partition(" ")[0].replace(",", ""))
+	else:
 		dose1 = clean_str(summary[0].replace(",", ""))
 
 	if not dose1:
@@ -81,7 +81,7 @@ def get_second_doses(summary):
 
 	if not dose2:
 		raise ValueError("dose 2 is empty")
-	else: 
+	else:
 		return dose2
 
 
@@ -92,4 +92,3 @@ def clean_str(string):
 
 
 main()
-
