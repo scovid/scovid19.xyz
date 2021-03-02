@@ -44,10 +44,10 @@ class TestVaccines:
 
 		vaccines = Vaccines()
 		results = vaccines.vaccines_daily()
-		assert 'dose1' in results
-		assert 'dose2' in results
-		assert results['dose1'] > 0
-		assert results['dose2'] > 0
+		assert "dose1" in results
+		assert "dose2" in results
+		assert results["dose1"] > 0
+		assert results["dose2"] > 0
 
 
 class TestInfections:
@@ -62,5 +62,5 @@ class TestInfections:
 
 		infections = Infections()
 		results = infections.summary()
-		assert 'cases' in results
-		assert 'deaths' in results
+		assert "cases" in results
+		assert "deaths" in results

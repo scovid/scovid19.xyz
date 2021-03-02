@@ -7,6 +7,7 @@ from scovid19.lib.data.Vaccines import Vaccines
 from scovid19.lib.data.Infections import Infections
 from scovid19.lib.Util import get_logger, project_root
 
+
 def main(dry_run=False):
 	tweet_logger = get_logger("tweet_bot")
 
@@ -46,9 +47,7 @@ def main(dry_run=False):
 	text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new infection cases confirmed \n\n For more stats visit www.scovid19.xyz"
 
 	if dry_run:
-		return(
-			f"--dry-run passed, would be tweeting the following message:\n{text.format(**v)}"
-		)
+		return f"--dry-run passed, would be tweeting the following message:\n{text.format(**v)}"
 
 	try:
 		api.update_status(text.format(**v))

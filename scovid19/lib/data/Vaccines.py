@@ -5,7 +5,7 @@ from scovid19.lib.data.Scotland import Scotland
 from datetime import datetime
 
 
-class Vaccines():
+class Vaccines:
 	def __init__(self):
 		self.logger = get_logger("app")
 		self.scotland = Scotland()

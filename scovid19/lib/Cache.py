@@ -77,7 +77,7 @@ class Cacher:
 	# Cache in object instance
 	def object_cache(self, func, *args, **kwargs):
 		cache_key = Cacher._make_key(func.__name__, *args, **kwargs)
-		
+
 		if cache_key in self.store:
 			cached = self.store[cache_key]
 			if cached.get("expires", 0) > time():
@@ -114,8 +114,12 @@ class Cacher:
 		Create a cache key from a func name and it's args
 		"""
 		# Ignore 'self' params for our classes
-		if len(args) > 0 and isinstance(args[0], object) and args[0].__class__.__module__ != 'builtins':
-			args = [ args[0].__class__.__name__, *args[1:] ]
+		if (
+			len(args) > 0
+			and isinstance(args[0], object)
+			and args[0].__class__.__module__ != "builtins"
+		):
+			args = [args[0].__class__.__name__, *args[1:]]
 
 		args_key = [str(x) for x in args]
 		kwargs_key = [f"{k}:{v}" for k, v in kwargs.items()]

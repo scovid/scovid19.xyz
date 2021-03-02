@@ -9,7 +9,7 @@ from collections import defaultdict
 # - Add heavier caching for things that won't change
 
 
-class Infections():
+class Infections:
 	def __init__(self):
 		self.logger = get_logger("app")
 		self.scotland = Scotland()

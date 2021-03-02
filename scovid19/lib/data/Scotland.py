@@ -9,9 +9,10 @@ HEAVY_CACHER = Cache.Cacher(
 	valid_for=Cache.Duration.days(2),
 )
 
-class Scotland():
+
+class Scotland:
 	def __init__(self):
-		self.logger = get_logger('app')
+		self.logger = get_logger("app")
 
 	# Get the mapping of council IDs to council names
 	@cacheable(cacher=HEAVY_CACHER)
