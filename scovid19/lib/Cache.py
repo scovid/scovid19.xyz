@@ -3,7 +3,7 @@ import os.path
 from time import time
 from enum import Enum
 from typing import Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from scovid19.lib.Util import project_root, env, get_logger
 
 
@@ -50,7 +50,7 @@ class Cacher:
 
 	system: System
 	valid_for: int  # Seconds cache is valid for
-	is_method: bool = False
+	store: dict[str, Any] = field(default_factory=dict)
 
 	@classmethod
 	def default(cls):
@@ -58,7 +58,7 @@ class Cacher:
 		Default cache configuration
 		A class instance cacher, valid for 2 hours
 		"""
-		return cls(system=System.OBJECT, valid_for=Duration.hours(2), is_method=True)
+		return cls(system=System.OBJECT, valid_for=Duration.hours(2))
 
 	def cache(self, func, *args, **kwargs):
 		"""
@@ -76,33 +76,21 @@ class Cacher:
 
 	# Cache in object instance
 	def object_cache(self, func, *args, **kwargs):
-		if not self.is_method:
-			raise CacheException("Can only create object_cache for methods")
-
-		this = args[0]
-		actual_args = args[1:] if len(args) > 1 else []
-		cache_key = Cacher._make_key(func.__name__, *actual_args, **kwargs)
-
-		if hasattr(this, "_cache") and cache_key in this._cache:
-			cached = this._cache[cache_key]
+		cache_key = Cacher._make_key(func.__name__, *args, **kwargs)
+		
+		if cache_key in self.store:
+			cached = self.store[cache_key]
 			if cached.get("expires", 0) > time():
 				return cached.get("value")
 
 		result = func(*args, **kwargs)
 		cached = {"value": result, "expires": time() + self.valid_for}
-		this._cache[func.__name__] = cached
+		self.store[cache_key] = cached
 		return result
 
 	# Cache in file
 	def file_cache(self, func, *args, **kwargs):
-		cache_key = None
-
-		# Handle `self`
-		if self.is_method:
-			actual_args = args[1:] if len(args) > 1 else []
-			cache_key = Cacher._make_key(func.__name__, *actual_args, **kwargs)
-		else:
-			cache_key = Cacher._make_key(func.__name__, *args, **kwargs)
+		cache_key = Cacher._make_key(func.__name__, *args, **kwargs)
 
 		cache_file = f"{project_root()}/cache/{cache_key}"
 
@@ -125,6 +113,10 @@ class Cacher:
 		"""
 		Create a cache key from a func name and it's args
 		"""
+		# Ignore 'self' params for our classes
+		if len(args) > 0 and isinstance(args[0], object) and args[0].__class__.__module__ != 'builtins':
+			args = [ args[0].__class__.__name__, *args[1:] ]
+
 		args_key = [str(x) for x in args]
 		kwargs_key = [f"{k}:{v}" for k, v in kwargs.items()]
 		return ";".join([name, *args_key, *kwargs_key])
