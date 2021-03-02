@@ -210,21 +210,35 @@ class Infections():
 			if pop["CA"] not in councils:
 				continue
 
-			# Work out cases per thousand people
-			quotient = pop["AllAges"] / 1000
-			per_thousand = cases[pop["CA"]] / quotient
+			# Work out cases per 100k people
+			quotient = pop["AllAges"] / 100_000
+			per_100k = cases[pop["CA"]] / quotient
+
+			# TODO: Link to this from the page
+			# Page 60 on the PDF
+			# https://www.gov.scot/publications/coronavirus-covid-19-strategic-framework-update-february-2021/
+			level = 0
+			if per_100k >= 150:
+				level = 4
+			elif per_100k >= 50:
+				level = 3
+			elif per_100k >= 20:
+				level = 2
+			elif per_100k >= 3:
+				level = 1
 
 			prevalence.append(
 				{
 					"council": councils[pop["CA"]],
 					"population": format(pop["AllAges"], ","),
 					"cases": format(cases[pop["CA"]], ","),
-					"per_thousand": round(per_thousand, 3),
+					"per_100k": round(per_100k, 2),
 					"percentage": format(cases[pop["CA"]] / pop["AllAges"], ","),
+					"level": level,
 				}
 			)
 
-		return sorted(prevalence, key=lambda x: x["per_thousand"], reverse=True)
+		return sorted(prevalence, key=lambda x: x["per_100k"], reverse=True)
 
 	# Get the last updated time of the OpenData stats
 	# Based on the latest date in the "Daily and Cumulative Cases" data set
