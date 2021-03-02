@@ -45,6 +45,6 @@ async function tableMore(e) {
 
 async function tableAll(e) {
 	let rowsBefore = tableBody.rows.length;
-	await loadTable(50); // There are less than 50 councils so 
+	await loadTable(50); // There are less than 50 councils so
 	document.querySelector('#tableLess').disabled = false;
 }
