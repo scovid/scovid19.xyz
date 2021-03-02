@@ -1,6 +1,6 @@
-from scovid19.lib.SCOVID import SCOVID
+from scovid19.lib.data.Scotland import Scotland
 from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Util import strpstrf
+from scovid19.lib.Util import strpstrf, get_logger
 from datetime import datetime
 from collections import defaultdict
 
@@ -9,9 +9,10 @@ from collections import defaultdict
 # - Add heavier caching for things that won't change
 
 
-class Infections(SCOVID):
+class Infections():
 	def __init__(self):
-		self._cache = {}
+		self.logger = get_logger("app")
+		self.scotland = Scotland()
 
 	# Return the summary of stats
 	def summary(self):
@@ -19,6 +20,7 @@ class Infections(SCOVID):
 		records = cases_by_day["records"]
 
 		# NOTE: Latest stat always trickles in so use the slice -8:-1 instead
+		print(records[-1])
 		summary = {
 			"cases": {
 				"total": records[-1]["CumulativeCases"],
@@ -136,7 +138,7 @@ class Infections(SCOVID):
 		total_by_area = OpenData.fetch("total_by_area")
 		records = total_by_area["records"]
 
-		councils = self.councils()
+		councils = self.scotland.councils()
 
 		sets = []
 		for location in records:
@@ -158,7 +160,7 @@ class Infections(SCOVID):
 		"""
 		Infections by location for the last 7 days
 		"""
-		councils = self.councils()
+		councils = self.scotland.councils()
 		daily_by_area = OpenData.fetch(
 			"daily_by_area", limit=(len(councils) * 7), sort="Date DESC"
 		)
@@ -188,8 +190,8 @@ class Infections(SCOVID):
 		}
 
 	def prevalence(self):
-		councils = self.councils()
-		populations = self.population()
+		councils = self.scotland.councils()
+		populations = self.scotland.population()
 
 		# Fetch the daily trends by council for the last 7 days
 		daily_by_area = OpenData.fetch(

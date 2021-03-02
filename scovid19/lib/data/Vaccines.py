@@ -1,14 +1,14 @@
 import os, json
-from scovid19.lib.SCOVID import SCOVID
 from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Util import project_root, get_logger
+from scovid19.lib.data.Scotland import Scotland
 from datetime import datetime
 
 
-class Vaccine(SCOVID):
+class Vaccines():
 	def __init__(self):
-		self._cache = {}
 		self.logger = get_logger("app")
+		self.scotland = Scotland()
 
 	def vaccines_weekly(self):
 		cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
@@ -73,7 +73,7 @@ class Vaccine(SCOVID):
 		return totals
 
 	def percentage_vaccinated(self):
-		population = self.scottish_population()
+		population = self.scotland.entire_population()
 
 		totals = self.vaccines_daily()
 		remainder = population - totals["dose2"] - totals["dose1"]
@@ -98,9 +98,8 @@ class Vaccine(SCOVID):
 		council_vaccinations = OpenData.fetch("vaccine_council")
 		records = council_vaccinations["records"]
 
-		councils = self.councils()
-
 		sets = []
+		councils = self.scotland.councils()
 		for location in records:
 			if not location["CA"] or location["CA"] not in councils:
 				continue
@@ -112,7 +111,7 @@ class Vaccine(SCOVID):
 			"labels": sorted(set(councils.values())),
 			"datasets": [
 				{
-					"backgroundColor": [Vaccine.color(item["x"]) for item in sets],
+					"backgroundColor": [Vaccines.color(item["x"]) for item in sets],
 					"label": "Cases by area",
 					"data": sets,
 				}
