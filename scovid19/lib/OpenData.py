@@ -13,7 +13,7 @@ class OpenData:
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"
 
 	resources = {
-		# COVID
+		# Infections
 		"daily": "287fc645-4352-4477-9c8c-55bc054b7e76",  # Daily and Cumulative Cases
 		"total_by_area": "e8454cf0-1152-4bcb-b9da-4343f625dfef",  # Total Cases By Council Area
 		"daily_by_area": "427f9a25-db22-4014-a3bc-893b68243055",  # Daily Case Trends By Council Area

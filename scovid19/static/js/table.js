@@ -14,7 +14,7 @@ async function loadTable(limit = 5) {
 	for (let item of data) {
 		let row = tableBody.insertRow();
 
-		['council', 'per_thousand', 'population', 'cases'].forEach(field => {
+		['council', 'per_100k', 'population', 'cases', 'level'].forEach(field => {
 			let cell = row.insertCell();
 			cell.appendChild(document.createTextNode(item[field]));
 		});
@@ -41,4 +41,10 @@ async function tableMore(e) {
 	if (tableBody.rows.length < rowsBefore + 5) {
 		e.disabled = true;
 	}
+}
+
+async function tableAll(e) {
+	let rowsBefore = tableBody.rows.length;
+	await loadTable(50); // There are less than 50 councils so
+	document.querySelector('#tableLess').disabled = false;
 }

@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os, logging
-from scovid19.lib.Vaccine import Vaccine
-from scovid19.lib.Infections import Infections
+from scovid19.lib.data import Infections, Vaccines
 from scovid19.lib.Decorators import page, endpoint
 from scovid19.lib.Util import project_root, get_logger
 
@@ -17,7 +16,7 @@ app = Flask(__name__, static_url_path="")
 app_logger = get_logger("app")
 
 infections = Infections()
-vaccines = Vaccine()
+vaccines = Vaccines()
 
 # Page routes
 @app.route("/")

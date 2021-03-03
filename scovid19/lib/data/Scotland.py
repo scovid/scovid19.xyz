@@ -1,18 +1,18 @@
 from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Decorators import cacheable
+from scovid19.lib.Util import get_logger
 import scovid19.lib.Cache as Cache
 
 # Heavy cacher for things that will rarely change
 HEAVY_CACHER = Cache.Cacher(
 	system=Cache.System.FILE,
 	valid_for=Cache.Duration.days(2),
-	is_method=True,
 )
 
 
-class SCOVID:
+class Scotland:
 	def __init__(self):
-		self._cache = {}
+		self.logger = get_logger("app")
 
 	# Get the mapping of council IDs to council names
 	@cacheable(cacher=HEAVY_CACHER)
@@ -28,7 +28,7 @@ class SCOVID:
 
 	# Get the population for Scotland
 	@cacheable(cacher=HEAVY_CACHER)
-	def scottish_population(self):
+	def entire_population(self):
 		populations = self.population()
 
 		for pop in populations:

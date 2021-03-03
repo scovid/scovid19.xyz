@@ -24,15 +24,16 @@
 <hr />
 
 <!-- Prevalence per council -->
-<section id="prevalence" class="section" style="overflow-x: auto">
-	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 1000 people in last 7 days</p>
+<section id="prevalence" style="overflow-x: auto">
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 100k people in last 7 days</p>
 	<table class="table is-striped is-hoverable is-fullwidth slider closed">
 		<thead>
 			<tr>
 				<th>Council</th>
-				<th>Cases per 1000</th>
+				<th>Cases per 100k</th>
 				<th>Population</th>
 				<th>Cases</th>
+				<th>Estimated Lockdown Level</th>
 			</tr>
 		</thead>
 		<tbody id="tableBody"></tbody>
@@ -46,6 +47,9 @@
 		</div>
 		<div class="control">
 			<button class="button" id="tableMore" onclick="tableMore(this)">Show More</button>
+		</div>
+		<div class="control">
+			<button class="button" id="tableAll" onclick="tableAll(this)">Show All</button>
 		</div>
 	</div>
 </section>
