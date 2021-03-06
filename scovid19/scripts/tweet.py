@@ -9,6 +9,9 @@ from scovid19.lib.Util import get_logger, project_root
 
 
 def main(dry_run=False):
+	# Disable caching to always pull latest stats
+	os.environ['SCOVID_NO_CACHE'] = '1'
+
 	tweet_logger = get_logger("tweet_bot")
 
 	# Add your credentials here
