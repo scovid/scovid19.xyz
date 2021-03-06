@@ -21,7 +21,7 @@ class Vaccines:
 			"this week": {
 				"Dose 1": weekly["dose1"],
 				"Dose 2": weekly["dose2"],
-				"Week Ending": end.strftime('%d/%m/%Y')
+				"Week Ending": end.strftime("%d/%m/%Y"),
 			},
 			"totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
 		}
@@ -41,8 +41,8 @@ class Vaccines:
 		if "records" not in kwargs:
 			records = self.get_daily_data()
 
-		start = str(start).replace('-', '')
-		end = str(end).replace('-', '')
+		start = str(start).replace("-", "")
+		end = str(end).replace("-", "")
 
 		weekly_records = []
 
@@ -52,20 +52,17 @@ class Vaccines:
 
 		return weekly_records
 
-
-
 	def get_previous_week(self, **kwargs):
 		if "starting_date" not in kwargs:
 			starting_date = date.today()
 		else:
-			starting_date = datetime.strptime(str(kwargs["starting_date"]), '%Y%m%d').date()
+			starting_date = datetime.strptime(str(kwargs["starting_date"]), "%Y%m%d").date()
 
 		start = starting_date - timedelta(days=starting_date.weekday(), weeks=+1)
 		end = start + timedelta(days=6)
 
 		return start, end
 
-		
 	def get_totals(self, records):
 		totals = {
 			"dose1": 0,
@@ -133,24 +130,24 @@ class Vaccines:
 		weeks = []
 		dates = []
 
-		for case in total_cases: # a list of when each week starts and ends
+		for case in total_cases:  # a list of when each week starts and ends
 			if case["Product"] == "Total":
 				start, end = self.get_previous_week(starting_date=case["Date"])
 
-				if str(start) != "2020-11-30":			
+				if str(start) != "2020-11-30":
 					week = {"start": start, "end": end}
-					
+
 					if week not in weeks:
 						weeks.append({"start": start, "end": end})
-						dates.append(start.strftime('%d/%m/%Y'))
+						dates.append(start.strftime("%d/%m/%Y"))
 
 		dose1 = []
 		dose2 = []
 
-		for record in weeks: # Get the total weekly data for these ranges
+		for record in weeks:  # Get the total weekly data for these ranges
 			weekly_records = self.get_weekly_data(record["start"], record["end"])
 			weekly_totals = self.get_totals(weekly_records)
-			
+
 			dose1.append(weekly_totals["dose1"])
 			dose2.append(weekly_totals["dose2"])
 
