@@ -2,7 +2,7 @@ import os, json
 from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Util import project_root, get_logger
 from scovid19.lib.data.Scotland import Scotland
-from datetime import datetime
+from datetime import date, timedelta, datetime
 
 
 class Vaccines:
@@ -11,33 +11,59 @@ class Vaccines:
 		self.scotland = Scotland()
 
 	def vaccines_weekly(self):
-		cases_by_week = OpenData.fetch("weekly_vaccine", limit=1000)
-		records = cases_by_week["records"]
+		totals = self.total_vaccinations()
+		start, end = self.get_previous_week()
 
-		latestrecords = []
+		weekly_records = self.get_weekly_data(start, end)
+		weekly = self.get_totals(weekly_records)
 
-		latestweek = records[-1]["WeekEnding"]
-		for record in records:
-			if record["WeekEnding"] == latestweek:
-				latestrecords.append(record)
-
-		totals = self.vaccines_daily()
-		weekly = self.get_totals(latestrecords)
 		return {
 			"this week": {
 				"Dose 1": weekly["dose1"],
 				"Dose 2": weekly["dose2"],
-				"Week Ending": datetime.strptime(
-					str(records[-1]["WeekEnding"]), "%Y%m%d"
-				).strftime("%d/%m/%Y"),
+				"Week Ending": end.strftime("%d/%m/%Y"),
 			},
 			"totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
 		}
 
-	def vaccines_daily(self):
+	def total_vaccinations(self):
+		daily_cases = self.get_daily_data()
+
+		return self.get_totals(daily_cases)
+
+	def get_daily_data(self):
 		cases_by_day = OpenData.fetch("daily_vaccine", limit=1000)
 		records = cases_by_day["records"]
 
+		return records
+
+	def get_weekly_data(self, start, end, **kwargs):
+		if "records" not in kwargs:
+			records = self.get_daily_data()
+
+		start = str(start).replace("-", "")
+		end = str(end).replace("-", "")
+
+		weekly_records = []
+
+		for record in records:
+			if int(start) <= int(record["Date"]) <= int(end):
+				weekly_records.append(record)
+
+		return weekly_records
+
+	def get_previous_week(self, **kwargs):
+		if "starting_date" not in kwargs:
+			starting_date = date.today()
+		else:
+			starting_date = datetime.strptime(str(kwargs["starting_date"]), "%Y%m%d").date()
+
+		start = starting_date - timedelta(days=starting_date.weekday(), weeks=+1)
+		end = start + timedelta(days=6)
+
+		return start, end
+
+	def get_totals(self, records):
 		totals = {
 			"dose1": 0,
 			"dose2": 0,
@@ -52,30 +78,10 @@ class Vaccines:
 
 		return totals
 
-	def get_totals(self, records):
-		totals = {
-			"dose1": 0,
-			"dose2": 0,
-		}
-
-		for record in records:
-			# BUG: For some reason the AstraZeneca data has a blank number vaccinated
-			if record["NumberVaccinated"].strip() == "":
-				continue
-
-			if record["Dose"] == "Dose 1":
-				if record["NumberVaccinated"]:
-					totals["dose1"] += int(record["NumberVaccinated"])
-			elif record["Dose"] == "Dose 2":
-				if record["NumberVaccinated"]:
-					totals["dose2"] += int(record["NumberVaccinated"])
-
-		return totals
-
 	def percentage_vaccinated(self):
 		population = self.scotland.entire_population()
 
-		totals = self.vaccines_daily()
+		totals = self.total_vaccinations()
 		remainder = population - totals["dose2"] - totals["dose1"]
 
 		dose1 = float(totals["dose1"] / population * 100)
@@ -119,40 +125,31 @@ class Vaccines:
 		}
 
 	def vaccine_trend(self):
-		cases_by_week = OpenData.fetch("weekly_vaccine")
-		records = cases_by_week["records"]
+		total_cases = self.get_daily_data()
 
-		weeklydata = []
-		for record in records:
-			weekending = record["WeekEnding"]
-			if weekending in weeklydata:
-				continue
-
-			weeklydata.append(weekending)
-
+		weeks = []
 		dates = []
+
+		for case in total_cases:  # a list of when each week starts and ends
+			if case["Product"] == "Total":
+				start, end = self.get_previous_week(starting_date=case["Date"])
+
+				if str(start) != "2020-11-30":
+					week = {"start": start, "end": end}
+
+					if week not in weeks:
+						weeks.append({"start": start, "end": end})
+						dates.append(start.strftime("%d/%m/%Y"))
+
 		dose1 = []
 		dose2 = []
 
-		for week in weeklydata:
+		for record in weeks:  # Get the total weekly data for these ranges
+			weekly_records = self.get_weekly_data(record["start"], record["end"])
+			weekly_totals = self.get_totals(weekly_records)
 
-			totals = {"dose1": 0, "dose2": 0}
-
-			for record in records:
-				if record["NumberVaccinated"].strip() == "":
-					continue
-
-				if week == record["WeekEnding"]:
-					if record["Dose"] == "Dose 1":
-						if record["NumberVaccinated"]:
-							totals["dose1"] += int(record["NumberVaccinated"])
-					elif record["Dose"] == "Dose 2":
-						if record["NumberVaccinated"]:
-							totals["dose2"] += int(record["NumberVaccinated"])
-
-			dates.append(datetime.strptime(str(week), "%Y%m%d").strftime("%d/%m/%Y"))
-			dose1.append(totals["dose1"])
-			dose2.append(totals["dose2"])
+			dose1.append(weekly_totals["dose1"])
+			dose2.append(weekly_totals["dose2"])
 
 		return {
 			"labels": dates,
