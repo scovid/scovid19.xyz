@@ -48,7 +48,6 @@ class Vaccines:
 
 		for record in records:
 			if int(start) <= int(record["Date"]) <= int(end):
-				#self.logger.error({"date": record["Date"], "Dose 1": record["Dose"], "NumberVaccinated": record["NumberVaccinated"]})
 				weekly_records.append(record)
 
 		return weekly_records
@@ -59,8 +58,8 @@ class Vaccines:
 		if "starting_date" not in kwargs:
 			starting_date = date.today()
 		else:
-			starting_date = kwargs["starting_date"]
-			
+			starting_date = datetime.strptime(str(kwargs["starting_date"]), '%Y%m%d').date()
+
 		start = starting_date - timedelta(days=starting_date.weekday(), weeks=+1)
 		end = start + timedelta(days=6)
 
@@ -129,40 +128,31 @@ class Vaccines:
 		}
 
 	def vaccine_trend(self):
-		cases_by_week = OpenData.fetch("weekly_vaccine")
-		records = cases_by_week["records"]
+		total_cases = self.get_daily_data()
 
-		weeklydata = []
-		for record in records:
-			weekending = record["WeekEnding"]
-			if weekending in weeklydata:
-				continue
-
-			weeklydata.append(weekending)
-
+		weeks = []
 		dates = []
+
+		for case in total_cases: # a list of when each week starts and ends
+			if case["Product"] == "Total":
+				start, end = self.get_previous_week(starting_date=case["Date"])
+
+				if str(start) != "2020-11-30":			
+					week = {"start": start, "end": end}
+					
+					if week not in weeks:
+						weeks.append({"start": start, "end": end})
+						dates.append(start.strftime('%d/%m/%Y'))
+
 		dose1 = []
 		dose2 = []
 
-		for week in weeklydata:
-
-			totals = {"dose1": 0, "dose2": 0}
-
-			for record in records:
-				if record["NumberVaccinated"].strip() == "":
-					continue
-
-				if week == record["WeekEnding"]:
-					if record["Dose"] == "Dose 1":
-						if record["NumberVaccinated"]:
-							totals["dose1"] += int(record["NumberVaccinated"])
-					elif record["Dose"] == "Dose 2":
-						if record["NumberVaccinated"]:
-							totals["dose2"] += int(record["NumberVaccinated"])
-
-			dates.append(datetime.strptime(str(week), "%Y%m%d").strftime("%d/%m/%Y"))
-			dose1.append(totals["dose1"])
-			dose2.append(totals["dose2"])
+		for record in weeks: # Get the total weekly data for these ranges
+			weekly_records = self.get_weekly_data(record["start"], record["end"])
+			weekly_totals = self.get_totals(weekly_records)
+			
+			dose1.append(weekly_totals["dose1"])
+			dose2.append(weekly_totals["dose2"])
 
 		return {
 			"labels": dates,
