@@ -31,7 +31,7 @@ def main(dry_run=False):
 
 	api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-	vaccine_data = vaccine.vaccines_daily()
+	vaccine_data = vaccine.total_vaccinations()
 	infection_data = infections.summary()
 
 	daily_cases = f"{infection_data['cases']['today']:,.0f}"
