@@ -14,11 +14,11 @@
 </div>
 
 <script>
-function locationChartOnSave() {
-	const full_duration = document.querySelector('#full_duration').value;
+	function locationChartOnSave() {
+		const full_duration = document.querySelector('#full_duration').value;
 
-	// If showing subset then display the subtitle
-	document.querySelector('#locationChart-subtitle').innerHTML = full_duration ? '&nbsp' : 'Last 7 days';
-}
+		// If showing subset then display the subtitle
+		document.querySelector('#locationChart-subtitle').innerHTML = full_duration ? '&nbsp' : 'Last 7 days';
+	}
 </script>
 {% endblock %} {% block footer %} {{ super() }} {% endblock %}
