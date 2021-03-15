@@ -64,6 +64,11 @@ function saveSettings(e) {
 	// Reload the chart using our new querystring
 	reloadChart(type, query);
 	closeSettings(e);
+
+	// Check if this chart has an 'OnSave' function defined
+	// If so call it
+	const fn = window[`${type}OnSave`];
+	if (typeof fn == 'function') fn();
 }
 
 function closeSettings(e) {
