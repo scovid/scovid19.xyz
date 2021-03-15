@@ -4,11 +4,12 @@
 }
 
 #darkToggle {
+	width: 100%;
 	cursor: pointer;
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
-	margin-bottom: -30px;
+	margin-bottom: 0.5rem;
 }
 
 @media only screen and (min-width: 1000px) {
