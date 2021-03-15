@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  tan:
+  format-all:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,17 +31,6 @@ jobs:
           source venv/bin/activate
           tan --use-tabs scovid19/
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: ':art: Auto-format with tan'
-
-  prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-        
       - name: Install
         run: yarn add prettier
  
@@ -53,4 +42,4 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: ':art: Auto-format with prettier'
+          commit_message: ':art: Auto-format with tan & prettier'
