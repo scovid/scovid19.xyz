@@ -34,7 +34,7 @@ class TestScotland:
 
 class TestVaccines:
 	@responses.activate
-	def test_vaccines_daily(self):
+	def test_total_vaccinations(self):
 		responses.add(
 			responses.GET,
 			"https://www.opendata.nhs.scot/en/api/3/action/datastore_search?resource_id=42f17a3c-a4db-4965-ba68-3dffe6bca13a&limit=1000",
@@ -43,7 +43,7 @@ class TestVaccines:
 		)
 
 		vaccines = Vaccines()
-		results = vaccines.vaccines_daily()
+		results = vaccines.total_vaccinations()
 		assert "dose1" in results
 		assert "dose2" in results
 		assert results["dose1"] > 0
