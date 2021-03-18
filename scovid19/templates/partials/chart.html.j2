@@ -6,14 +6,9 @@
 	{% endif %}
 </p>
 
-{% if subtitle: %}
-<p class="has-text-centered">{{ subtitle }}</p>
-{% else %}
-<p>&nbsp;</p>
-{% endif %}
+<p id="{{ type }}-subtitle" class="has-text-centered is-family-monospace is-uppercase pb-2">{{ subtitle }}&nbsp;</p>
 <br />
 
-<!-- Cases by location -->
 <div class="chart-container">
 	<canvas id="{{ type }}"></canvas>
 </div>
