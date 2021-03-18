@@ -47,7 +47,7 @@ def main(dry_run=False):
 		"dose2": f"{vaccine_data['dose2']:,.0f}",
 		"daily_cases": daily_cases,
 	}
-	text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new infection cases confirmed \n\n For more stats visit www.scovid19.xyz"
+	text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new cases reported \n\n For more stats visit www.scovid19.xyz"
 
 	if dry_run:
 		return f"--dry-run passed, would be tweeting the following message:\n{text.format(**v)}"
