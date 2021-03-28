@@ -89,7 +89,14 @@ if [[ $flask == 'up' ]]; then
 
 	elif [[ $env == 'prod' ]]; then
 		source venv/bin/activate
-		gunicorn --bind 0.0.0.0:5000 scovid19:app
+		gunicorn \
+			--workers 4 \
+			--bind 0.0.0.0:5000 \
+			--log-file ./logs/app.log \
+			--error-logfile ./logs/app.log \
+			--log-level debug \
+			--capture-output \
+			scovid19:app
 
 	else
 		echo "Invalid env value '$env'"
