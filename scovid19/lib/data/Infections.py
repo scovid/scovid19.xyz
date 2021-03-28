@@ -106,9 +106,9 @@ class Infections:
 		total_by_deprivation = OpenData.fetch("total_by_deprivation")
 		records = total_by_deprivation["records"]
 		for record in records:
-			positive += record["TotalPositive"]
-			negative += record["TotalNegative"]
-			deaths += record["TotalDeaths"]
+			positive += record["total_positive"]
+			negative += record["total_negative"]
+			deaths += record["total_deaths"]
 
 		return {
 			"labels": ["Positive", "Negative", "Deaths"],
