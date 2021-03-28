@@ -91,7 +91,9 @@ if [[ $flask == 'up' ]]; then
 		source venv/bin/activate
 		gunicorn \
 			--workers 4 \
+			--threads 4 \
 			--bind 0.0.0.0:5000 \
+			--worker-tmp-dir /dev/shm \
 			--log-file ./logs/app.log \
 			--error-logfile ./logs/app.log \
 			--log-level debug \
