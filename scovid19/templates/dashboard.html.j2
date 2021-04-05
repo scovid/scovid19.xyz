@@ -1,0 +1,45 @@
+{% import 'partials/tile.html.j2' as tile %}
+{% extends 'layouts/wrapper.html.j2' %} {% block body %}
+<script defer src="js/table.js"></script>
+
+<section id="stats" class="columns">
+	<div class="column">{{ tile.tile('New cases per day', infections['cases']['avg'], '#249596', 'average over last 7 days') }}</div>
+	<div class="column">{{ tile.tile('New deaths per day', infections['deaths']['avg'], '#67a23f', 'average over last 7 days') }}</div>
+	<div class="column">{{ tile.tile('First vaccines received', vaccines['totals']['Dose 1'], '#f6ae33', 'Total') }}</div>
+	<div class="column">{{ tile.tile('Second vaccines received', vaccines['totals']['Dose 2'], '#f94333', 'Total') }}</div>
+</section>
+
+<hr />
+
+<!-- Prevalence per council -->
+<section id="prevalence" style="overflow-x: auto">
+	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 100k people in last 7 days</p>
+	<table class="table is-striped is-hoverable is-fullwidth slider closed">
+		<thead>
+			<tr>
+				<th>Council</th>
+				<th>Cases per 100k</th>
+				<th>Population</th>
+				<th>Cases</th>
+				<th>Estimated Lockdown Level</th>
+			</tr>
+		</thead>
+		<tbody id="tableBody"></tbody>
+	</table>
+	<progress id="tableProgress" class="progress"></progress>
+
+	<!-- More councils -->
+	<div class="field has-addons is-justify-content-center">
+		<div class="control">
+			<button class="button" disabled id="tableLess" onclick="tableLess(this)">Show Less</button>
+		</div>
+		<div class="control">
+			<button class="button" id="tableMore" onclick="tableMore(this)">Show More</button>
+		</div>
+		<div class="control">
+			<button class="button" id="tableAll" onclick="tableAll(this)">Show All</button>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

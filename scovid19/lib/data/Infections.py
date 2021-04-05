@@ -20,7 +20,6 @@ class Infections:
 		records = cases_by_day["records"]
 
 		# NOTE: Latest stat always trickles in so use the slice -8:-1 instead
-		print(records[-1])
 		summary = {
 			"cases": {
 				"total": records[-1]["CumulativeCases"],
