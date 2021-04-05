@@ -21,16 +21,28 @@ vaccines = Vaccines()
 # Page routes
 @app.route("/")
 @page
+def dashboard():
+	return render_template(
+		"dashboard.html.j2",
+		infections=infections.summary(),
+		vaccines=vaccines.vaccines_weekly(),
+		last_updated=infections.last_updated(format="%d %b %y"),
+		tab="dashboard",
+	)
+
+
+@app.route("/infections")
+@page
 def index():
 	return render_template(
 		"infections.html.j2",
 		summary=infections.summary(),
-		last_updated=infections.last_updated(format="%d %B %Y"),
+		last_updated=infections.last_updated(format="%d %b %y"),
 		tab="overview",
 	)
 
 
-@app.route("/vaccine")
+@app.route("/vaccines")
 @page
 def vaccine():
 	return render_template(

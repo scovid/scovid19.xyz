@@ -1,5 +1,4 @@
 {% import 'partials/chart.html.j2' as chart %} {% import 'partials/tile.html.j2' as tile %} {% extends 'layouts/wrapper.html.j2' %} {% block body %}
-<script defer src="js/table.js"></script>
 
 <!-- Stats-->
 <section id="stats" class="columns">
@@ -22,40 +21,6 @@
 </div>
 
 <hr />
-
-<!-- Prevalence per council -->
-<section id="prevalence" style="overflow-x: auto">
-	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 100k people in last 7 days</p>
-	<table class="table is-striped is-hoverable is-fullwidth slider closed">
-		<thead>
-			<tr>
-				<th>Council</th>
-				<th>Cases per 100k</th>
-				<th>Population</th>
-				<th>Cases</th>
-				<th>Estimated Lockdown Level</th>
-			</tr>
-		</thead>
-		<tbody id="tableBody"></tbody>
-	</table>
-	<progress id="tableProgress" class="progress"></progress>
-
-	<!-- More councils -->
-	<div class="field has-addons is-justify-content-center">
-		<div class="control">
-			<button class="button" disabled id="tableLess" onclick="tableLess(this)">Show Less</button>
-		</div>
-		<div class="control">
-			<button class="button" id="tableMore" onclick="tableMore(this)">Show More</button>
-		</div>
-		<div class="control">
-			<button class="button" id="tableAll" onclick="tableAll(this)">Show All</button>
-		</div>
-	</div>
-</section>
-
-<hr />
-
 <!-- Charts -->
 <section id="charts" class="section">
 	<div class="columns is-desktop">
