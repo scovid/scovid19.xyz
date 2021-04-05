@@ -30,6 +30,7 @@ def dashboard():
 		tab="dashboard",
 	)
 
+
 @app.route("/infections")
 @page
 def index():
@@ -39,6 +40,7 @@ def index():
 		last_updated=infections.last_updated(format="%d %b %y"),
 		tab="overview",
 	)
+
 
 @app.route("/vaccines")
 @page
