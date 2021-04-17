@@ -32,7 +32,7 @@ class Vaccines:
 		return self.get_totals(daily_cases)
 
 	def get_daily_data(self):
-		cases_by_day = OpenData.fetch("daily_vaccine", limit=1000)
+		cases_by_day = OpenData.fetch("daily_vaccine", limit=10000)
 		records = cases_by_day["records"]
 
 		return records
