@@ -10,7 +10,7 @@
 		<title>SCOVID-19</title>
 
 		<!-- Bulma and bulma swatch themes -->
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" />
 		<link rel="stylesheet" id="flatly" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css" />
 		<link rel="stylesheet" id="darkly" disabled href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css" />
 
@@ -41,7 +41,6 @@
 						<i id="themeToggle" onclick="toggleDarkMode()" style="color: white" class="fas fa-moon fa-2x"></i>
 					</span>
 				</div>
-
 				<div class="level">
 					<div class="level-left">
 						<div>
@@ -56,8 +55,15 @@
 						</div>
 					</div>
 					<div class="level-right">
-						<div class="container">
-							<p class="subtitle is-6 scotflag">Don't be an eejit, wear a mask</p>
+						<div class="level-item is-justify-content-flex-start">
+							<div class="has-text-right-tablet">
+								<div>
+									<p class="is-6 scotflag">
+										<a class="has-text-white" href="https://twitter.com/Scovid19Bot/"><i class="fab fa-twitter pr-1"></i> Follow us on twitter</a>
+									</p>
+									<p class="is-6 scotflag">Don't be an eejit, wear a mask</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -66,8 +72,9 @@
 			<section id="tabs">
 				<div class="tabs is-centered is-boxed">
 					<ul>
-						<li class='{{ "is-active" if tab == "overview" }}'><a href="/">Infection Stats</a></li>
-						<li class='{{ "is-active" if tab == "vaccine" }}'><a href="/vaccine">Vaccine Stats</a></li>
+						<li class='{{ "is-active" if tab == "dashboard" }}'><a href="/">Dashboard</a></li>
+						<li class='{{ "is-active" if tab == "overview" }}'><a href="/infections">Infections</a></li>
+						<li class='{{ "is-active" if tab == "vaccine" }}'><a href="/vaccines">Vaccines</a></li>
 					</ul>
 				</div>
 			</section>

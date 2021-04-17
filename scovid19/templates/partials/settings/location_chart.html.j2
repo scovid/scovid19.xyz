@@ -1,16 +1,24 @@
 {% extends "partials/settings/base.html.j2" %} {% set modal_id = 'location_chart_settings' %} {% block title %}Edit Date Range{% endblock %} {% block body %}
 <div class="control">
-	<!-- TODO: Add "Last 7 days" subtitle to chart when viewing last 7 days -->
 	<label class="radio">
-		<input type="radio" checked name="duration" onchange="document.querySelector('#duration_choice').value=''" />
+		<input type="radio" checked name="duration" onchange="document.querySelector('#full_duration').value=''" />
 		Last 7 days
 	</label>
 	<label class="radio">
-		<input type="radio" name="duration" onchange="document.querySelector('#duration_choice').value='true'" />
+		<input type="radio" name="duration" onchange="document.querySelector('#full_duration').value='true'" />
 		Full
 	</label>
 
 	<!-- Use hidden field as our data-param -->
-	<input id="duration_choice" type="hidden" data-param="full" value="" />
+	<input id="full_duration" type="hidden" data-param="full" value="" />
 </div>
+
+<script>
+	function locationChartOnSave() {
+		const full_duration = document.querySelector('#full_duration').value;
+
+		// If showing subset then display the subtitle
+		document.querySelector('#locationChart-subtitle').innerHTML = full_duration ? '&nbsp' : 'Last 7 days';
+	}
+</script>
 {% endblock %} {% block footer %} {{ super() }} {% endblock %}

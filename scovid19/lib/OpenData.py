@@ -10,6 +10,7 @@ CACHER = Cache.Cacher(system=Cache.System.FILE, valid_for=Cache.Duration.hours(2
 
 
 class OpenData:
+	default_timeout = 5
 	endpoint = "https://www.opendata.nhs.scot/en/api/3/action/datastore_search"
 
 	resources = {
@@ -35,7 +36,7 @@ class OpenData:
 			return {}
 
 		kwargs["resource_id"] = OpenData.resources[resource]
-		r = requests.get(OpenData.endpoint, params=kwargs)
+		r = requests.get(OpenData.endpoint, timeout=OpenData.default_timeout, params=kwargs)
 
 		if r.status_code != 200:
 			logging.error(f"ERROR: Bad response from OpenData API:\n{r.content}")
