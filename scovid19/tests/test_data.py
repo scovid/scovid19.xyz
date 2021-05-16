@@ -37,7 +37,7 @@ class TestVaccines:
 	def test_total_vaccinations(self):
 		responses.add(
 			responses.GET,
-			"https://www.opendata.nhs.scot/en/api/3/action/datastore_search?resource_id=42f17a3c-a4db-4965-ba68-3dffe6bca13a&limit=1000",
+			"https://www.opendata.nhs.scot/en/api/3/action/datastore_search?limit=10000&resource_id=42f17a3c-a4db-4965-ba68-3dffe6bca13a",
 			json=read_response("vaccines_daily.json", as_json=True),
 			status=200,
 		)
