@@ -26,10 +26,7 @@ class Vaccines:
                 "Dose 2": weekly["dose2"],
                 "Week Ending": end.strftime("%d/%m/%Y"),
             },
-            "totals": {
-                "Dose 1": totals["dose1"],
-                "Dose 2": totals["dose2"]
-            },
+            "totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
         }
 
     def total_vaccinations(self):
@@ -80,7 +77,10 @@ class Vaccines:
         }
 
         for record in records:
-            if record["Product"] == "Total" and record["AgeBand"] == "16 years and over":
+            if (
+                record["Product"] == "Total"
+                and record["AgeBand"] == "16 years and over"
+            ):
                 if record["Dose"] == "Dose 1":
                     totals["dose1"] += int(record["NumberVaccinated"])
                 elif record["Dose"] == "Dose 2":
