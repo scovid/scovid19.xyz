@@ -77,7 +77,7 @@ class Vaccines:
         }
 
         for record in records:
-            if (record["Product"] == "Total"):
+            if record["Product"] == "Total":
                 if "AgeBand" in record:
                     if record["AgeBand"] != "16 years and over":
                         continue
