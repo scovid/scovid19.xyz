@@ -77,10 +77,10 @@ class Vaccines:
         }
 
         for record in records:
-            if (
-                record["Product"] == "Total"
-                and record["AgeBand"] == "16 years and over"
-            ):
+            if (record["Product"] == "Total"):
+                if "AgeBand" in record:
+                    if record["AgeBand"] != "16 years and over":
+                        continue
                 if record["Dose"] == "Dose 1":
                     totals["dose1"] += int(record["NumberVaccinated"])
                 elif record["Dose"] == "Dose 2":
