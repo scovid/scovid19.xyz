@@ -27,10 +27,10 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: 'Run tan'
+      - name: 'Run py formatter'
         run: |
           source venv/bin/activate
-          tan --use-tabs scovid19/
+          black scovid19/
 
       # Front end formatting with prettier
       - name: Install
