@@ -1,4 +1,4 @@
-import os, json
+import json
 from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Util import project_root, get_logger
 from scovid19.lib.data.Scotland import Scotland
@@ -10,10 +10,13 @@ class Vaccines:
         self.logger = get_logger("app")
         self.scotland = Scotland()
 
-    def vaccines_weekly(self):
+    def vaccines_summary(self):
+        """
+        Returns the vaccine figures for this last week and overall
+        """
         totals = self.total_vaccinations()
-        start, end = self.get_previous_week()
 
+        start, end = self.get_previous_week()
         weekly_records = self.get_weekly_data(start, end)
         weekly = self.get_totals(weekly_records)
 
@@ -23,12 +26,17 @@ class Vaccines:
                 "Dose 2": weekly["dose2"],
                 "Week Ending": end.strftime("%d/%m/%Y"),
             },
-            "totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
+            "totals": {
+                "Dose 1": totals["dose1"],
+                "Dose 2": totals["dose2"]
+            },
         }
 
     def total_vaccinations(self):
+        """
+        Returns the total vaccinated overall
+        """
         daily_cases = self.get_daily_data()
-
         return self.get_totals(daily_cases)
 
     def get_daily_data(self):
@@ -72,7 +80,7 @@ class Vaccines:
         }
 
         for record in records:
-            if record["Product"] == "Total":
+            if record["Product"] == "Total" and record["AgeBand"] == "16 years and over":
                 if record["Dose"] == "Dose 1":
                     totals["dose1"] += int(record["NumberVaccinated"])
                 elif record["Dose"] == "Dose 2":

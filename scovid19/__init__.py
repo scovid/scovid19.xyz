@@ -25,7 +25,7 @@ def dashboard():
     return render_template(
         "dashboard.html.j2",
         infections=infections.summary(),
-        vaccines=vaccines.vaccines_weekly(),
+        vaccines=vaccines.vaccines_summary(),
         last_updated=infections.last_updated(format="%d %b %y"),
         tab="dashboard",
     )
@@ -48,7 +48,7 @@ def vaccine():
     return render_template(
         "vaccine.html.j2",
         tab="vaccine",
-        weekly=vaccines.vaccines_weekly(),
+        weekly=vaccines.vaccines_summary(),
         percentage=vaccines.percentage_vaccinated(),
         last_updated=infections.last_updated(format="%d %B %Y"),
     )

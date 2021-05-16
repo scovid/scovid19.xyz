@@ -1,4 +1,3 @@
-import sys
 import requests
 import logging
 import scovid19.lib.Cache as Cache
