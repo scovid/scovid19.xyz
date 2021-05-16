@@ -1,52 +1,125 @@
-/* JS for the table */
-window.addEventListener('load', () => loadTable());
+/*
+TODO:
+- Support pagination or load more/load less
+- Display sort arrows on headers
+- Support search filtering
+*/
 
-const tableBody = document.querySelector('#tableBody');
+class SimpleTable {
+	/*
+	selector: The DOM selector for the table
+	headers: Map of header string and key for the row object
+	rows: Array of objects of the table rows (or a function that returns this - async supported)
+	rowLimit: Max number of rows to load at once, pass -1 to disable (Default = -1)
+	*/
+	constructor(selector, headers, rows) {
+		this.selector = selector;
+		this.headers = headers;
+		this.rows = rows;
 
-async function loadTable(limit = 5) {
-	if (limit < 5) limit = 5;
-
-	let res = await fetch(`/api/prevalence?limit=${limit}`);
-	let data = await res.json();
-
-	tableBody.innerHTML = '';
-
-	for (let item of data) {
-		let row = tableBody.insertRow();
-
-		['council', 'per_100k', 'population', 'cases', 'level'].forEach(field => {
-			let cell = row.insertCell();
-			cell.appendChild(document.createTextNode(item[field]));
-		});
+		this.table = {};
+		this.state = {};
 	}
 
-	document.querySelector('#tableProgress').classList.add('is-hidden');
-}
+	async init() {
+		const container = document.querySelector(this.selector);
+		if (!container) {
+			console.error(`SimpleTable Error: '${this.selector}' not found`)
+			return;
+		}
 
-async function tableLess(e) {
-	await loadTable(tableBody.rows.length - 5);
-	document.querySelector('#tableMore').disabled = false;
-	document.querySelector('#tableAll').disabled = false;
+		let table = document.createElement('table');
+		table.classList = 'table is-striped is-hoverable is-fullwidth slider closed'
+		this.table.table = table;
 
-	console.log(tableBody.rows.length);
-	if (tableBody.rows.length <= 5) {
-		e.disabled = true;
+		// Progress bar
+		let progress = document.createElement('progress');
+		progress.classList = 'progress'
+
+		container.appendChild(table);
+		container.appendChild(progress);
+
+		// Head
+		let tableHead = table.createTHead();
+		let headerRow = tableHead.insertRow();
+		this.table.head = tableHead;
+
+		for (let [header, rowKey] of this.headers) {
+			let cell = document.createElement('th');
+			cell.appendChild(document.createTextNode(header));
+			cell.setAttribute('row-key', rowKey);
+
+			// Sort by header on click
+			cell.addEventListener('click', () => {
+				if (!Array.isArray(this.rows) || this.rows.length == 0) return;
+
+				const parseNum = (num) => Number(num.toString().replace(',', ''));
+
+				// Sort data
+				const isNumeric = Number.isFinite(parseNum(this.rows[0][rowKey]));
+				console.log(isNumeric)
+				if (isNumeric)
+					this.rows = this.rows.sort((a, b) => parseNum(b[rowKey]) - parseNum(a[rowKey]));
+				else
+					this.rows = this.rows.sort((a, b) => a[rowKey] > b[rowKey]);
+
+					// Store state and handle reversing
+				if (this.state.sorted === rowKey) {
+					this.rows = this.rows.reverse();
+					this.state.sorted = `${rowKey}_reversed`;
+				} else {
+					this.state.sorted = rowKey;
+				}
+
+				// Reload data
+				this.buildRows();
+			})
+			headerRow.appendChild(cell);
+		}
+
+		// Body
+		let tableBody = document.createElement('tbody');
+		this.table.body = tableBody;
+
+		// Load rows
+		if (typeof this.rows === 'function') {
+			let isAsync = this.rows[Symbol.toStringTag] === 'AsyncFunction';
+			this.rows = isAsync ? await this.rows() : this.rows();
+		}
+
+		table.appendChild(tableBody);
+		this.buildRows();
+
+		// document.querySelector(this.selector).classList.add('is-hidden');
+		progress.classList.add('is-hidden');
+	}
+
+	buildRows() {
+		this.table.body.innerHTML = '';
+
+		// Build rows
+		for (let row of this.rows) {
+			let newRow = this.table.body.insertRow();
+			for (let [_, rowKey] of this.headers) {
+				let cell = newRow.insertCell();
+				cell.appendChild(document.createTextNode(row[rowKey]));
+			}
+		}
 	}
 }
 
-async function tableMore(e) {
-	let rowsBefore = tableBody.rows.length;
-	await loadTable(tableBody.rows.length + 5);
-	document.querySelector('#tableLess').disabled = false;
+/* EXAMPLE
+let headers = new Map();
+headers.set('Council', 'council');
+headers.set('Cases per 100k', 'per_100k');
+headers.set('Population', 'population');
+headers.set('Cases', 'cases');
+headers.set('Estimated Level', 'level');
 
-	if (tableBody.rows.length < rowsBefore + 5) {
-		e.disabled = true;
-	}
-}
+const dataLoader = async () => {
+	let res = await fetch(`/api/prevalence`);
+	return await res.json();
+};
 
-async function tableAll(e) {
-	await loadTable(50); // There are less than 50 councils so
-	document.querySelector('#tableLess').disabled = false;
-	document.querySelector('#tableMore').disabled = true;
-	document.querySelector('#tableAll').disabled = true;
-}
+new SimpleTable('#statsTable', headers, dataLoader).init();
+*/

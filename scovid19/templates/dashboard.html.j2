@@ -13,32 +13,27 @@
 <!-- Prevalence per council -->
 <section id="prevalence" style="overflow-x: auto">
 	<p class="heading is-size-5 has-text-centered has-text-weight-medium">Cases per 100k people in last 7 days</p>
-	<table class="table is-striped is-hoverable is-fullwidth slider closed">
-		<thead>
-			<tr>
-				<th>Council</th>
-				<th>Cases per 100k</th>
-				<th>Population</th>
-				<th>Cases</th>
-				<th>Estimated Lockdown Level</th>
-			</tr>
-		</thead>
-		<tbody id="tableBody"></tbody>
-	</table>
-	<progress id="tableProgress" class="progress"></progress>
-
-	<!-- More councils -->
-	<div class="field has-addons is-justify-content-center">
-		<div class="control">
-			<button class="button" disabled id="tableLess" onclick="tableLess(this)">Show Less</button>
-		</div>
-		<div class="control">
-			<button class="button" id="tableMore" onclick="tableMore(this)">Show More</button>
-		</div>
-		<div class="control">
-			<button class="button" id="tableAll" onclick="tableAll(this)">Show All</button>
-		</div>
+	<div id="statsTable">
+		<!-- Stats populated here dynamically -->
 	</div>
 </section>
+
+<script>
+	window.addEventListener('load', () => {
+		let headers = new Map();
+		headers.set('Council', 'council');
+		headers.set('Cases per 100k', 'per_100k');
+		headers.set('Population', 'population');
+		headers.set('Cases', 'cases');
+		headers.set('Estimated Level', 'level');
+
+		const dataLoader = async () => {
+			let res = await fetch(`/api/prevalence`);
+			return await res.json();
+		};
+		
+		new SimpleTable('#statsTable', headers, dataLoader).init();
+	});
+</script>
 
 {% endblock %}
