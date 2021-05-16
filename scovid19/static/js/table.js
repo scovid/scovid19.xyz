@@ -24,17 +24,17 @@ class SimpleTable {
 	async init() {
 		const container = document.querySelector(this.selector);
 		if (!container) {
-			console.error(`SimpleTable Error: '${this.selector}' not found`)
+			console.error(`SimpleTable Error: '${this.selector}' not found`);
 			return;
 		}
 
 		let table = document.createElement('table');
-		table.classList = 'table is-striped is-hoverable is-fullwidth slider closed'
+		table.classList = 'table is-striped is-hoverable is-fullwidth slider closed';
 		this.table.table = table;
 
 		// Progress bar
 		let progress = document.createElement('progress');
-		progress.classList = 'progress'
+		progress.classList = 'progress';
 
 		container.appendChild(table);
 		container.appendChild(progress);
@@ -53,17 +53,15 @@ class SimpleTable {
 			cell.addEventListener('click', () => {
 				if (!Array.isArray(this.rows) || this.rows.length == 0) return;
 
-				const parseNum = (num) => Number(num.toString().replace(',', ''));
+				const parseNum = num => Number(num.toString().replace(',', ''));
 
 				// Sort data
 				const isNumeric = Number.isFinite(parseNum(this.rows[0][rowKey]));
-				console.log(isNumeric)
-				if (isNumeric)
-					this.rows = this.rows.sort((a, b) => parseNum(b[rowKey]) - parseNum(a[rowKey]));
-				else
-					this.rows = this.rows.sort((a, b) => a[rowKey] > b[rowKey]);
+				console.log(isNumeric);
+				if (isNumeric) this.rows = this.rows.sort((a, b) => parseNum(b[rowKey]) - parseNum(a[rowKey]));
+				else this.rows = this.rows.sort((a, b) => a[rowKey] > b[rowKey]);
 
-					// Store state and handle reversing
+				// Store state and handle reversing
 				if (this.state.sorted === rowKey) {
 					this.rows = this.rows.reverse();
 					this.state.sorted = `${rowKey}_reversed`;
@@ -73,7 +71,7 @@ class SimpleTable {
 
 				// Reload data
 				this.buildRows();
-			})
+			});
 			headerRow.appendChild(cell);
 		}
 
