@@ -10,6 +10,6 @@ from scovid19.scripts.tweet import main as tweet
 
 
 class TestTweet:
-	def test_tweet(self):
-		tweet_result = tweet(dry_run=True)
-		assert "would be tweeting" in tweet_result
+    def test_tweet(self):
+        tweet_result = tweet(dry_run=True)
+        assert "would be tweeting" in tweet_result
