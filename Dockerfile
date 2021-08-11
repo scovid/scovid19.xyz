@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.2
+
 FROM python:3.9-slim-buster
 
 LABEL Author="Daniel Stewart"
@@ -5,7 +7,12 @@ LABEL E-mail="danielandrewstewart@gmail.com"
 LABEL version="0.0.1"
 
 # Install deps
-RUN apt-get update -y && apt-get install -y sudo cron
+# Disable auto-cleanup after install:
+RUN rm /etc/apt/apt.conf.d/docker-clean
+
+# Install updates and cache across builds
+ENV DEBIAN_FRONTEND=noninteractive
+RUN --mount=type=cache,target=/var/cache/apt,id=apt apt-get update && apt-get -y upgrade && apt-get install -y sudo cron
 
 ENV PATH="/home/code/.local/bin:${PATH}"
 
@@ -17,15 +24,19 @@ USER code
 RUN mkdir -p /home/code/scovid19
 WORKDIR /home/code/scovid19
 
+# Install python deps
 COPY --chown=code:code requirements.txt ./
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN --mount=type=cache,target=/home/app/.cache/pip,id=pip pip install -r requirements.txt
+
+# Get traceback for C crashes
+ENV PYTHONFAULTHANDLER=1
 
 COPY --chown=code:code . ./
 
-# Don't need a .env in the container
-# env is set built in entrypoint.sh based on docker-compose
-RUN if [ -f .env ]; then rm .env; fi
-
 EXPOSE 5000
-ENTRYPOINT [ "/home/code/scovid19/scovid19/entrypoint.sh" ]
+
+# Blank entrypoint allows passing custom commands via `docker run`
+ENTRYPOINT [ ]
+
+CMD [ "/home/code/scovid19/scovid19/entrypoint.sh" ]

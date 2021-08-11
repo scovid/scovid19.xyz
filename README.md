@@ -20,15 +20,16 @@ The following instructions use docker, if you'd rather not use docker then see `
 # Dependencies
 sudo apt install docker docker-compose
 
+# Enable BuildKit
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+export BUILDKIT_PROGRESS=plain
+
 # Start the container in dev mode
-# This mounts `./scovid/` as a docker volume so you can edit the container code directly
-./control.sh --env dev --docker up
+docker-compose up -d --build scovid
 
-# Docker logs
+# Logs
 docker logs --tail 200 -f scovid
-
-# App logs
-docker exec -it scovid tail -f app.log
 
 # Tests
 docker exec -it scovid pytest
@@ -42,7 +43,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 # run
-./control.sh --env prod --docker up
+docker-compose -f docker-compose.yml up -d --build scovid
 
 # nginx
 sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/
@@ -55,7 +56,7 @@ sudo certbot --nginx
 # Update
 # Uses docker-compose scaling to deploy without downtime
 git pull
-./control.sh --docker deploy
+./scripts/deploy.sh
 ```
 
 

@@ -6,9 +6,6 @@ sudo service cron start
 # Default to dev
 [[ -z $SCOVID_ENV ]] && SCOVID_ENV='dev'
 
-# Create our env file
-printenv | grep -e '^SCOVID_' > "$SCOVID_PROJECT_ROOT/.env"
-
 # Create user cron if it doesn't exist
 # NOTE: This exits with a non zero
 crontab -l >/dev/null 2>&1
@@ -21,4 +18,17 @@ PATH="$PATH:/usr/local/bin"
 EOF
 
 # Start web server
-./control.sh --env $SCOVID_ENV --flask up --in-container
+if [[ $SCOVID_ENV == 'dev' || $SCOVID_ENV == 'development' ]]; then
+    exec flask run --host 0.0.0.0
+else
+    exec gunicorn \
+        --workers 4 \
+        --threads 4 \
+        --worker-class gevent \
+        --bind 0.0.0.0:5000 \
+        --worker-tmp-dir /dev/shm \
+        --log-level debug \
+        --capture-output \
+        --enable-stdio-inheritance \
+        scovid19:app
+fi
