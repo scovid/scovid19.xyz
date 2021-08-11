@@ -25,7 +25,6 @@
 		headers.set('Cases per 100k', 'per_100k');
 		headers.set('Population', 'population');
 		headers.set('Cases', 'cases');
-		headers.set('Estimated Level', 'level');
 
 		const dataLoader = async () => {
 			let res = await fetch(`/api/prevalence`);

@@ -217,19 +217,6 @@ class Infections:
             quotient = pop["AllAges"] / 100_000
             per_100k = cases[pop["CA"]] / quotient
 
-            # TODO: Link to this from the page
-            # Page 60 on the PDF
-            # https://www.gov.scot/publications/coronavirus-covid-19-strategic-framework-update-february-2021/
-            level = 0
-            if per_100k >= 150:
-                level = 4
-            elif per_100k >= 50:
-                level = 3
-            elif per_100k >= 20:
-                level = 2
-            elif per_100k >= 3:
-                level = 1
-
             prevalence.append(
                 {
                     "council": councils[pop["CA"]],
@@ -237,7 +224,6 @@ class Infections:
                     "cases": format(cases[pop["CA"]], ","),
                     "per_100k": round(per_100k, 2),
                     "percentage": format(cases[pop["CA"]] / pop["AllAges"], ","),
-                    "level": level,
                 }
             )
 
