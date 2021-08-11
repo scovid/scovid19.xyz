@@ -56,7 +56,7 @@ sudo certbot --nginx
 # Update
 # Uses docker-compose scaling to deploy without downtime
 git pull
-./scripts/deploy.sh
+./tools/deploy.sh
 ```
 
 
