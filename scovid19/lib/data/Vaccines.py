@@ -45,6 +45,8 @@ class Vaccines:
     def get_weekly_data(self, start, end, **kwargs):
         if "records" not in kwargs:
             records = self.get_daily_data()
+        else:
+            records = kwargs["records"]
 
         start = str(start).replace("-", "")
         end = str(end).replace("-", "")
@@ -76,15 +78,12 @@ class Vaccines:
             "dose2": 0,
         }
 
+        records = [ record for record in records if record["Product"] == "Total" and record["AgeBand"] == "All vaccinations" ]
         for record in records:
-            if record["Product"] == "Total":
-                if "AgeBand" in record:
-                    if record["AgeBand"] != "16 years and over":
-                        continue
-                if record["Dose"] == "Dose 1":
-                    totals["dose1"] += int(record["NumberVaccinated"])
-                elif record["Dose"] == "Dose 2":
-                    totals["dose2"] += int(record["NumberVaccinated"])
+            if record["Dose"] == "Dose 1":
+                totals["dose1"] += int(record["NumberVaccinated"])
+            elif record["Dose"] == "Dose 2":
+                totals["dose2"] += int(record["NumberVaccinated"])
 
         return totals
 
@@ -92,20 +91,19 @@ class Vaccines:
         population = self.scotland.entire_population()
 
         totals = self.total_vaccinations()
-        remainder = population - totals["dose2"] - totals["dose1"]
 
-        dose1 = float(totals["dose1"] / population * 100)
-        dose2 = float(totals["dose2"] / population * 100)
-        remainder = float(remainder / population * 100)
+        double_vax = totals["dose2"]
+        single_vax = totals["dose1"] - totals["dose2"]
+        no_vax = population - totals["dose1"]
 
         return {
-            "labels": ["Second Dose received", "First Dose received", "Un-vaccinated"],
+            "labels": ["Both vaccines", "First vaccine only", "Un-vaccinated"],
             "datasets": [
                 {
                     "backgroundColor": ["green", "lightblue", "red"],
                     "borderColor": ["green", "lightblue", "red"],
                     "label": "Vaccinations by total population",
-                    "data": [dose2, dose1, remainder],
+                    "data": [ double_vax, single_vax, no_vax ],
                 }
             ],
         }

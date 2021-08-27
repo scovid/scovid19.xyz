@@ -28,7 +28,7 @@ class Scotland:
 
     # Get the population for Scotland
     @cacheable(cacher=HEAVY_CACHER)
-    def entire_population(self):
+    def entire_population(self) -> int:
         populations = self.population()
 
         for pop in populations:
