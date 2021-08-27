@@ -33,6 +33,9 @@ docker logs --tail 200 -f scovid
 
 # Tests
 docker exec -it scovid pytest
+
+# Post tweet - does not post if stats are the same
+docker exec -it scovid python3 -m scovid19.scripts.tweet
 ```
 
 ### Deploy
