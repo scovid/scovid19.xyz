@@ -13,7 +13,9 @@ database = 'data/scovid19.db'
 datasets = {
     # Misc
     "population_by_council": 'https://www.opendata.nhs.scot/datastore/dump/09ebfefb-33f4-4f6a-8312-2d14e2b02ace?format=json',
-    "councils": 'https://www.opendata.nhs.scot/datastore/dump/967937c4-8d67-4f39-974f-fd58c4acfda5?format=json',
+
+    # NOTE: The JSON version of this is wrong so don't update it
+    # "councils": 'https://www.opendata.nhs.scot/datastore/dump/967937c4-8d67-4f39-974f-fd58c4acfda5?format=json',
 
     # Infections
     "infections_daily": 'https://www.opendata.nhs.scot/datastore/dump/287fc645-4352-4477-9c8c-55bc054b7e76?format=json',
@@ -49,7 +51,6 @@ for table_name, url in datasets.items():
 
         conn.cursor().execute(f"DROP TABLE IF EXISTS {table_name}")
         conn.cursor().execute(f"CREATE TABLE {table_name}({cols})")
-        conn.commit()
 
         for row in parsed["records"]:
             placeholders = ','.join(['?'] * len(row))

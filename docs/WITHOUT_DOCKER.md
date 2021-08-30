@@ -27,12 +27,8 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# systemd
-sudo systemctl enable $(pwd)/system/systemd/scovid19.service
-sudo systemctl start scovid19
-
 # nginx
-sudo cp system/nginx/scovid19.xyz /etc/nginx/sites-available/
+sudo cp config/nginx/scovid19.xyz /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/scovid19.xyz /etc/nginx/sites-enabled/
 sudo service nginx restart
 

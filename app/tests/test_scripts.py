@@ -5,8 +5,8 @@ The mock responses are stored in scovid19/tests/responses/
 """
 
 import pytest
-from scovid19.lib.data import Scotland, Infections, Vaccines
-from scovid19.scripts.tweet import main as tweet
+from app.lib.data import Scotland, Infections, Vaccines
+from app.scripts.tweet import main as tweet
 
 
 class TestTweet:

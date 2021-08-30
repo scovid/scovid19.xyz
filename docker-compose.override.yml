@@ -8,11 +8,11 @@ services:
     ports:
       - 4001:5000
     volumes:
-      - './scovid19:/home/code/scovid19/scovid19'
-      - data:/home/code/scovid19/data
+      - './:/home/app/scovid19/'
+      - ./data:/home/app/scovid19/data
     environment:
       SCOVID_ENV: dev
-      SCOVID_PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/app/scovid19/
       FLASK_ENV: development
       FLASK_DEBUG: 1
-      FLASK_APP: scovid19
+      FLASK_APP: app

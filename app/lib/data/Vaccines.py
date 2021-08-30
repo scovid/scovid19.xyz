@@ -1,7 +1,7 @@
 import json
-from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Util import project_root, get_logger
-from scovid19.lib.data.Scotland import Scotland
+from app.lib.OpenData import OpenData
+from app.lib.Util import project_root, get_logger
+from app.lib.data.Scotland import Scotland
 from datetime import date, timedelta, datetime
 
 

@@ -7,7 +7,7 @@ The mock responses are stored in scovid19/tests/responses/
 import pytest
 import responses
 import json
-from scovid19.lib.data import Scotland, Infections, Vaccines
+from app.lib.data import Scotland, Infections, Vaccines
 
 
 def read_response(name, as_json=True):

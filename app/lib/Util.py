@@ -20,7 +20,7 @@ def strpstrf(dt, strp="%Y%m%d", strf="%Y-%m-%d", rev=False):
 
 
 def project_root():
-    return os.environ.get("SCOVID_PROJECT_ROOT", "/home/code/scovid19")
+    return os.environ.get("SCOVID_PROJECT_ROOT", "/home/app/scovid19")
 
 
 def env():

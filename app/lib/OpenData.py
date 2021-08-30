@@ -1,7 +1,7 @@
 import requests
 import logging
-import scovid19.lib.Cache as Cache
-from scovid19.lib.Decorators import cacheable
+import app.lib.Cache as Cache
+from app.lib.Decorators import cacheable
 
 # Define our cache
 # File cacher with an expiry of 2 hours

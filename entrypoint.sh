@@ -39,5 +39,5 @@ else
         --log-level debug \
         --capture-output \
         --enable-stdio-inheritance \
-        scovid19:app
+        'app:create_app()'
 fi

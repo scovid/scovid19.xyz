@@ -1,8 +1,8 @@
-from scovid19.lib.data.Scotland import Scotland
-from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Util import strpstrf, get_logger
+from app.lib.data.Scotland import Scotland
+from app.lib.OpenData import OpenData
+from app.lib.Util import strpstrf, get_logger
 from datetime import datetime, timedelta
-from scovid19.lib import DB
+from app.lib import DB
 
 # TODO:
 # - Confirm @cacheable decorator works
@@ -75,12 +75,6 @@ class Infections:
         dates = []
         cases = []
         for day in rows:
-            print(day)
-            # On Apr 19th the stats started to include UK test centres
-            # So this day isn't really an accurate representation
-            if day["Date"] == 20200420:
-                day["DailyCases"] = 0
-
             date = strpstrf(str(day["Date"]), strf="%d %b %y")
             dates.append(date)
             cases.append(day["DailyCases"])

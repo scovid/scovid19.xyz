@@ -1,7 +1,7 @@
-from scovid19.lib.OpenData import OpenData
-from scovid19.lib.Decorators import cacheable
-from scovid19.lib.Util import get_logger
-import scovid19.lib.Cache as Cache
+from app.lib.OpenData import OpenData
+from app.lib.Decorators import cacheable
+from app.lib.Util import get_logger
+import app.lib.Cache as Cache
 
 # Heavy cacher for things that will rarely change
 HEAVY_CACHER = Cache.Cacher(

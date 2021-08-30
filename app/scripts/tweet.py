@@ -3,9 +3,9 @@
 import os, sys
 import tweepy
 from datetime import datetime
-from scovid19.lib.data.Vaccines import Vaccines
-from scovid19.lib.data.Infections import Infections
-from scovid19.lib.Util import get_logger, project_root
+from app.lib.data.Vaccines import Vaccines
+from app.lib.data.Infections import Infections
+from app.lib.Util import get_logger, project_root
 
 
 def main(dry_run=False):

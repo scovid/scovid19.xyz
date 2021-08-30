@@ -14,33 +14,32 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 ENV DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,id=apt apt-get update && apt-get -y upgrade && apt-get install -y sudo cron sqlite3 curl
 
-ENV PATH="/home/code/.local/bin:${PATH}"
+ENV PATH="/home/app/.local/bin:${PATH}"
 
 # Add user, make sudo, do not require password
-RUN useradd --create-home -G sudo code
+RUN useradd --create-home -G sudo app
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-USER code
+USER app
 
 # Configure sqlite
-RUN touch /home/code/.sqliterc
-RUN echo ".headers on\n.mode columns" > /home/code/.sqliterc
+COPY --chown=app:app config/sqliterc /home/app/.sqliterc
 
-RUN mkdir -p /home/code/scovid19
-WORKDIR /home/code/scovid19
+RUN mkdir -p /home/app/scovid19
+WORKDIR /home/app/scovid19
 
 # Install python deps
-COPY --chown=code:code requirements.txt ./
+COPY --chown=app:app requirements.txt ./
 RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/home/app/.cache/pip,id=pip pip install -r requirements.txt
 
 # Get traceback for C crashes
 ENV PYTHONFAULTHANDLER=1
 
-COPY --chown=code:code . ./
+COPY --chown=app:app . ./
 
 EXPOSE 5000
 
 # Blank entrypoint allows passing custom commands via `docker run`
 ENTRYPOINT [ ]
 
-CMD [ "/home/code/scovid19/scovid19/entrypoint.sh" ]
+CMD [ "/home/app/scovid19/entrypoint.sh" ]
