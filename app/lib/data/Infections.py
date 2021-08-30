@@ -1,5 +1,3 @@
-from app.lib.data.Scotland import Scotland
-from app.lib.OpenData import OpenData
 from app.lib.Util import strpstrf, get_logger
 from datetime import datetime, timedelta
 from app.lib import DB
@@ -13,7 +11,6 @@ class Infections:
     def __init__(self):
         self.db = DB()
         self.logger = get_logger("app")
-        self.scotland = Scotland()
 
     # Return the summary of stats
     def summary(self):
@@ -63,6 +60,9 @@ class Infections:
 
     # Return the overall cases by day for Scotland
     def trend(self, params={}):
+        """
+        Returns the data for the daily infections trend chart
+        """
         if "start" in params and "end" in params:
             start = strpstrf(params["start"], rev=True)
             end = strpstrf(params["end"], rev=True)
@@ -105,45 +105,34 @@ class Infections:
         }
 
     def prevalence(self):
-        councils = self.scotland.councils()
-        populations = self.scotland.population()
-
-        # Fetch the daily trends by council for the last 7 days
-        daily_by_area = OpenData.fetch(
-            "daily_by_area", limit=(len(councils) * 7), sort="Date DESC"
-        )["records"]
-
-        # Total up the cases
-        cases = {}
-        for record in daily_by_area:
-            if record["CA"] not in cases:
-                cases[record["CA"]] = 0
-            cases[record["CA"]] += record["DailyPositive"]
-
+        """
+        Returns the cases per 100k for each council area
+        """
+        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
         prevalence = []
-        for pop in populations:
-            if pop["CA"] not in councils:
-                continue
 
-            # Work out cases per 100k people
-            quotient = pop["AllAges"] / 100_000
-            per_100k = cases[pop["CA"]] / quotient
+        rows = self.db.query('SELECT c.CAName, SUM(i.DailyPositive) AS Positive, pop.AllAges AS Population FROM infections_daily_by_council AS i LEFT JOIN councils AS c ON i.CA = c.CA LEFT JOIN population_by_council AS pop ON pop.CA = c.CA WHERE i.Date >= :start AND pop.Sex = "All" AND pop.year = 2020 GROUP BY i.CA', start=seven_days_ago)
+
+        for row in rows:
+            quotient = row["Population"] / 100_000
+            per_100k = row["Positive"] / quotient
 
             prevalence.append(
                 {
-                    "council": councils[pop["CA"]],
-                    "population": format(pop["AllAges"], ","),
-                    "cases": format(cases[pop["CA"]], ","),
+                    "council": row['CAName'],
+                    "population": format(row["Population"], ","),
+                    "cases": format(row["Positive"], ","),
                     "per_100k": round(per_100k, 2),
-                    "percentage": format(cases[pop["CA"]] / pop["AllAges"], ","),
+                    "percentage": format(row["Positive"] / row["Population"], ","),
                 }
             )
 
         return sorted(prevalence, key=lambda x: x["per_100k"], reverse=True)
 
-    # Get the last updated time of the OpenData stats
-    # Based on the latest date in the "Daily and Cumulative Cases" data set
     def last_updated(self, format=None):
+        """
+        Returns the last date in the infections_daily data
+        """
         last_updated, = self.db.query('SELECT MAX(`Date`) FROM infections_daily').fetchone()
         last_updated = datetime.strptime(str(last_updated), "%Y%m%d")
 
