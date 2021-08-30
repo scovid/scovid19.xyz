@@ -1,8 +1,8 @@
 .vscode/
 logs/*
-data/*
 cache/*
 .env
+data/scovid19.db
 
 # From https://github.com/github/gitignore/blob/master/Python.gitignore
 

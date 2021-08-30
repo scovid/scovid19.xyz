@@ -10,7 +10,7 @@ class Vaccines:
         self.logger = get_logger("app")
         self.scotland = Scotland()
 
-    def vaccines_summary(self):
+    def summary(self):
         """
         Returns the vaccine figures for this last week and overall
         """

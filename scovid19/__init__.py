@@ -14,18 +14,18 @@ app = Flask(__name__, static_url_path="")
 # Set up logger
 app_logger = get_logger("app")
 
-infections = Infections()
-vaccines = Vaccines()
-
 
 # Page routes
 @app.route("/")
 @page
 def dashboard():
+    infections = Infections()
+    vaccines = Vaccines()
+
     return render_template(
         "dashboard.html.j2",
         infections=infections.summary(),
-        vaccines=vaccines.vaccines_summary(),
+        vaccines=vaccines.summary(),
         last_updated=infections.last_updated(format="%d %b %y"),
         tab="dashboard",
     )
@@ -34,6 +34,7 @@ def dashboard():
 @app.route("/infections")
 @page
 def index():
+    infections = Infections()
     return render_template(
         "infections.html.j2",
         summary=infections.summary(),
@@ -45,10 +46,12 @@ def index():
 @app.route("/vaccines")
 @page
 def vaccine():
+    infections = Infections()
+    vaccines = Vaccines()
     return render_template(
         "vaccine.html.j2",
         tab="vaccine",
-        weekly=vaccines.vaccines_summary(),
+        weekly=vaccines.summary(),
         percentage=vaccines.percentage_vaccinated(),
         last_updated=infections.last_updated(format="%d %B %Y"),
     )
@@ -66,44 +69,43 @@ def ping():
 @app.route("/api/infections/trend")
 @endpoint
 def trend():
+    infections = Infections()
     return infections.trend(request.args)
 
 
 @app.route("/api/infections/breakdown")
 @endpoint
 def breakdown():
+    infections = Infections()
     return infections.breakdown()
-
-
-@app.route("/api/infections/locations")
-@endpoint
-def locations():
-    full = request.args.get("full", False)
-    return infections.locations(full)
 
 
 # Vaccines
 @app.route("/api/vaccines/breakdown")
 @endpoint
 def percentage_vaccinated():
+    vaccines = Vaccines()
     return vaccines.percentage_vaccinated()
 
 
 @app.route("/api/vaccines/council")
 @endpoint
 def council_breakdown():
+    vaccines = Vaccines()
     return vaccines.council_breakdown()
 
 
 @app.route("/api/vaccines/trend")
 @endpoint
 def vaccine_trend():
+    vaccines = Vaccines()
     return vaccines.vaccine_trend()
 
 
 @app.route("/api/prevalence")
 @endpoint
 def prevalence():
+    infections = Infections()
     limit = int(request.args["limit"]) if "limit" in request.args else -1
     return infections.prevalence()[0:limit]
 

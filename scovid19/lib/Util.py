@@ -4,8 +4,18 @@ from datetime import datetime
 
 
 # datetime.strptime and datetime.strftime in one go
-def strpstrf(dt, strp="%Y%m%d", strf="%Y-%m-%d"):
+def strpstrf(dt, strp="%Y%m%d", strf="%Y-%m-%d", rev=False):
+    """
+    Parse and format a datetime string in one go
+
+    Default parse format is %Y%m%d (The format the OpenData uses) and out is %Y-%m-%d (ISO-8601)
+    This can be easily swapped by setting `rev` as True
+    """
     dt = str(dt)  # Ensure string
+
+    if rev:
+        strp, strf = strf, strp
+
     return datetime.strftime(datetime.strptime(dt, strp), strf)
 
 

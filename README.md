@@ -18,7 +18,7 @@ The following instructions use docker, if you'd rather not use docker then see `
 ### Run locally
 ```bash
 # Dependencies
-sudo apt install docker docker-compose
+sudo apt install docker docker-compose sqlite3
 
 # Enable BuildKit
 export DOCKER_BUILDKIT=1
@@ -30,6 +30,9 @@ docker-compose up -d --build scovid
 
 # Logs
 docker logs --tail 200 -f scovid
+
+# Populate/update database
+docker exec -it scovid tools/update_db.py
 
 # Tests
 docker exec -it scovid pytest
@@ -60,6 +63,15 @@ sudo certbot --nginx
 # Uses docker-compose scaling to deploy without downtime
 git pull
 ./tools/deploy.sh
+```
+
+#### Secrets
+Currently the only secrets are for the Twitter bot, so you only need to set them if you are working on that, they are:
+```
+SCOVID_TWITTER_API_KEY=
+SCOVID_TWITTER_API_SECRET=
+SCOVID_TWITTER_ACCESS_TOKEN=
+SCOVID_TWITTER_ACCESS_SECRET=
 ```
 
 

@@ -1,8 +1,8 @@
 from scovid19.lib.data.Scotland import Scotland
 from scovid19.lib.OpenData import OpenData
 from scovid19.lib.Util import strpstrf, get_logger
-from datetime import datetime
-from collections import defaultdict
+from datetime import datetime, timedelta
+from scovid19.lib import DB
 
 # TODO:
 # - Confirm @cacheable decorator works
@@ -11,77 +11,71 @@ from collections import defaultdict
 
 class Infections:
     def __init__(self):
+        self.db = DB()
         self.logger = get_logger("app")
         self.scotland = Scotland()
 
     # Return the summary of stats
     def summary(self):
-        cases_by_day = OpenData.fetch("daily", limit=1000, sort="Date ASC")
-        records = cases_by_day["records"]
+        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
 
-        # NOTE: Latest stat always trickles in so use the slice -8:-1 instead
-        summary = {
+        cases_this_week, = self.db.query('SELECT SUM(DailyCases) FROM infections_daily WHERE `Date` >= :start_date', start_date=seven_days_ago).fetchone()
+        total_cases, = self.db.query('SELECT CumulativeCases FROM infections_daily ORDER BY `Date` DESC LIMIT 1').fetchone()
+        most_cases = self.db.query('SELECT MAX(DailyCases), Date FROM infections_daily').fetchone()
+        total_deaths, = self.db.query('SELECT MAX(Deaths) FROM infections_daily').fetchone()
+
+        # We do not have the daily death stats, only the total at any given date
+        # So go through all records
+        most_deaths = (0, '')
+        deaths_yesterday = 0
+        deaths_this_week = 0
+        records = self.db.query('SELECT `Date`, Deaths FROM infections_daily ORDER BY `Date` ASC')
+        for record in records.fetchall():
+            date, deaths = record
+            deaths_today = deaths - deaths_yesterday
+            if deaths_today > int(most_deaths[0]):
+                most_deaths = (deaths_today, date)
+            deaths_yesterday = deaths
+
+            if date >= int(seven_days_ago):
+                deaths_this_week += deaths_yesterday
+
+        return {
             "cases": {
-                "total": records[-1]["CumulativeCases"],
-                "new": sum([x["DailyCases"] for x in records[-8:-1]]),
-                "today": records[-2]["DailyCases"],
+                "total": total_cases,
+                "new": cases_this_week,
+                "avg": int(round(cases_this_week / 7)),
+                "most": {
+                    "number": most_cases[0],
+                    "date": strpstrf(most_cases[1]),
+                }
             },
             "deaths": {
-                "total": records[-1]["Deaths"],
-                "new": records[-2]["Deaths"] - records[-8]["Deaths"],
-                "today": records[-2]["Deaths"],
-            },
+                "total": total_deaths,
+                "new": deaths_this_week,
+                "avg": int(round(deaths_this_week / 7)),
+                "most": {
+                    "number": most_deaths[0],
+                    "date": strpstrf(most_deaths[1]),
+                }
+            }
         }
-
-        # Work out 7 day average
-        summary["cases"]["avg"] = int(round(summary["cases"]["new"] / 7))
-        summary["deaths"]["avg"] = int(round(summary["deaths"]["new"] / 7))
-
-        max_deaths = {}
-        max_cases = {}
-        prev_day = {}
-        for day in records:
-            new_deaths = (
-                day["Deaths"] - prev_day["Deaths"] if prev_day else day["Deaths"]
-            )
-
-            if not max_deaths or new_deaths > max_deaths["number"]:
-                max_deaths["number"] = new_deaths
-                max_deaths["date"] = strpstrf(day["Date"], strf="%d %b %Y")
-
-            if not max_cases or day["DailyCases"] > max_cases["number"]:
-                # On Apr 19th the stats started to include UK test centres
-                # So this day isn't really an accurate representation
-                if day["Date"] != 20200420:
-                    max_cases["number"] = day["DailyCases"]
-                    max_cases["date"] = strpstrf(day["Date"], strf="%d %b %Y")
-
-            prev_day = day
-
-        summary["cases"]["most"] = max_cases
-        summary["deaths"]["most"] = max_deaths
-        return summary
 
     # Return the overall cases by day for Scotland
     def trend(self, params={}):
-        limit, offset = 30, 0
-
         if "start" in params and "end" in params:
-            start = datetime.strptime(params["start"], "%Y-%m-%d")
-            end = datetime.strptime(params["end"], "%Y-%m-%d")
-            last_updated = self.last_updated()
+            start = strpstrf(params["start"], rev=True)
+            end = strpstrf(params["end"], rev=True)
+        else:
+            start = (datetime.today() - timedelta(days=30)).strftime('%Y%m%d')
+            end = datetime.today().strftime('%Y%m%d')
 
-            limit = (end - start).days + 1  # Add one to make bounds inclusive
-            offset = (last_updated - end).days
-            if offset < 0:
-                offset = 0
-
-        trend = OpenData.fetch("daily", sort="Date DESC", limit=limit, offset=offset)
-        records = reversed(trend["records"])
+        rows = self.db.query('SELECT `Date`, DailyCases FROM infections_daily WHERE `Date` >= :start AND `Date` <= :end', start=start, end=end)
 
         dates = []
         cases = []
-        for day in records:
+        for day in rows:
+            print(day)
             # On Apr 19th the stats started to include UK test centres
             # So this day isn't really an accurate representation
             if day["Date"] == 20200420:
@@ -102,16 +96,7 @@ class Infections:
         """
         Breakdown of postive, negative and deaths over the full time period
         """
-        positive, negative, deaths = 0, 0, 0
-
-        # There doesn't seem to be a good endpoint for getting total negatives
-        # So use total_by_deprivation and total it manually
-        total_by_deprivation = OpenData.fetch("total_by_deprivation")
-        records = total_by_deprivation["records"]
-        for record in records:
-            positive += record["TotalPositive"]
-            negative += record["TotalNegative"]
-            deaths += record["TotalDeaths"]
+        positive, negative, deaths = self.db.query("SELECT SUM(TotalPositive), SUM(TotalNegative), SUM(TotalDeaths) FROM infections_total_by_deprivation").fetchone()
 
         return {
             "labels": ["Positive", "Negative", "Deaths"],
@@ -121,73 +106,6 @@ class Infections:
                     "borderColor": ["darkorange", "lightgreen", "darkgrey"],
                     "label": "Breakdown",
                     "data": [positive, negative, deaths],
-                }
-            ],
-        }
-
-    def locations(self, full=False):
-        """
-        Wrapper around _locations_total() and _locations_new()
-        """
-        if full:
-            return self._locations_total()
-
-        return self._locations_new()
-
-    def _locations_total(self):
-        """
-        Total infections by location
-        """
-        total_by_area = OpenData.fetch("total_by_area")
-        records = total_by_area["records"]
-
-        councils = self.scotland.councils()
-
-        sets = []
-        for location in records:
-            sets.append({"x": councils[location["CA"]], "y": location["TotalCases"]})
-
-        sets = sorted(sets, key=lambda k: k["x"])
-        return {
-            "labels": sorted(set(councils.values())),
-            "datasets": [
-                {
-                    "backgroundColor": [Infections.color(item["x"]) for item in sets],
-                    "label": "Cases by area",
-                    "data": sets,
-                }
-            ],
-        }
-
-    def _locations_new(self):
-        """
-        Infections by location for the last 7 days
-        """
-        councils = self.scotland.councils()
-        daily_by_area = OpenData.fetch(
-            "daily_by_area", limit=(len(councils) * 7), sort="Date DESC"
-        )
-        records = daily_by_area["records"]
-
-        totals = defaultdict(lambda: 0)
-        for record in records:
-            totals[record["CA"]] += record["DailyPositive"]
-
-        sets = []
-        for ca in totals.keys():
-            if not ca or ca not in councils:
-                continue
-
-            sets.append({"x": councils[ca], "y": totals[ca]})
-
-        sets = sorted(sets, key=lambda k: k["x"])
-        return {
-            "labels": sorted(set(councils.values())),
-            "datasets": [
-                {
-                    "backgroundColor": [Infections.color(item["x"]) for item in sets],
-                    "label": "Cases by area",
-                    "data": sets,
                 }
             ],
         }
@@ -232,9 +150,8 @@ class Infections:
     # Get the last updated time of the OpenData stats
     # Based on the latest date in the "Daily and Cumulative Cases" data set
     def last_updated(self, format=None):
-        cases_by_day = OpenData.fetch("daily", limit=1, sort="Date DESC")
-        records = cases_by_day["records"]
-        last_updated = datetime.strptime(str(records[-1]["Date"]), "%Y%m%d")
+        last_updated, = self.db.query('SELECT MAX(`Date`) FROM infections_daily').fetchone()
+        last_updated = datetime.strptime(str(last_updated), "%Y%m%d")
 
         if format:
             return datetime.strftime(last_updated, format)
