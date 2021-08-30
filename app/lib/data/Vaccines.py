@@ -1,12 +1,13 @@
-import json
 from app.lib.OpenData import OpenData
-from app.lib.Util import project_root, get_logger
+from app.lib.Util import get_logger, strpstrf
 from app.lib.data.Scotland import Scotland
 from datetime import date, timedelta, datetime
+from app.lib import DB
 
 
 class Vaccines:
     def __init__(self):
+        self.db = DB()
         self.logger = get_logger("app")
         self.scotland = Scotland()
 
@@ -14,19 +15,26 @@ class Vaccines:
         """
         Returns the vaccine figures for this last week and overall
         """
-        totals = self.total_vaccinations()
+        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
 
-        start, end = self.get_previous_week()
-        weekly_records = self.get_weekly_data(start, end)
-        weekly = self.get_totals(weekly_records)
+        last_updated, = self.db.query('SELECT MAX(Date) FROM vaccines_total').fetchone()
+
+        first_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 1" AND Date >= :start', start=seven_days_ago).fetchone()
+        second_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 2" AND Date >= :start', start=seven_days_ago).fetchone()
+
+        first_vax_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
+        fully_vaxxed_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
 
         return {
             "this week": {
-                "Dose 1": weekly["dose1"],
-                "Dose 2": weekly["dose2"],
-                "Week Ending": end.strftime("%d/%m/%Y"),
+                "Dose 1": first_this_week,
+                "Dose 2": second_this_week,
+                "Week Ending": strpstrf(last_updated, strf="%d/%m/%Y"),
             },
-            "totals": {"Dose 1": totals["dose1"], "Dose 2": totals["dose2"]},
+            "totals": {
+                "Dose 1": first_vax_total,
+                "Dose 2": fully_vaxxed_total,
+            },
         }
 
     def total_vaccinations(self):
@@ -168,14 +176,6 @@ class Vaccines:
                 {"label": "Dose 2", "backgroundColor": "lightgreen", "data": dose2},
             ],
         }
-
-    def get_scraper_data(self):
-        filepath = f"{project_root()}/data/vaccine.json"
-
-        with open(filepath) as fh:
-            contents = json.loads(fh.read())
-
-            return {"dose1": int(contents["dose1"]), "dose2": int(contents["dose2"])}
 
     @staticmethod
     def color(key):
