@@ -35,18 +35,11 @@ def percentage_vaccinated():
     return vaccines.percentage_vaccinated()
 
 
-@api.route("/vaccines/council")
-@endpoint_handler
-def council_breakdown():
-    vaccines = Vaccines()
-    return vaccines.council_breakdown()
-
-
 @api.route("/vaccines/trend")
 @endpoint_handler
 def vaccine_trend():
     vaccines = Vaccines()
-    return vaccines.vaccine_trend()
+    return vaccines.trend()
 
 
 @api.route("/prevalence")

@@ -1,7 +1,6 @@
-from app.lib.OpenData import OpenData
 from app.lib.Util import get_logger, strpstrf
 from app.lib.data.Scotland import Scotland
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 from app.lib import DB
 
 
@@ -37,72 +36,14 @@ class Vaccines:
             },
         }
 
-    def total_vaccinations(self):
-        """
-        Returns the total vaccinated overall
-        """
-        daily_cases = self.get_daily_data()
-        return self.get_totals(daily_cases)
-
-    def get_daily_data(self):
-        cases_by_day = OpenData.fetch("daily_vaccine", limit=10000)
-        records = cases_by_day["records"]
-
-        return records
-
-    def get_weekly_data(self, start, end, **kwargs):
-        if "records" not in kwargs:
-            records = self.get_daily_data()
-        else:
-            records = kwargs["records"]
-
-        start = str(start).replace("-", "")
-        end = str(end).replace("-", "")
-
-        weekly_records = []
-
-        for record in records:
-            if int(start) <= int(record["Date"]) <= int(end):
-                weekly_records.append(record)
-
-        return weekly_records
-
-    def get_previous_week(self, **kwargs):
-        if "starting_date" not in kwargs:
-            starting_date = date.today()
-        else:
-            starting_date = datetime.strptime(
-                str(kwargs["starting_date"]), "%Y%m%d"
-            ).date()
-
-        start = starting_date - timedelta(days=starting_date.weekday(), weeks=+1)
-        end = start + timedelta(days=6)
-
-        return start, end
-
-    def get_totals(self, records):
-        totals = {
-            "dose1": 0,
-            "dose2": 0,
-        }
-
-        records = [ record for record in records if record["Product"] == "Total" and record["AgeBand"] == "All vaccinations" ]
-        for record in records:
-            if record["Dose"] == "Dose 1":
-                totals["dose1"] += int(record["NumberVaccinated"])
-            elif record["Dose"] == "Dose 2":
-                totals["dose2"] += int(record["NumberVaccinated"])
-
-        return totals
-
     def percentage_vaccinated(self):
         population = self.scotland.entire_population()
 
-        totals = self.total_vaccinations()
+        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
+        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
+        no_vax = population - single_vax
 
-        double_vax = totals["dose2"]
-        single_vax = totals["dose1"] - totals["dose2"]
-        no_vax = population - totals["dose1"]
+        single_vax -= double_vax
 
         return {
             "labels": ["Both vaccines", "First vaccine only", "Un-vaccinated"],
@@ -116,64 +57,39 @@ class Vaccines:
             ],
         }
 
-    def council_breakdown(self):
-        council_vaccinations = OpenData.fetch("vaccine_council")
-        records = council_vaccinations["records"]
-
-        sets = []
-        councils = self.scotland.councils()
-        for location in records:
-            if not location["CA"] or location["CA"] not in councils:
-                continue
-
-            sets.append(
-                {"x": councils[location["CA"]], "y": location["NumberVaccinated"]}
-            )
-
-        sets = sorted(sets, key=lambda k: k["x"])
-        return {
-            "labels": sorted(set(councils.values())),
-            "datasets": [
-                {
-                    "backgroundColor": [Vaccines.color(item["x"]) for item in sets],
-                    "label": "Cases by area",
-                    "data": sets,
-                }
-            ],
-        }
-
-    def vaccine_trend(self):
-        total_cases = self.get_daily_data()
+    def trend(self):
+        today = datetime.today()
+        start = datetime(year=2020, month=12, day=8)
+        week = start
 
         weeks = []
         dates = []
 
-        for case in total_cases:  # a list of when each week starts and ends
-            if case["Product"] == "Total":
-                start, end = self.get_previous_week(starting_date=case["Date"])
-
-                if str(start) != "2020-11-30":
-                    week = {"start": start, "end": end}
-
-                    if week not in weeks:
-                        weeks.append({"start": start, "end": end})
-                        dates.append(start.strftime("%d/%m/%Y"))
-
         dose1 = []
         dose2 = []
 
-        for record in weeks:  # Get the total weekly data for these ranges
-            weekly_records = self.get_weekly_data(record["start"], record["end"])
-            weekly_totals = self.get_totals(weekly_records)
+        while week < today:
+            next_week = week + timedelta(days=7)
 
-            dose1.append(weekly_totals["dose1"])
-            dose2.append(weekly_totals["dose2"])
+            first_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Date >= :week AND Date < :next_week AND Dose = "Dose 1"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
+            second_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Date >= :week AND Date < :next_week AND Dose = "Dose 2"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
+
+            if not first_dose or not second_dose:
+                break
+
+            weeks.append({ "start": week, "end": next_week })
+            dates.append(week.strftime("%d/%m/%Y"))
+
+            dose1.append(first_dose)
+            dose2.append(second_dose)
+
+            week = next_week
 
         return {
             "labels": dates,
             "datasets": [
-                {"label": "Dose 1", "backgroundColor": "lightblue", "data": dose1},
-                {"label": "Dose 2", "backgroundColor": "lightgreen", "data": dose2},
+                { "label": "First Vaccine", "backgroundColor": "lightblue", "data": dose1 },
+                { "label": "Second Vaccine", "backgroundColor": "lightgreen", "data": dose2 },
             ],
         }
 
