@@ -30,7 +30,7 @@ jobs:
       - name: 'Run py formatter'
         run: |
           source venv/bin/activate
-          black scovid19/
+          black app/
 
       # Front end formatting with prettier
       - name: Install

@@ -2,11 +2,12 @@ import functools
 import logging
 import traceback
 from flask import jsonify, render_template
-from scovid19.lib.Cache import Cacher
+from app.lib.Cache import Cacher
+
 
 # Endpoint decorator
 # Try/Except and return JSON
-def endpoint(func):
+def endpoint_handler(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -21,7 +22,7 @@ def endpoint(func):
 
 # Page decorator
 # Try/Except and show error.html on error
-def page(func):
+def page_handler(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:

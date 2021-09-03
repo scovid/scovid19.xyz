@@ -12,9 +12,12 @@ services:
     ports:
       - 4001-4002:5000
     volumes:
-      - data:/home/code/scovid19/data
+      - data:/home/app/scovid19/data
     environment:
+      FLASK_APP: app
+      FLASK_ENV: production
+      DATABASE: '/home/app/scovid19/data/scovid19.db'
       SCOVID_ENV: prod
-      SCOVID_PROJECT_ROOT: /home/code/scovid19/
+      SCOVID_PROJECT_ROOT: /home/app/scovid19/
     env_file:
       - .env

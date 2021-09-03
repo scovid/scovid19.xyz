@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os
+import sys
 import tweepy
 from datetime import datetime
-from scovid19.lib.data.Vaccines import Vaccines
-from scovid19.lib.data.Infections import Infections
-from scovid19.lib.Util import get_logger, project_root
+from app.lib.data.Vaccines import Vaccines
+from app.lib.data.Infections import Infections
+from app.lib.Util import get_logger
 
 
 def main(dry_run=False):
@@ -34,17 +35,17 @@ def main(dry_run=False):
 
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-    vaccine_data = vaccine.total_vaccinations()
+    vaccine_data = vaccine.summary()
     infection_data = infections.summary()
 
-    daily_cases = f"{infection_data['cases']['today']:,.0f}"
+    daily_cases = f"{infection_data['cases']['new']:,.0f}"
 
     date = datetime.today().strftime("%Y-%m-%d")
 
     v = {
         "date": date,
-        "dose1": f"{vaccine_data['dose1']:,.0f}",
-        "dose2": f"{vaccine_data['dose2']:,.0f}",
+        "dose1": f"{vaccine_data['totals']['Dose 1']:,.0f}",
+        "dose2": f"{vaccine_data['totals']['Dose 2']:,.0f}",
         "daily_cases": daily_cases,
     }
     text = "Scotland vaccinations as of 08:30am on {date}: \n\n First Dose: {dose1} \n Second Dose: {dose2} \n\n {daily_cases} new cases reported \n\n For more stats visit www.scovid19.xyz"
@@ -60,7 +61,7 @@ def main(dry_run=False):
     except tweepy.TweepError as e:
         tweet_logger.error("Error: " + e.response.text)
         sys.exit(1)
-    except:
+    except Exception:
         tweet_logger.error("Unknown Error.")
         sys.exit(1)
 

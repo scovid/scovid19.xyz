@@ -11,11 +11,20 @@ sudo service cron start
 crontab -l >/dev/null 2>&1
 
 # Add to cron
-# Every day at 15:00 run the scraper and tweet results
 cat << EOF | crontab -
 PATH="$PATH:/usr/local/bin"
+
+# Download new data every dat at 2pm
+0 14 * * * bash -c 'bash $SCOVID_PROJECT_ROOT/tools/update_db.py'
+
+# Post tweet every day at 3pm
 0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m scovid19.scripts.tweet'
 EOF
+
+# Create db if it doesn't exist
+if [[ ! -f $DATABASE ]]; then
+    ./tools/update_db.py
+fi
 
 # Start web server
 if [[ $SCOVID_ENV == 'dev' || $SCOVID_ENV == 'development' ]]; then
@@ -30,5 +39,5 @@ else
         --log-level debug \
         --capture-output \
         --enable-stdio-inheritance \
-        scovid19:app
+        'app:create_app()'
 fi
