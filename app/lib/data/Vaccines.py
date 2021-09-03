@@ -39,8 +39,8 @@ class Vaccines:
     def percentage(self):
         population = self.scotland.entire_population()
 
-        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
-        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
+        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
+        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
         no_vax = population - single_vax
 
         single_vax -= double_vax
