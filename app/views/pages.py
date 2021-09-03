@@ -43,6 +43,6 @@ def vaccine():
         "vaccine.html.j2",
         tab="vaccine",
         weekly=vaccines.summary(),
-        percentage=vaccines.percentage_vaccinated(),
+        percentage=vaccines.percentage(),
         last_updated=infections.last_updated(format="%d %B %Y"),
     )

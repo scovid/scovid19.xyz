@@ -32,7 +32,7 @@ def breakdown():
 @endpoint_handler
 def percentage_vaccinated():
     vaccines = Vaccines()
-    return vaccines.percentage_vaccinated()
+    return vaccines.percentage()
 
 
 @api.route("/vaccines/trend")

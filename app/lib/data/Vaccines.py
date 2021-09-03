@@ -18,11 +18,11 @@ class Vaccines:
 
         last_updated, = self.db.query('SELECT MAX(Date) FROM vaccines_total').fetchone()
 
-        first_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 1" AND Date >= :start', start=seven_days_ago).fetchone()
-        second_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 2" AND Date >= :start', start=seven_days_ago).fetchone()
+        first_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Date >= :start', start=seven_days_ago).fetchone()
+        second_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Date >= :start', start=seven_days_ago).fetchone()
 
-        first_vax_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
-        fully_vaxxed_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "18 years and over" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
+        first_vax_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
+        fully_vaxxed_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
 
         return {
             "this week": {
@@ -36,11 +36,11 @@ class Vaccines:
             },
         }
 
-    def percentage_vaccinated(self):
+    def percentage(self):
         population = self.scotland.entire_population()
 
-        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
-        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
+        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
+        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
         no_vax = population - single_vax
 
         single_vax -= double_vax
@@ -71,8 +71,8 @@ class Vaccines:
         while week < today:
             next_week = week + timedelta(days=7)
 
-            first_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Date >= :week AND Date < :next_week AND Dose = "Dose 1"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
-            second_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "18 years and over" AND Date >= :week AND Date < :next_week AND Dose = "Dose 2"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
+            first_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 1"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
+            second_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 2"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
 
             if not first_dose or not second_dose:
                 break

@@ -38,7 +38,10 @@ docker exec -it scovid tools/update_db.py
 docker exec -it scovid pytest
 
 # Post tweet - does not post if stats are the same
-docker exec -it scovid python3 -m scovid19.scripts.tweet
+docker exec -it scovid python3 -m app.scripts.tweet [--dry-run]
+
+# Force update database stats
+docker exec -it scovid tools/update_db.py
 ```
 
 ### Deploy
