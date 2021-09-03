@@ -24,18 +24,18 @@ class Infections:
         # We do not have the daily death stats, only the total at any given date
         # So go through all records
         most_deaths = (0, '')
-        deaths_yesterday = 0
+        total_deaths_yesterday = 0
         deaths_this_week = 0
         records = self.db.query('SELECT `Date`, Deaths FROM infections_daily ORDER BY `Date` ASC')
         for record in records.fetchall():
-            date, deaths = record
-            deaths_today = deaths - deaths_yesterday
+            date, total_deaths = record
+            deaths_today = total_deaths - total_deaths_yesterday
             if deaths_today > int(most_deaths[0]):
                 most_deaths = (deaths_today, date)
-            deaths_yesterday = deaths
+            total_deaths_yesterday = total_deaths
 
             if date >= int(seven_days_ago):
-                deaths_this_week += deaths_yesterday
+                deaths_this_week += deaths_today
 
         return {
             "cases": {
