@@ -3,7 +3,7 @@
 """
 This script will download all of the configured datasets and load them into an sqlite3 file database
 First downloads the JSON to get the schema, then downloads the CSV to load the data
-A few datasets have incorrect JSON data but correct CSV
+The JSON has the data but a few datasets have incorrect JSON data but correct CSV so just always use the CSV
 """
 
 import sqlite3
@@ -11,21 +11,27 @@ import json
 import csv
 import os
 
+# https://www.opendata.nhs.scot/dataset/covid-19-in-scotland
+# https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland
+# https://www.opendata.nhs.scot/dataset/weekly-covid-19-statistical-data-in-scotland
 datasets = {
     # Misc
     "population_by_council": 'https://www.opendata.nhs.scot/datastore/dump/09ebfefb-33f4-4f6a-8312-2d14e2b02ace',
     "councils": 'https://www.opendata.nhs.scot/datastore/dump/967937c4-8d67-4f39-974f-fd58c4acfda5',
 
     # Infections
-    "infections_daily": 'https://www.opendata.nhs.scot/datastore/dump/287fc645-4352-4477-9c8c-55bc054b7e76',
-    "infections_daily_by_council": 'https://www.opendata.nhs.scot/datastore/dump/427f9a25-db22-4014-a3bc-893b68243055',
-    "infections_total_by_council": 'https://www.opendata.nhs.scot/datastore/dump/e8454cf0-1152-4bcb-b9da-4343f625dfef',
-    "infections_total_by_deprivation": 'https://www.opendata.nhs.scot/datastore/dump/a965ee86-0974-4c93-bbea-e839e27d7085',
+    "cases": 'https://www.opendata.nhs.scot/datastore/dump/287fc645-4352-4477-9c8c-55bc054b7e76',
+    "cases_by_council": 'https://www.opendata.nhs.scot/datastore/dump/427f9a25-db22-4014-a3bc-893b68243055',
+    "cases_by_deprivation": 'https://www.opendata.nhs.scot/datastore/dump/a965ee86-0974-4c93-bbea-e839e27d7085',
+    "cases_by_age": 'https://www.opendata.nhs.scot/datastore/dump/44b9bfac-ec14-403e-8609-3576d438df8c',
 
     # Vaccines
     "vaccines_by_group": 'https://www.opendata.nhs.scot/datastore/dump/9b99e278-b8d8-47df-8d7a-a8cf98519ac1',
     "vaccines_total": 'https://www.opendata.nhs.scot/datastore/dump/42f17a3c-a4db-4965-ba68-3dffe6bca13a',
     "vaccines_by_council": 'https://www.opendata.nhs.scot/datastore/dump/d5ffffc0-f6f3-4b76-8f38-71ccfd7747a4',
+
+    # Hospital admissions
+    "hospital_adm_daily": 'https://www.opendata.nhs.scot/datastore/dump/0451bc49-0eaf-49a0-aa76-7f4539e5a615',
 }
 
 
@@ -51,6 +57,8 @@ def main():
         csv_file = download(url, 'csv')
         load_csv(csv_file, table_name)
 
+        os.remove(json_file)
+        os.remove(csv_file)
         progress += 1
 
 

@@ -16,17 +16,17 @@ class Infections:
     def summary(self):
         seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
 
-        cases_this_week, = self.db.query('SELECT SUM(DailyCases) FROM infections_daily WHERE `Date` >= :start_date', start_date=seven_days_ago).fetchone()
-        total_cases, = self.db.query('SELECT CumulativeCases FROM infections_daily ORDER BY `Date` DESC LIMIT 1').fetchone()
-        most_cases = self.db.query('SELECT MAX(DailyCases), Date FROM infections_daily').fetchone()
-        total_deaths, = self.db.query('SELECT MAX(Deaths) FROM infections_daily').fetchone()
+        cases_this_week, = self.db.query('SELECT SUM(DailyCases) FROM cases WHERE `Date` >= :start_date', start_date=seven_days_ago).fetchone()
+        total_cases, = self.db.query('SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1').fetchone()
+        most_cases = self.db.query('SELECT MAX(DailyCases), Date FROM cases').fetchone()
+        total_deaths, = self.db.query('SELECT MAX(Deaths) FROM cases').fetchone()
 
         # We do not have the daily death stats, only the total at any given date
         # So go through all records
         most_deaths = (0, '')
         total_deaths_yesterday = 0
         deaths_this_week = 0
-        records = self.db.query('SELECT `Date`, Deaths FROM infections_daily ORDER BY `Date` ASC')
+        records = self.db.query('SELECT `Date`, Deaths FROM cases ORDER BY `Date` ASC')
         for record in records.fetchall():
             date, total_deaths = record
             deaths_today = total_deaths - total_deaths_yesterday
@@ -70,7 +70,7 @@ class Infections:
             start = (datetime.today() - timedelta(days=30)).strftime('%Y%m%d')
             end = datetime.today().strftime('%Y%m%d')
 
-        rows = self.db.query('SELECT `Date`, DailyCases FROM infections_daily WHERE `Date` >= :start AND `Date` <= :end', start=start, end=end)
+        rows = self.db.query('SELECT `Date`, DailyCases FROM cases WHERE `Date` >= :start AND `Date` <= :end', start=start, end=end)
 
         dates = []
         cases = []
@@ -90,7 +90,7 @@ class Infections:
         """
         Breakdown of postive, negative and deaths over the full time period
         """
-        positive, negative, deaths = self.db.query("SELECT SUM(TotalPositive), SUM(TotalNegative), SUM(TotalDeaths) FROM infections_total_by_deprivation").fetchone()
+        positive, negative, deaths = self.db.query("SELECT SUM(TotalPositive), SUM(TotalNegative), SUM(TotalDeaths) FROM cases_by_deprivation").fetchone()
 
         return {
             "labels": ["Positive", "Negative", "Deaths"],
@@ -111,7 +111,7 @@ class Infections:
         seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
         prevalence = []
 
-        rows = self.db.query('SELECT c.CAName, SUM(i.DailyPositive) AS Positive, pop.AllAges AS Population FROM infections_daily_by_council AS i LEFT JOIN councils AS c ON i.CA = c.CA LEFT JOIN population_by_council AS pop ON pop.CA = c.CA WHERE i.Date >= :start AND pop.Sex = "All" AND pop.year = 2020 GROUP BY i.CA', start=seven_days_ago)
+        rows = self.db.query('SELECT c.CAName, SUM(i.DailyPositive) AS Positive, pop.AllAges AS Population FROM cases_by_council AS i LEFT JOIN councils AS c ON i.CA = c.CA LEFT JOIN population_by_council AS pop ON pop.CA = c.CA WHERE i.Date >= :start AND pop.Sex = "All" AND pop.year = 2020 GROUP BY i.CA', start=seven_days_ago)
 
         for row in rows:
             quotient = row["Population"] / 100_000
@@ -133,7 +133,7 @@ class Infections:
         """
         Returns the last date in the infections_daily data
         """
-        last_updated, = self.db.query('SELECT MAX(`Date`) FROM infections_daily').fetchone()
+        last_updated, = self.db.query('SELECT MAX(`Date`) FROM cases').fetchone()
         last_updated = datetime.strptime(str(last_updated), "%Y%m%d")
 
         if format:
