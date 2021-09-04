@@ -14,6 +14,9 @@ The new and improved Scottish COVID-19 tracker.
 ## How to
 
 The following instructions use docker, if you'd rather not use docker then see `docs/WITHOUT_DOCKER.md`.  
+The first time you run the container and sqlite file database will be created and populated with the data.  
+
+This will update on a cron schedule so if you're container isn't always running remember to update this manually.  
 
 ### Run locally
 ```bash
