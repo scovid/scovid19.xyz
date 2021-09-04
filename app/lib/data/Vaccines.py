@@ -37,7 +37,7 @@ class Vaccines:
         }
 
     def percentage(self):
-        population = self.scotland.entire_population()
+        population = self.scotland.population_for_age_range(lower=16)
 
         double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
         single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
@@ -51,7 +51,7 @@ class Vaccines:
                 {
                     "backgroundColor": ["green", "lightblue", "red"],
                     "borderColor": ["green", "lightblue", "red"],
-                    "label": "Vaccinations by total population",
+                    "label": "Vaccinations by total population (16+)",
                     "data": [ double_vax, single_vax, no_vax ],
                 }
             ],
