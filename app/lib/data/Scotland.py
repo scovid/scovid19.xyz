@@ -10,7 +10,7 @@ HEAVY_CACHER = Cache.Cacher(
 )
 
 MAX_YEAR = 2020
-COUNTRY_CA = 'S92000003'  # The CA for Scotland as a country
+COUNTRY_CA = "S92000003"  # The CA for Scotland as a country
 
 
 class Scotland:
@@ -21,19 +21,26 @@ class Scotland:
     # Get the mapping of council IDs to council names
     @cacheable(cacher=HEAVY_CACHER)
     def councils(self):
-        councils = self.db.query('SELECT CA, CAName FROM councils').fetchall()
-        return { council["CA"]: council["CAName"] for council in councils }
+        councils = self.db.query("SELECT CA, CAName FROM councils").fetchall()
+        return {council["CA"]: council["CAName"] for council in councils}
 
     # Get the population of each council area for 2019
     @cacheable(cacher=HEAVY_CACHER)
     def population_per_council(self):
-        rows = self.db.query('SELECT _id, Year, CA, Sex, AllAges FROM population_by_council WHERE CA != :scotland AND Sex = "All" AND Year = :year', year=MAX_YEAR, scotland=COUNTRY_CA).fetchall()
+        rows = self.db.query(
+            'SELECT _id, Year, CA, Sex, AllAges FROM population_by_council WHERE CA != :scotland AND Sex = "All" AND Year = :year',
+            year=MAX_YEAR,
+            scotland=COUNTRY_CA,
+        ).fetchall()
         return rows
 
     # Get the population for Scotland
     @cacheable(cacher=HEAVY_CACHER)
     def population(self) -> int:
-        population, = self.db.query('SELECT AllAges FROM population_by_council WHERE CA = :scotland AND Sex = "All" ORDER BY Year DESC LIMIT 1', scotland=COUNTRY_CA).fetchone()
+        (population,) = self.db.query(
+            'SELECT AllAges FROM population_by_council WHERE CA = :scotland AND Sex = "All" ORDER BY Year DESC LIMIT 1',
+            scotland=COUNTRY_CA,
+        ).fetchone()
         return int(population)
 
     # Get the population of Scotland for an age range
@@ -42,8 +49,11 @@ class Scotland:
         lower = 0 if lower < 0 else lower
         upper = 90 if upper > 90 else upper
 
-        columns = ' + '.join([ 'Age{}'.format(age) for age in range(lower, upper) ])
-        columns = columns.replace('Age90', 'Age90Plus')
+        columns = " + ".join(["Age{}".format(age) for age in range(lower, upper)])
+        columns = columns.replace("Age90", "Age90Plus")
 
-        population, = self.db.query(f'SELECT {columns} FROM population_by_council WHERE CA = "S92000003" AND Sex = "All" AND Year = :year', year=MAX_YEAR).fetchone()
+        (population,) = self.db.query(
+            f'SELECT {columns} FROM population_by_council WHERE CA = "S92000003" AND Sex = "All" AND Year = :year',
+            year=MAX_YEAR,
+        ).fetchone()
         return int(population)

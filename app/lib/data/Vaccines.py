@@ -14,15 +14,27 @@ class Vaccines:
         """
         Returns the vaccine figures for this last week and overall
         """
-        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
+        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime("%Y%m%d")
 
-        last_updated, = self.db.query('SELECT MAX(Date) FROM vaccines_total').fetchone()
+        (last_updated,) = self.db.query(
+            "SELECT MAX(Date) FROM vaccines_total"
+        ).fetchone()
 
-        first_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Date >= :start', start=seven_days_ago).fetchone()
-        second_this_week, = self.db.query('SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Date >= :start', start=seven_days_ago).fetchone()
+        (first_this_week,) = self.db.query(
+            'SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Date >= :start',
+            start=seven_days_ago,
+        ).fetchone()
+        (second_this_week,) = self.db.query(
+            'SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Date >= :start',
+            start=seven_days_ago,
+        ).fetchone()
 
-        first_vax_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1').fetchone()
-        fully_vaxxed_total, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1').fetchone()
+        (first_vax_total,) = self.db.query(
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" ORDER BY Date DESC LIMIT 1'
+        ).fetchone()
+        (fully_vaxxed_total,) = self.db.query(
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1'
+        ).fetchone()
 
         return {
             "this week": {
@@ -39,8 +51,12 @@ class Vaccines:
     def percentage(self):
         population = self.scotland.population_for_age_range(lower=16)
 
-        double_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
-        single_vax, = self.db.query('SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Product = "Total" ORDER BY Date DESC LIMIT 1').fetchone()
+        (double_vax,) = self.db.query(
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Product = "Total" ORDER BY Date DESC LIMIT 1'
+        ).fetchone()
+        (single_vax,) = self.db.query(
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Product = "Total" ORDER BY Date DESC LIMIT 1'
+        ).fetchone()
         no_vax = population - single_vax
 
         single_vax -= double_vax
@@ -52,7 +68,7 @@ class Vaccines:
                     "backgroundColor": ["green", "lightblue", "red"],
                     "borderColor": ["green", "lightblue", "red"],
                     "label": "Vaccinations by total population (16+)",
-                    "data": [ double_vax, single_vax, no_vax ],
+                    "data": [double_vax, single_vax, no_vax],
                 }
             ],
         }
@@ -71,13 +87,21 @@ class Vaccines:
         while week < today:
             next_week = week + timedelta(days=7)
 
-            first_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 1"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
-            second_dose, = self.db.query('SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 2"', week=week.strftime('%Y%m%d'), next_week=next_week.strftime('%Y%m%d')).fetchone()
+            (first_dose,) = self.db.query(
+                'SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 1"',
+                week=week.strftime("%Y%m%d"),
+                next_week=next_week.strftime("%Y%m%d"),
+            ).fetchone()
+            (second_dose,) = self.db.query(
+                'SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 2"',
+                week=week.strftime("%Y%m%d"),
+                next_week=next_week.strftime("%Y%m%d"),
+            ).fetchone()
 
             if not first_dose or not second_dose:
                 break
 
-            weeks.append({ "start": week, "end": next_week })
+            weeks.append({"start": week, "end": next_week})
             dates.append(week.strftime("%d/%m/%Y"))
 
             dose1.append(first_dose)
@@ -88,8 +112,16 @@ class Vaccines:
         return {
             "labels": dates,
             "datasets": [
-                { "label": "First Vaccine", "backgroundColor": "lightblue", "data": dose1 },
-                { "label": "Second Vaccine", "backgroundColor": "lightgreen", "data": dose2 },
+                {
+                    "label": "First Vaccine",
+                    "backgroundColor": "lightblue",
+                    "data": dose1,
+                },
+                {
+                    "label": "Second Vaccine",
+                    "backgroundColor": "lightgreen",
+                    "data": dose2,
+                },
             ],
         }
 

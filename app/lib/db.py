@@ -4,7 +4,7 @@ import sqlite3
 
 class DB:
     def __init__(self):
-        self.con = sqlite3.connect(os.getenv('DATABASE'))
+        self.con = sqlite3.connect(os.getenv("DATABASE"))
         self.con.row_factory = sqlite3.Row
 
     def query(self, query: str, _commit: bool = True, **replacers):
