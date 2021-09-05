@@ -25,7 +25,7 @@ jobs:
 
           # Build and test
           docker-compose up --build -d scovid
-          sleep 20
+          docker exec scovid ./tools/update-db.py
           docker exec scovid pytest
 
   bandit:
@@ -44,5 +44,5 @@ jobs:
 
           # Build and test
           docker-compose up --build -d scovid
-          sleep 20
+          docker exec scovid ./tools/update-db.py
           docker exec scovid bandit -c .banditrc -r app/
