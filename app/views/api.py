@@ -27,6 +27,20 @@ def breakdown():
     return infections.breakdown()
 
 
+@api.route("/infections/by_age")
+@endpoint_handler
+def by_age():
+    infections = Infections()
+    return infections.by_age()
+
+
+@api.route("/infections/hospital_admissions")
+@endpoint_handler
+def hospital_admissions():
+    infections = Infections()
+    return infections.hospital_admissions()
+
+
 # Vaccines
 @api.route("/vaccines/breakdown")
 @endpoint_handler

@@ -104,6 +104,27 @@ class Infections:
             ],
         }
 
+    def by_age(self):
+        seven_days_ago = (datetime.today() - timedelta(days=7)).strftime('%Y%m%d')
+        rows = self.db.query('SELECT AgeGroup, DailyPositive FROM cases_by_age WHERE Sex = "Total" AND Date > :start AND AgeGroup NOT IN ("Total", "0 to 59", "60+") GROUP BY AgeGroup', start=seven_days_ago).fetchall()
+
+        return {
+            "labels": [ row["AgeGroup"] for row in rows ],
+            "datasets": [
+                { "label": "Cases", "backgroundColor": "darkorange", "data": [ row["DailyPositive"] for row in rows ] },
+            ],
+        }
+
+    def hospital_admissions(self):
+        rows = self.db.query('SELECT Date, NumberAdmitted FROM hospital_admissions ORDER BY Date DESC LIMIT 30').fetchall()
+
+        return {
+            "labels": [ strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows) ],
+            "datasets": [
+                { "label": "Cases", "backgroundColor": "lightblue", "data": [ row["NumberAdmitted"] for row in reversed(rows) ] },
+            ],
+        }
+
     def prevalence(self):
         """
         Returns the cases per 100k for each council area

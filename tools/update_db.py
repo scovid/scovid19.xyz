@@ -23,7 +23,7 @@ datasets = {
     "cases": 'https://www.opendata.nhs.scot/datastore/dump/287fc645-4352-4477-9c8c-55bc054b7e76',
     "cases_by_council": 'https://www.opendata.nhs.scot/datastore/dump/427f9a25-db22-4014-a3bc-893b68243055',
     "cases_by_deprivation": 'https://www.opendata.nhs.scot/datastore/dump/a965ee86-0974-4c93-bbea-e839e27d7085',
-    "cases_by_age": 'https://www.opendata.nhs.scot/datastore/dump/44b9bfac-ec14-403e-8609-3576d438df8c',
+    "cases_by_age": 'https://www.opendata.nhs.scot/datastore/dump/9393bd66-5012-4f01-9bc5-e7a10accacf4',
 
     # Vaccines
     "vaccines_by_group": 'https://www.opendata.nhs.scot/datastore/dump/9b99e278-b8d8-47df-8d7a-a8cf98519ac1',
@@ -31,7 +31,7 @@ datasets = {
     "vaccines_by_council": 'https://www.opendata.nhs.scot/datastore/dump/d5ffffc0-f6f3-4b76-8f38-71ccfd7747a4',
 
     # Hospital admissions
-    "hospital_adm_daily": 'https://www.opendata.nhs.scot/datastore/dump/0451bc49-0eaf-49a0-aa76-7f4539e5a615',
+    "hospital_admissions": 'https://www.opendata.nhs.scot/datastore/dump/0451bc49-0eaf-49a0-aa76-7f4539e5a615',
 }
 
 

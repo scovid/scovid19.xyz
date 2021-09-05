@@ -23,9 +23,13 @@
 <hr />
 <!-- Charts -->
 <section id="charts" class="section">
-	<div class="columns is-desktop">
-		<div class="column">{{ chart.chart('trendChart', 'Daily Trends', show_cog=True) }}</div>
+	<div class="columns is-desktop pb-5">
+		<div class="column">{{ chart.chart('trendChart', 'Daily Cases', show_cog=True) }}</div>
 		<div class="column">{{ chart.chart('breakdownChart', 'Breakdown') }}</div>
+	</div>
+	<div class="columns is-desktop">
+		<div class="column">{{ chart.chart('hopsitalAdmissions', 'Hospital Admissions') }}</div>
+		<div class="column">{{ chart.chart('byAgeChart', 'Cases by age', subtitle='Last 7 days') }}</div>
 	</div>
 </section>
 
@@ -59,10 +63,17 @@
 			endpoint: 'infections/breakdown',
 		},
 
-		locationChart: {
+		byAgeChart: {
 			type: 'bar',
 			options: { legend: false },
-			endpoint: 'infections/locations',
+			endpoint: 'infections/by_age',
+			...scales,
+		},
+
+		hopsitalAdmissions: {
+			type: 'bar',
+			options: { legend: false },
+			endpoint: 'infections/hospital_admissions',
 			...scales,
 		},
 	};

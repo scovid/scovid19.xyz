@@ -12,7 +12,7 @@
 
 <section id="charts" class="section">
 	<div class="columns is-desktop">
-		<div class="column">{{ chart.chart('vaccineChart', 'Vaccinations by total population (16+)') }}</div>
+		<div class="column">{{ chart.chart('vaccineChart', 'Total vaccinations', subtitle='Over 16s only') }}</div>
 		<div class="column">{{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}</div>
 	</div>
 </section>
@@ -35,13 +35,6 @@
 		vaccineChart: {
 			type: 'doughnut',
 			endpoint: 'vaccines/breakdown',
-		},
-
-		vaccineCouncilChart: {
-			type: 'bar',
-			options: { legend: false },
-			endpoint: 'vaccines/council',
-			...scales,
 		},
 
 		vaccineTrendChart: {
