@@ -15,7 +15,7 @@ cat << EOF | crontab -
 PATH="$PATH:/usr/local/bin"
 
 # Download new data every dat at 2pm
-0 14 * * * bash -c 'python3 $SCOVID_PROJECT_ROOT/tools/update_db.py'
+0 14 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 $SCOVID_PROJECT_ROOT/tools/update_db.py'
 
 # Post tweet every day at 3pm
 0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m scovid19.scripts.tweet'
