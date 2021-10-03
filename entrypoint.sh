@@ -18,7 +18,7 @@ PATH="$PATH:/usr/local/bin"
 0 14 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 $SCOVID_PROJECT_ROOT/tools/update_db.py'
 
 # Post tweet every day at 3pm
-0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m scovid19.scripts.tweet'
+0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m app.scripts.tweet'
 EOF
 
 # Create db if it doesn't exist
