@@ -56,13 +56,13 @@ def main(dry_run=False):
     try:
         api.update_status(text.format(**v))
     except tweepy.RateLimitError as e:
-        tweet_logger.error("Error: " + e.response.text)
+        tweet_logger.error(f"RateLimitError: {e}")
         sys.exit(1)
     except tweepy.TweepError as e:
-        tweet_logger.error("Error: " + e.response.text)
+        tweet_logger.error(f"TweepError: {e}")
         sys.exit(1)
-    except Exception:
-        tweet_logger.error("Unknown Error.")
+    except Exception as e:
+        tweet_logger.error(f"Error: {e}")
         sys.exit(1)
 
 
