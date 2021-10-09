@@ -12,13 +12,14 @@ crontab -l >/dev/null 2>&1
 
 # Add to cron
 cat << EOF | crontab -
-PATH="$PATH:/usr/local/bin"
+# Set the environment
+$(env)
 
 # Download new data every dat at 2pm
-0 14 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 $SCOVID_PROJECT_ROOT/tools/update_db.py'
+0 14 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 ./tools/update_db.py' > /tmp/update_db.log 2>&1
 
 # Post tweet every day at 3pm
-0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m app.scripts.tweet'
+0 15 * * * bash -c 'cd $SCOVID_PROJECT_ROOT && python3 -m app.scripts.tweet' > /tmp/tweet.log 2>&1
 EOF
 
 # Create db if it doesn't exist

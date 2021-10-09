@@ -12,7 +12,7 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install updates and cache across builds
 ENV DEBIAN_FRONTEND=noninteractive
-RUN --mount=type=cache,target=/var/cache/apt,id=apt apt-get update && apt-get -y upgrade && apt-get install -y sudo cron sqlite3 curl
+RUN --mount=type=cache,target=/var/cache/apt,id=apt apt-get update && apt-get -y upgrade && apt-get install -y sudo cron sqlite3 curl vim
 
 ENV PATH="/home/app/.local/bin:${PATH}"
 
