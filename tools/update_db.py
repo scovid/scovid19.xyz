@@ -10,6 +10,7 @@ import sqlite3
 import json
 import csv
 import os
+from pathlib import Path
 
 # https://www.opendata.nhs.scot/dataset/covid-19-in-scotland
 # https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland
@@ -33,6 +34,7 @@ datasets = {
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 database = f"{script_dir}/data/scovid19.db"
+Path(database).touch()
 conn = sqlite3.connect(database)
 
 
