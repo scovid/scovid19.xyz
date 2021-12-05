@@ -32,10 +32,11 @@ datasets = {
     "hospital_admissions": "https://www.opendata.nhs.scot/datastore/dump/0451bc49-0eaf-49a0-aa76-7f4539e5a615",
 }
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-database = f"{script_dir}/data/scovid19.db"
-Path(database).touch()
-conn = sqlite3.connect(database)
+database = Path("./data/scovid19.db")
+database.parent.mkdir(parents=True, exist_ok=True)
+database.touch()
+
+conn = sqlite3.connect(str(database))
 
 
 def main():
