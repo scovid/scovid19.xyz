@@ -8,11 +8,23 @@
 		<div class="column">{{ tile.tile('First Dosage', weekly['totals']['Dose 1'], '#f6ae33', 'Total') }}</div>
 		<div class="column">{{ tile.tile('Second Dosage', weekly['totals']['Dose 2'], '#f94333', 'Total') }}</div>
 	</section>
+
+	<section id="moreStats" class="columns slider">
+		<div class="column">{{ tile.tile('Third Dosage', weekly['this week']['Dose 3'], '#67a23f', 'Week Ending ' + weekly['this week']['Week Ending']) }}</div>
+		<div class="column">{{ tile.tile('Third Dosage', weekly['totals']['Dose 3'], '#f94333', 'Total') }}</div>
+	</section>
+
+	<!-- More stats button -->
+	<div class="has-text-centered">
+		<a class="button is-text is-medium is-family-monospace" onclick="toggleExtraCards(this)">
+			<i class="fas fa-chevron-up"></i>
+		</a>
+	</div>
 </div>
 
 <section id="charts" class="section">
 	<div class="columns is-desktop">
-		<div class="column">{{ chart.chart('vaccineChart', 'Total vaccinations', subtitle='Over 16s only') }}</div>
+		<div class="column">{{ chart.chart('vaccineChart', 'Total vaccinations', subtitle='Aged 12+ only') }}</div>
 		<div class="column">{{ chart.chart('vaccineTrendChart', 'Weekly vaccine trends') }}</div>
 	</div>
 </section>

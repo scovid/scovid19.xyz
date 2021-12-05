@@ -8,7 +8,7 @@
 	<div class="column">{{ tile.tile('New deaths per day', summary['deaths']['avg'], '#f94333', 'average over last 7 days') }}</div>
 </section>
 
-<section id="moreStats" class="columns slider closed">
+<section id="moreStats" class="columns slider">
 	<div class="column">{{ tile.tile('Most cases in one day', summary['cases']['most']['number'], '#469C6B', "On " + summary['cases']['most']['date']) }}</div>
 	<div class="column">{{ tile.tile('Most deaths in one day', summary['deaths']['most']['number'], '#F87933', "On " + summary['deaths']['most']['date']) }}</div>
 </section>
@@ -16,7 +16,7 @@
 <!-- More stats button -->
 <div class="has-text-centered">
 	<a class="button is-text is-medium is-family-monospace" onclick="toggleExtraCards(this)">
-		<i class="fas fa-chevron-down"></i>
+		<i class="fas fa-chevron-up"></i>
 	</a>
 </div>
 
