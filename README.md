@@ -28,6 +28,10 @@ export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
 export BUILDKIT_PROGRESS=plain
 
+# Make an empty .env file
+# The secrets are only needed for the twitter bot (see below)
+touch .env
+
 # Start the container in dev mode
 docker-compose up -d --build scovid
 
