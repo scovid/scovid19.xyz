@@ -16,7 +16,9 @@ class Vaccines:
         """
         seven_days_ago = (datetime.today() - timedelta(days=7)).strftime("%Y%m%d")
 
-        (last_updated,) = self.db.query("SELECT MAX(Date) FROM vaccines_total").fetchone()
+        (last_updated,) = self.db.query(
+            "SELECT MAX(Date) FROM vaccines_total"
+        ).fetchone()
 
         (first_this_week,) = self.db.query(
             'SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 1" AND Date >= :start',
@@ -73,7 +75,12 @@ class Vaccines:
         double_vax -= triple_vax
 
         return {
-            "labels": ["Three Vaccines", "Two Vaccines Only", "One Vaccine Only", "No Vaccines"],
+            "labels": [
+                "Three Vaccines",
+                "Two Vaccines Only",
+                "One Vaccine Only",
+                "No Vaccines",
+            ],
             "datasets": [
                 {
                     "backgroundColor": ["green", "yellow", "orange", "red"],
