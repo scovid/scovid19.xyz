@@ -1,2 +1,2 @@
 assert_used:
-  skips: ['*_test.py', 'test_*.py','scovid19/tests/*']
+  skips: ['*_test.py', 'test_*.py', 'app/tests/*']
