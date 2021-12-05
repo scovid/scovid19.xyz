@@ -15,25 +15,8 @@ def main(dry_run=False):
 
     tweet_logger = get_logger("tweet_bot")
 
-    # Add your credentials here
-    twitter_keys = {
-        "consumer_key": os.environ.get("SCOVID_TWITTER_API_KEY"),
-        "consumer_secret": os.environ.get("SCOVID_TWITTER_API_SECRET"),
-        "access_token_key": os.environ.get("SCOVID_TWITTER_ACCESS_TOKEN"),
-        "access_token_secret": os.environ.get("SCOVID_TWITTER_ACCESS_SECRET"),
-    }
-
     vaccine = Vaccines()
     infections = Infections()
-
-    auth = tweepy.OAuthHandler(
-        twitter_keys["consumer_key"], twitter_keys["consumer_secret"]
-    )
-    auth.set_access_token(
-        twitter_keys["access_token_key"], twitter_keys["access_token_secret"]
-    )
-
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     vaccine_data = vaccine.summary()
     infection_data = infections.summary()
@@ -54,7 +37,7 @@ def main(dry_run=False):
         return f"--dry-run passed, would be tweeting the following message:\n{text.format(**v)}"
 
     try:
-        api.update_status(text.format(**v))
+        send_tweet(text.format(**v))
     except tweepy.RateLimitError as e:
         tweet_logger.error(f"RateLimitError: {e}")
         sys.exit(1)
@@ -64,6 +47,29 @@ def main(dry_run=False):
     except Exception as e:
         tweet_logger.error(f"Error: {e}")
         sys.exit(1)
+
+
+def send_tweet(msg: str):
+    """
+    Authentice via twitter API and send the tweet
+    """
+
+    twitter_keys = {
+        "consumer_key": os.environ.get("SCOVID_TWITTER_API_KEY"),
+        "consumer_secret": os.environ.get("SCOVID_TWITTER_API_SECRET"),
+        "access_token_key": os.environ.get("SCOVID_TWITTER_ACCESS_TOKEN"),
+        "access_token_secret": os.environ.get("SCOVID_TWITTER_ACCESS_SECRET"),
+    }
+
+    auth = tweepy.OAuthHandler(
+        twitter_keys["consumer_key"], twitter_keys["consumer_secret"]
+    )
+    auth.set_access_token(
+        twitter_keys["access_token_key"], twitter_keys["access_token_secret"]
+    )
+
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    api.update_status(msg)
 
 
 if __name__ == "__main__":
