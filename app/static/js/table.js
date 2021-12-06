@@ -3,6 +3,8 @@ TODO:
 - Support pagination or load more/load less
 - Display sort arrows on headers
 - Support search filtering
+- Use JS doc comments
+- Add a way to set the default sorting
 */
 
 class SimpleTable {
@@ -57,9 +59,11 @@ class SimpleTable {
 
 				// Sort data
 				const isNumeric = Number.isFinite(parseNum(this.rows[0][rowKey]));
-				console.log(isNumeric);
-				if (isNumeric) this.rows = this.rows.sort((a, b) => parseNum(b[rowKey]) - parseNum(a[rowKey]));
-				else this.rows = this.rows.sort((a, b) => a[rowKey] > b[rowKey]);
+				if (isNumeric) {
+					this.rows = this.rows.sort((a, b) => parseNum(b[rowKey]) - parseNum(a[rowKey]));
+				} else {
+					this.rows = this.rows.sort((a, b) => a[rowKey] > b[rowKey]);
+				}
 
 				// Store state and handle reversing
 				if (this.state.sorted === rowKey) {
@@ -94,6 +98,24 @@ class SimpleTable {
 
 	buildRows() {
 		this.table.body.innerHTML = '';
+
+		// Add the sort arrow indicator when sorting
+		if (this.state && this.state.sorted) {
+			let sortedOn = this.state.sorted;
+			let reversed = false;
+
+			if (sortedOn.endsWith("_reversed")) {
+				reversed = true;
+				sortedOn = sortedOn.replace("_reversed", "");
+			}
+
+			// Delete all sort indicators
+			document.querySelectorAll(".sort-indicator").forEach(indicator => indicator.parentNode.removeChild(indicator));
+
+			// Add a sort indicator on the current column
+			const indicator = reversed ? `<i class="fas fa-arrow-up"></i>` : `<i class="fas fa-arrow-down"></i>`;
+			document.querySelector(`[row-key="${sortedOn}"]`).innerHTML += `<span class="sort-indicator" style="margin-left: 10px;">${indicator}</span>`;
+		}
 
 		// Build rows
 		for (let row of this.rows) {

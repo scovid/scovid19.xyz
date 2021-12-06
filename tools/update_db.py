@@ -101,4 +101,6 @@ def load_csv(csv_file, table_name):
 
 
 if __name__ == "__main__":
+    print("Populating database...")
     main()
+    print("Done!")
