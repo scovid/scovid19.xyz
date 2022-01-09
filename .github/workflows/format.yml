@@ -28,8 +28,7 @@ jobs:
 
       - name: 'Run py formatter'
         run: |
-          source venv/bin/activate
-          black app/
+          poetry run black app/
 
       # Front end formatting with prettier
       - name: Install
