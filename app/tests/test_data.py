@@ -2,7 +2,7 @@
 Tests for scovid19.lib.data using pytest
 """
 
-from app.lib.data import Scotland, Infections, Vaccines
+from app.controllers import Scotland, Infections, Vaccines
 
 
 class TestScotland:

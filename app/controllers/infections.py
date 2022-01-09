@@ -20,9 +20,7 @@ class Infections:
             "SELECT SUM(DailyCases) FROM cases WHERE `Date` >= :start_date",
             start_date=seven_days_ago,
         ).fetchone()
-        (total_cases,) = self.db.query(
-            "SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1"
-        ).fetchone()
+        (total_cases,) = self.db.query("SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1").fetchone()
         most_cases = self.db.query("SELECT MAX(DailyCases), Date FROM cases").fetchone()
         (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases").fetchone()
 
@@ -64,16 +62,11 @@ class Infections:
         }
 
     # Return the overall cases by day for Scotland
-    def trend(self, params={}):
+    def trend(self, start=None, end=None):
         """
         Returns the data for the daily infections trend chart
         """
-        if "start" in params and "end" in params:
-            start = strpstrf(params["start"], rev=True)
-            end = strpstrf(params["end"], rev=True)
-        else:
-            start = (datetime.today() - timedelta(days=30)).strftime("%Y%m%d")
-            end = datetime.today().strftime("%Y%m%d")
+        start, end = self.get_date_range(start, end)
 
         rows = self.db.query(
             "SELECT `Date`, DailyCases FROM cases WHERE `Date` >= :start AND `Date` <= :end",
@@ -90,9 +83,7 @@ class Infections:
 
         return {
             "labels": dates,
-            "datasets": [
-                {"backgroundColor": "darkorange", "label": "Positive", "data": cases}
-            ],
+            "datasets": [{"backgroundColor": "darkorange", "label": "Positive", "data": cases}],
         }
 
     def breakdown(self):
@@ -133,15 +124,17 @@ class Infections:
             ],
         }
 
-    def hospital_admissions(self):
+    def hospital_admissions(self, start=None, end=None):
+        start, end = self.get_date_range(start, end)
+
         rows = self.db.query(
-            "SELECT Date, NumberAdmitted FROM hospital_admissions ORDER BY Date DESC LIMIT 30"
+            "SELECT Date, NumberAdmitted FROM hospital_admissions WHERE `Date` >= :start AND `Date` <= :end ORDER BY Date DESC",
+            start=start,
+            end=end,
         ).fetchall()
 
         return {
-            "labels": [
-                strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)
-            ],
+            "labels": [strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)],
             "datasets": [
                 {
                     "label": "Cases",
@@ -190,6 +183,23 @@ class Infections:
             return datetime.strftime(last_updated, format)
 
         return last_updated
+
+    @staticmethod
+    def get_date_range(start: str = "", end: str = "", default_days: int = 30):
+        """
+        Take a start and end date in the format YYYY-MM-DD
+        Return them in the format YYYYMMDD
+
+        If they are blank then default to start=today, end=30 days ago
+        """
+        if start and end:
+            start = strpstrf(start, rev=True)
+            end = strpstrf(end, rev=True)
+        else:
+            start = (datetime.today() - timedelta(days=default_days)).strftime("%Y%m%d")
+            end = datetime.today().strftime("%Y%m%d")
+
+        return start, end
 
     @staticmethod
     def color(key):

@@ -30,6 +30,7 @@ datasets = {
     "vaccines_by_council": "https://www.opendata.nhs.scot/datastore/dump/d5ffffc0-f6f3-4b76-8f38-71ccfd7747a4",
     # Hospital admissions
     "hospital_admissions": "https://www.opendata.nhs.scot/datastore/dump/0451bc49-0eaf-49a0-aa76-7f4539e5a615",
+    "icu_admissions": "https://www.opendata.nhs.scot/datastore/dump/93d0c3f8-b61f-48d5-977c-b8d95bfb2511",
 }
 
 database = Path("./data/scovid19.db")

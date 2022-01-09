@@ -1,5 +1,5 @@
 from flask import render_template, Blueprint
-from app.lib.data import Infections, Vaccines
+from app.controllers import Infections, Vaccines
 from app.lib.Decorators import page_handler
 
 

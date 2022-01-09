@@ -4,8 +4,7 @@ import os
 import sys
 import tweepy
 from datetime import datetime
-from app.lib.data.Vaccines import Vaccines
-from app.lib.data.Infections import Infections
+from app.controllers import Infections, Vaccines
 from app.lib.Util import get_logger
 
 
@@ -61,12 +60,8 @@ def send_tweet(msg: str):
         "access_token_secret": os.environ.get("SCOVID_TWITTER_ACCESS_SECRET"),
     }
 
-    auth = tweepy.OAuthHandler(
-        twitter_keys["consumer_key"], twitter_keys["consumer_secret"]
-    )
-    auth.set_access_token(
-        twitter_keys["access_token_key"], twitter_keys["access_token_secret"]
-    )
+    auth = tweepy.OAuthHandler(twitter_keys["consumer_key"], twitter_keys["consumer_secret"])
+    auth.set_access_token(twitter_keys["access_token_key"], twitter_keys["access_token_secret"])
 
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     api.update_status(msg)

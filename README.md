@@ -18,7 +18,7 @@ The first time you run the container and sqlite file database will be created an
 
 This will update on a cron schedule so if you're container isn't always running remember to update this manually.  
 
-### Run locally
+### Running with docker-compose
 ```bash
 # Dependencies
 sudo apt install docker docker-compose sqlite3
@@ -33,6 +33,7 @@ export BUILDKIT_PROGRESS=plain
 touch .env
 
 # Start the container in dev mode
+# Runs on http://localhost:4001 or http://localhost:4002
 docker-compose up -d --build scovid
 
 # Logs

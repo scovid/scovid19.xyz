@@ -1,5 +1,5 @@
 from app.lib.Util import get_logger, strpstrf
-from app.lib.data.Scotland import Scotland
+from app.controllers import Scotland
 from datetime import timedelta, datetime
 from app.lib import DB
 

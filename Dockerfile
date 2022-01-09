@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.2
 
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-buster
 
 LABEL Author="Daniel Stewart"
 LABEL E-mail="danielandrewstewart@gmail.com"
@@ -27,10 +27,18 @@ COPY --chown=app:app config/sqliterc /home/app/.sqliterc
 RUN mkdir -p /home/app/scovid19
 WORKDIR /home/app/scovid19
 
-# Install python deps
-COPY --chown=app:app requirements.txt ./
-RUN pip install --upgrade pip
-RUN --mount=type=cache,target=/home/app/.cache/pip,id=pip pip install -r requirements.txt
+# Install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Disable use of virtualenvs - we don't need them in a container
+RUN poetry config virtualenvs.create false
+
+# Install requirements
+COPY --chown=app:app pyproject.toml ./
+COPY --chown=app:app poetry.lock ./
+# TODO: Fix cache
+# RUN --mount=type=cache,target=/home/app/.cache/pypoetry,id=poetry poetry install
+RUN poetry install
 
 # Get traceback for C crashes
 ENV PYTHONFAULTHANDLER=1

@@ -24,14 +24,18 @@ EOF
 
 # Create db if it doesn't exist
 if [[ ! -f $DATABASE ]]; then
+    echo "Generating database..."
     ./tools/update_db.py
+    echo "Successfully generated database"
 fi
 
 # Start web server
 if [[ $SCOVID_ENV == 'dev' || $SCOVID_ENV == 'development' ]]; then
-    exec flask run --host 0.0.0.0
+    echo "Starting flask dev server..."
+    exec poetry run flask run --host 0.0.0.0
 else
-    exec gunicorn \
+    echo "Starting gunicorn server..."
+    exec poetry run gunicorn \
         --workers 4 \
         --threads 4 \
         --worker-class gevent \

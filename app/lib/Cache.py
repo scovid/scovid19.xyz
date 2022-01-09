@@ -4,7 +4,7 @@ from time import time
 from enum import Enum
 from typing import Any
 from dataclasses import dataclass, field
-from app.lib.Util import project_root, env, get_logger
+from app.lib.Util import project_root, env
 
 
 class CacheException(Exception):
@@ -114,11 +114,7 @@ class Cacher:
         Create a cache key from a func name and it's args
         """
         # Ignore 'self' params for our classes
-        if (
-            len(args) > 0
-            and isinstance(args[0], object)
-            and args[0].__class__.__module__ != "builtins"
-        ):
+        if len(args) > 0 and isinstance(args[0], object) and args[0].__class__.__module__ != "builtins":
             args = [args[0].__class__.__name__, *args[1:]]
 
         args_key = [str(x) for x in args]

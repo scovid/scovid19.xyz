@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "scovid19.xyz"
+version = "1.0.0"
+description = "Scottish COVID-19 stat tracker"
+authors = ["Dan Stewart <git@mail.danstewart.dev>"]
+
+[tool.poetry.dependencies]
+python = "^3.10.0"
+requests = "^2.27.1"
+Flask = "^2.0.2"
+gunicorn = "^20.1.0"
+tweepy = "^4.4.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+bandit = "^1.7.1"
+python-devtools = {extras = ["pygments"], version = "^2"}
+black = "^21.12b0"
+pyflakes = "^2.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

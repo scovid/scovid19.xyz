@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from app.lib.data import Infections, Vaccines
+from app.controllers import Infections, Vaccines
 from app.lib.Decorators import endpoint_handler
 
 
@@ -17,7 +17,7 @@ def ping():
 @endpoint_handler
 def trend():
     infections = Infections()
-    return infections.trend(request.args)
+    return infections.trend(**request.args)
 
 
 @api.route("/infections/breakdown")
