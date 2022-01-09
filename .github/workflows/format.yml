@@ -23,9 +23,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
 
       - name: 'Run py formatter'
         run: |
