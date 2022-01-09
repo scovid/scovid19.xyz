@@ -104,13 +104,13 @@ class SimpleTable {
 			let sortedOn = this.state.sorted;
 			let reversed = false;
 
-			if (sortedOn.endsWith("_reversed")) {
+			if (sortedOn.endsWith('_reversed')) {
 				reversed = true;
-				sortedOn = sortedOn.replace("_reversed", "");
+				sortedOn = sortedOn.replace('_reversed', '');
 			}
 
 			// Delete all sort indicators
-			document.querySelectorAll(".sort-indicator").forEach(indicator => indicator.parentNode.removeChild(indicator));
+			document.querySelectorAll('.sort-indicator').forEach(indicator => indicator.parentNode.removeChild(indicator));
 
 			// Add a sort indicator on the current column
 			const indicator = reversed ? `<i class="fas fa-arrow-up"></i>` : `<i class="fas fa-arrow-down"></i>`;

@@ -20,7 +20,9 @@ class Infections:
             "SELECT SUM(DailyCases) FROM cases WHERE `Date` >= :start_date",
             start_date=seven_days_ago,
         ).fetchone()
-        (total_cases,) = self.db.query("SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1").fetchone()
+        (total_cases,) = self.db.query(
+            "SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1"
+        ).fetchone()
         most_cases = self.db.query("SELECT MAX(DailyCases), Date FROM cases").fetchone()
         (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases").fetchone()
 
@@ -83,7 +85,9 @@ class Infections:
 
         return {
             "labels": dates,
-            "datasets": [{"backgroundColor": "darkorange", "label": "Positive", "data": cases}],
+            "datasets": [
+                {"backgroundColor": "darkorange", "label": "Positive", "data": cases}
+            ],
         }
 
     def breakdown(self):
@@ -134,7 +138,9 @@ class Infections:
         ).fetchall()
 
         return {
-            "labels": [strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)],
+            "labels": [
+                strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)
+            ],
             "datasets": [
                 {
                     "label": "Cases",
