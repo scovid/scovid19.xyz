@@ -20,6 +20,13 @@ def trend():
     return infections.trend(**request.args)
 
 
+@api.route("/infections/deaths")
+@endpoint_handler
+def deaths():
+    infections = Infections()
+    return infections.deaths(**request.args)
+
+
 @api.route("/infections/breakdown")
 @endpoint_handler
 def breakdown():

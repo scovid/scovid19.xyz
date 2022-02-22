@@ -20,9 +20,7 @@ class Infections:
             "SELECT SUM(DailyCases) FROM cases WHERE `Date` >= :start_date",
             start_date=seven_days_ago,
         ).fetchone()
-        (total_cases,) = self.db.query(
-            "SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1"
-        ).fetchone()
+        (total_cases,) = self.db.query("SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1").fetchone()
         most_cases = self.db.query("SELECT MAX(DailyCases), Date FROM cases").fetchone()
         (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases").fetchone()
 
@@ -71,7 +69,7 @@ class Infections:
         start, end = self.get_date_range(start, end)
 
         rows = self.db.query(
-            "SELECT `Date`, DailyCases FROM cases WHERE `Date` >= :start AND `Date` <= :end",
+            "SELECT `Date`, DailyCases FROM cases WHERE `Date` >= :start AND `Date` <= :end ORDER BY `Date` DESC",
             start=start,
             end=end,
         )
@@ -86,10 +84,49 @@ class Infections:
         return {
             "labels": dates,
             "datasets": [
-                {"backgroundColor": "darkorange", "label": "Positive", "data": cases}
+                {
+                    "backgroundColor": "darkorange",
+                    "label": "Positive",
+                    "data": cases,
+                },
             ],
         }
 
+    def deaths(self, start=None, end=None):
+        """
+        Returns the deaths data for the daily infections trend chart
+        """
+        start, end = self.get_date_range(start, end)
+
+        rows = self.db.query(
+            "SELECT `Date`, Deaths FROM cases WHERE `Date` >= :start AND `Date` <= :end ORDER BY `Date` DESC",
+            start=start,
+            end=end,
+        )
+
+        (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases").fetchone()
+
+        dates = []
+        deaths = []
+        prev_deaths = total_deaths
+        for day in rows:
+            date = strpstrf(str(day["Date"]), strf="%d %b %y")
+            dates.append(date)
+            deaths.append(prev_deaths - day["Deaths"])
+            prev_deaths = day["Deaths"]
+
+        return {
+            "labels": list(reversed(dates)),
+            "datasets": [
+                {
+                    "backgroundColor": "grey",
+                    "label": "Deaths",
+                    "data": list(reversed(deaths)),
+                },
+            ],
+        }
+
+    # NOTE: Not currently used
     def breakdown(self):
         """
         Breakdown of postive, negative and deaths over the full time period
@@ -138,9 +175,7 @@ class Infections:
         ).fetchall()
 
         return {
-            "labels": [
-                strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)
-            ],
+            "labels": [strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)],
             "datasets": [
                 {
                     "label": "Cases",
