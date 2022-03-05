@@ -1,3 +1,4 @@
+from typing import Optional
 from app.lib.Util import strpstrf, get_logger
 from datetime import datetime, timedelta
 from app.lib import DB
@@ -20,9 +21,7 @@ class Infections:
             "SELECT SUM(DailyCases) FROM cases WHERE `Date` >= :start_date",
             start_date=seven_days_ago,
         ).fetchone()
-        (total_cases,) = self.db.query(
-            "SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1"
-        ).fetchone()
+        (total_cases,) = self.db.query("SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1").fetchone()
         most_cases = self.db.query("SELECT MAX(DailyCases), Date FROM cases").fetchone()
         (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases").fetchone()
 
@@ -64,12 +63,13 @@ class Infections:
         }
 
     # Return the overall cases by day for Scotland
-    def trend(self, start=None, end=None):
+    def trend(self, start: Optional[str] = None, end: Optional[str] = None):
         """
         Returns the data for the daily infections trend chart
         """
         start, end = self.get_date_range(start, end)
 
+        # Get daily cases from newest to oldest
         rows = self.db.query(
             "SELECT `Date`, DailyCases FROM cases WHERE `Date` >= :start AND `Date` <= :end ORDER BY `Date` DESC",
             start=start,
@@ -80,8 +80,8 @@ class Infections:
         cases = []
         for day in rows:
             date = strpstrf(str(day["Date"]), strf="%d %b %y")
-            dates.append(date)
-            cases.append(day["DailyCases"])
+            dates.insert(0, date)
+            cases.insert(0, day["DailyCases"])
 
         return {
             "labels": dates,
@@ -100,6 +100,7 @@ class Infections:
         """
         start, end = self.get_date_range(start, end)
 
+        # Get total deaths from newest to oldest
         rows = self.db.query(
             "SELECT `Date`, Deaths FROM cases WHERE `Date` >= :start AND `Date` <= :end ORDER BY `Date` DESC",
             start=start,
@@ -113,17 +114,17 @@ class Infections:
         prev_deaths = total_deaths
         for day in rows:
             date = strpstrf(str(day["Date"]), strf="%d %b %y")
-            dates.append(date)
-            deaths.append(prev_deaths - day["Deaths"])
+            dates.insert(0, date)
+            deaths.insert(0, prev_deaths - day["Deaths"])
             prev_deaths = day["Deaths"]
 
         return {
-            "labels": list(reversed(dates)),
+            "labels": dates,
             "datasets": [
                 {
                     "backgroundColor": "grey",
                     "label": "Deaths",
-                    "data": list(reversed(deaths)),
+                    "data": deaths,
                 },
             ],
         }
@@ -177,9 +178,7 @@ class Infections:
         ).fetchall()
 
         return {
-            "labels": [
-                strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)
-            ],
+            "labels": [strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)],
             "datasets": [
                 {
                     "label": "Cases",
@@ -230,7 +229,7 @@ class Infections:
         return last_updated
 
     @staticmethod
-    def get_date_range(start: str = "", end: str = "", default_days: int = 30):
+    def get_date_range(start: Optional[str], end: Optional[str], default_days: int = 30):
         """
         Take a start and end date in the format YYYY-MM-DD
         Return them in the format YYYYMMDD
