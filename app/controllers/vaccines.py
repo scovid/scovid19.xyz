@@ -29,7 +29,7 @@ class Vaccines:
             start=seven_days_ago,
         ).fetchone()
         (third_this_week,) = self.db.query(
-            'SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 3 and Booster" AND Date >= :start',
+            'SELECT SUM(NumberVaccinated) FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 3" AND Date >= :start',
             start=seven_days_ago,
         ).fetchone()
 
@@ -40,7 +40,7 @@ class Vaccines:
             'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 2" ORDER BY Date DESC LIMIT 1'
         ).fetchone()
         (triple_vax_total,) = self.db.query(
-            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 3 and Booster" ORDER BY Date DESC LIMIT 1'
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE product = "Total" AND AgeBand = "All vaccinations" AND Dose = "Dose 3" ORDER BY Date DESC LIMIT 1'
         ).fetchone()
 
         return {
@@ -61,7 +61,7 @@ class Vaccines:
         population = self.scotland.population_for_age_range(lower=12)
 
         (triple_vax,) = self.db.query(
-            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 3 and Booster" AND Product = "Total" ORDER BY Date DESC LIMIT 1'
+            'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 3" AND Product = "Total" ORDER BY Date DESC LIMIT 1'
         ).fetchone()
         (double_vax,) = self.db.query(
             'SELECT CumulativeNumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Dose = "Dose 2" AND Product = "Total" ORDER BY Date DESC LIMIT 1'
@@ -117,7 +117,7 @@ class Vaccines:
                 next_week=next_week.strftime("%Y%m%d"),
             ).fetchone()
             (third_dose,) = self.db.query(
-                'SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 3 and Booster" AND Product = "Total"',
+                'SELECT SUM(NumberVaccinated) AS NumberVaccinated FROM vaccines_total WHERE AgeBand = "All vaccinations" AND Date >= :week AND Date < :next_week AND Dose = "Dose 3" AND Product = "Total"',
                 week=week.strftime("%Y%m%d"),
                 next_week=next_week.strftime("%Y%m%d"),
             ).fetchone()
