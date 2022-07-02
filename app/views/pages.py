@@ -1,7 +1,6 @@
-from flask import render_template, Blueprint
 from app.controllers import Infections, Vaccines
 from app.lib.Decorators import page_handler
-
+from flask import Blueprint, render_template
 
 pages = Blueprint("pages", __name__)
 
@@ -44,5 +43,5 @@ def vaccine():
         tab="vaccine",
         weekly=vaccines.summary(),
         percentage=vaccines.percentage(),
-        last_updated=infections.last_updated(format="%d %B %Y"),
+        last_updated=infections.last_updated(format="%d %b %y"),
     )

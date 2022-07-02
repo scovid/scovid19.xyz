@@ -1,8 +1,9 @@
 import functools
 import logging
 import traceback
-from flask import jsonify, render_template
+
 from app.lib.Cache import Cacher
+from flask import jsonify, render_template
 
 
 # Endpoint decorator
@@ -15,7 +16,7 @@ def endpoint_handler(func):
         except Exception:
             err = traceback.format_exc()
             logging.error(f"Error when calling endpoint '{func.__name__}': {err}")
-            return jsonify({"error": "Something went wrong"})
+            return jsonify({"error": "Unknown Error"})
 
     return wrapper
 
