@@ -26,16 +26,22 @@ class Infections:
         if not cases_this_week:
             cases_this_week = 0
 
-        (total_cases,) = self.db.query("SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1").fetchone()
+        (total_cases,) = self.db.query(
+            "SELECT CumulativeCases FROM cases ORDER BY `Date` DESC LIMIT 1"
+        ).fetchone()
         most_cases = self.db.query("SELECT MAX(DailyCases), Date FROM cases").fetchone()
-        (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases WHERE Deaths != ''").fetchone()
+        (total_deaths,) = self.db.query(
+            "SELECT MAX(Deaths) FROM cases WHERE Deaths != ''"
+        ).fetchone()
 
         # We do not have the daily death stats, only the total at any given date
         # So go through all records
         most_deaths = (0, "")
         total_deaths_yesterday = 0
         deaths_this_week = 0
-        records = self.db.query("SELECT `Date`, Deaths FROM cases WHERE Deaths != '' ORDER BY `Date` ASC")
+        records = self.db.query(
+            "SELECT `Date`, Deaths FROM cases WHERE Deaths != '' ORDER BY `Date` ASC"
+        )
         for record in records.fetchall():
             date, total_deaths = record
             deaths_today = total_deaths - total_deaths_yesterday
@@ -112,7 +118,9 @@ class Infections:
             end=end,
         )
 
-        (total_deaths,) = self.db.query("SELECT MAX(Deaths) FROM cases WHERE Deaths != ''").fetchone()
+        (total_deaths,) = self.db.query(
+            "SELECT MAX(Deaths) FROM cases WHERE Deaths != ''"
+        ).fetchone()
 
         dates = []
         deaths = []
@@ -183,7 +191,9 @@ class Infections:
         ).fetchall()
 
         return {
-            "labels": [strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)],
+            "labels": [
+                strpstrf(str(row["Date"]), strf="%d %b %y") for row in reversed(rows)
+            ],
             "datasets": [
                 {
                     "label": "Cases",
@@ -234,7 +244,9 @@ class Infections:
         return last_updated
 
     @staticmethod
-    def get_date_range(start: Optional[str], end: Optional[str], default_days: int = 30):
+    def get_date_range(
+        start: Optional[str], end: Optional[str], default_days: int = 30
+    ):
         """
         Take a start and end date in the format YYYY-MM-DD
         Return them in the format YYYYMMDD
