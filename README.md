@@ -60,7 +60,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 # run
-docker-compose -f docker-compose.yml up -d --build scovid
+docker compose -f docker-compose.yml up -d --build scovid
 
 # nginx
 sudo cp nginx/scovid19.xyz /etc/nginx/sites-available/
