@@ -1,7 +1,9 @@
 # scovid19.xyz
-The new and improved Scottish COVID-19 tracker.  
+
+The new and improved Scottish COVID-19 tracker.
 
 ### Built with
+
 - [flask](https://flask.palletsprojects.com/en/1.1.x/)
 - [jinja](https://jinja.palletsprojects.com/en/2.11.x/)
 - [Bulma](https://bulma.io/)
@@ -10,15 +12,15 @@ The new and improved Scottish COVID-19 tracker.
 - [flatpickr](https://flatpickr.js.org/)
 - [Plausible Analytics](https://plausible.io/)
 
-
 ## How to
 
 The following instructions use docker, if you'd rather not use docker then see `docs/WITHOUT_DOCKER.md`.  
-The first time you run the container and sqlite file database will be created and populated with the data.  
+The first time you run the container and sqlite file database will be created and populated with the data.
 
-This will update on a cron schedule so if you're container isn't always running remember to update this manually.  
+This will update on a cron schedule so if you're container isn't always running remember to update this manually.
 
 ### Running with docker-compose
+
 ```bash
 # Dependencies
 sudo apt install docker docker-compose sqlite3
@@ -47,12 +49,10 @@ docker exec -it scovid pytest
 
 # Post tweet - does not post if stats are the same
 docker exec -it scovid python3 -m app.scripts.tweet [--dry-run]
-
-# Force update database stats
-docker exec -it scovid tools/update_db.py
 ```
 
 ### Deploy
+
 ```bash
 # Dependencies
 sudo apt install docker docker-compose nginx certbot
@@ -77,7 +77,9 @@ git pull
 ```
 
 #### Secrets
+
 Currently the only secrets are for the Twitter bot, so you only need to set them if you are working on that, they are:
+
 ```
 SCOVID_TWITTER_API_KEY=
 SCOVID_TWITTER_API_SECRET=
@@ -85,7 +87,7 @@ SCOVID_TWITTER_ACCESS_TOKEN=
 SCOVID_TWITTER_ACCESS_SECRET=
 ```
 
-
 ## Notes
+
 Open Data API reference:  
 https://docs.ckan.org/en/latest/maintaining/datastore.html#api-reference
