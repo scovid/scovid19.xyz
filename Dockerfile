@@ -30,14 +30,9 @@ WORKDIR /home/app/scovid19
 # Install poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# Disable use of virtualenvs - we don't need them in a container
-RUN poetry config virtualenvs.create false
-
 # Install requirements
 COPY --chown=app:app pyproject.toml ./
 COPY --chown=app:app poetry.lock ./
-# TODO: Fix cache
-# RUN --mount=type=cache,target=/home/app/.cache/pypoetry,id=poetry poetry install
 RUN poetry install
 
 # Get traceback for C crashes
